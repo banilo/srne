@@ -1,5 +1,12 @@
 """
 HCP: sparse region estimator
+
+"One of the greatest challenges left for systems
+neuroscience is to understand the normal and dysfunctional
+operations of the cerebral cortex by relating local and global
+patterns of activity [...]."
+
+Buzsaki 2007 Nature
 """
 """
 Notes:

@@ -154,7 +154,6 @@ class SSEncoder(BaseEstimator):
         DEBUG_FLAG = True
 
         # self.max_epochs = 333
-        self.batch_size = 100
         self.n_reg = atlas_vox_reg.shape[1]  # number of brain compartments
         n_input = X_task.shape[1]  # sklearn-like structure
         n_output = n_input
@@ -194,6 +193,8 @@ class SSEncoder(BaseEstimator):
             self.dbg_nonimprovesteps = list()
             self.dbg_prfs_ = list()
             self.dbg_prfs_other_ds_ = list()
+
+        self.batch_size = X_train_s.shape[0]  # HACK
 
         # V -> supervised / logistic regression
         # regcoeff_vals = rng.randn(self.n_reg, self._nreg).astype(np.float32) * self.gain1        
@@ -265,9 +266,11 @@ class SSEncoder(BaseEstimator):
                 print("Max estimated duration: %i hours and %i minutes" % (hs, mins))
 
             lr_n_batches = lr_train_samples // self.batch_size
-            for i in range(lr_n_batches):
-                args = f_train(i)
-                lr_cur_cost = args[0]
+
+            # for i in range(lr_n_batches):
+
+            args = f_train(0)  # HACK: full dataset!
+            lr_cur_cost = args[0]
 
             # evaluate epoch cost
             if lr_last_cost < lr_cur_cost:
@@ -334,7 +337,7 @@ class SSEncoder(BaseEstimator):
 # computation
 ##############################################################################
 
-for l1 in [0.001]:
+for l1 in [0.25]:
     l2 = 0.999
     my_title = r'SRE: L1=%.3f L2=%.3f' % (l1, l2)
     print(my_title)

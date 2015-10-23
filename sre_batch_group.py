@@ -146,7 +146,7 @@ class SSEncoder(BaseEstimator):
         for p, g in zip(params, grads):
             new_val = p - lr * g
             new_val = self.prox_group_l2(new_val, np.float32(0.1) * lr)
-            new_val = self.prox_l1(new_val, np.float32(0.1) * lr)
+            new_val = self.prox_l1(new_val, np.float32(1.25) * lr)
             
             updates.append((p, new_val))
         return updates

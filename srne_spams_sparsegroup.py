@@ -136,12 +136,12 @@ param = {
  'intercept': False,
  'ista': False,
  'it0': 10,
- 'lambda1': 1.00,
+ 'lambda1': 1.0,
  'loss': 'logistic',
  'max_it': 2000,
  'numThreads': 1,
  'pos': False,
- 'regul': 'sparse-group-lasso-l2',
+ 'regul': 'sparse-group-lasso-linf',
  'groups': np.int32(msdl_labels),
  'subgrad': False,
  'tol': 0.001,
@@ -157,7 +157,7 @@ out_fname = 'TOMaudio_vs_video_%s_lambda%.3f.nii.gz' % (
 )
 nifti_masker.inverse_transform(W.T).to_filename(out_fname)
 
-# rsync -vza dbzdok@drago:/storage/workspace/danilo/prni2015/TOM* /git/srne/
+# rsync -vza dbzdok@drago:/storage/workspace/danilo/srne/TOM* /git/srne/
 
 
 

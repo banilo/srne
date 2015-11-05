@@ -212,8 +212,16 @@ Y = np.asfortranarray(Y)
 X_task_tree = np.asfortranarray(X_task_tree)
 W0 = np.asfortranarray(np.float64(W0))
 
+from sklearn.cross_validation import KFold
+folder = KFold(len(Y), n_folds=10)
+inds_train, inds_test = iter(folder).next()
+X_train = X_task_tree[inds_train]
+Y_train = Y[inds_train]
+X_test = X_task_tree[inds_test]
+Y_test = Y[inds_test]
+
 param = {'numThreads' : 1,'verbose' : True,
-         'lambda1' : 0.001, 'it0' : 10, 'max_it' : 200,
+         'lambda1' : 1.0, 'it0' : 10, 'max_it' : 200,
          'L0' : 0.1, 'tol' : 1e-5, 'intercept' : False,
          'pos' : False}
 tree = {
@@ -227,7 +235,7 @@ param['loss'] = 'logistic'
 # param['tree'] = tree
 
 (W, optim_info) = spams.fistaTree(
-    np.float64(Y), np.float64(X_task_tree), # U: double m x n matrix   (input signals) m is the signal size
+    np.float64(Y_train), np.float64(X_train), # U: double m x n matrix   (input signals) m is the signal size
     W0, tree, True,
     **param)
 
@@ -250,5 +258,11 @@ nifti_masker.inverse_transform(W_org.T).to_filename(out_fname)
 
 # rsync -vza dbzdok@drago:/storage/workspace/danilo/prni2015/TOM* /git/srne/
 
+y_truth = np.array(Y_test, dtype=np.float32)[:, 0]
+y_pred = np.array(np.dot(X_test, W) > 0, dtype=np.float32)[:, 0]
+y_pred[y_pred == 0] = -1
+
+acc = np.mean(y_pred == y_truth)
+print('Accuracy: %.2f' % acc)
 
 

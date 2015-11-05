@@ -226,68 +226,27 @@ param['regul'] = 'tree-l2'
 param['loss'] = 'logistic'
 # param['tree'] = tree
 
-# (W, optim_info) = spams.fistaTree(
-#     np.float64(Y), np.float64(X_task_tree), # U: double m x n matrix   (input signals) m is the signal size
-#     W0, tree, True,
-#     **param)
-# 
-# out_fname = 'TOMaudio_vs_video_%s_lambda%.3f.nii.gz' % (
-#     param['regul'], param['lambda1']
-# )
-# nifti_masker.inverse_transform(W.T).to_filename(out_fname)
-
-
-
-# prepare network dictionary
-# spca = joblib.load('/git/cohort/archi/preload_compr_HTGSPCAModel40')
-# from nilearn.input_data import NiftiMasker
-# nm = NiftiMasker('/git/cohort/archi/debug_mask.nii')
-# nm.fit()
-# comps_nii = nm.inverse_transform(spca.components_)
-# comps_nii.to_filename('spca_4d.nii.gz')
-# comps_4d = nifti_masker.transform(comps_nii)
-# 
-# net_maxlabels = np.argmax(comps_4d, axis=0)  # HACK
-# nifti_masker.inverse_transform(net_maxlabels).to_filename('dbg_net_maxlabels.nii.gz')
-# msdl_labels = net_maxlabels
-# 
-# comps_4d[comps_4d < 0.1] = 0
-# comps_4d[comps_4d >= 0.1] = 1
-# n_networks = len(comps_4d)
-# for i_comp in range(n_networks):
-#     comps_4d[i_comp, :] *= (i_comp + 1 + n_regions)
-# net_labels = nifti_masker.inverse_transform(comps_4d)
-# net_labels.to_filename('dbg_net_labels.nii.gz')
-
-import spams
-param = {'L0': 0.1,
- 'a': 0.1,
- 'b': 1000,
- 'compute_gram': False,
- 'intercept': False,
- 'ista': False,
- 'it0': 10,
- 'lambda1': 0.25,
- 'loss': 'logistic',
- 'max_it': 2000,
- 'numThreads': 1,
- 'pos': False,
- 'regul': 'trace-norm',
- # 'regul': 'l1',
- 'groups': np.int32(msdl_labels),
- 'subgrad': False,
- 'tol': 0.001,
- 'verbose': True}
-(W, optim_info) = spams.fistaFlat(
-    Y, X, # U: double m x n matrix   (input signals) m is the signal size
-    W0, True,
+(W, optim_info) = spams.fistaTree(
+    np.float64(Y), np.float64(X_task_tree), # U: double m x n matrix   (input signals) m is the signal size
+    W0, tree, True,
     **param)
-print 'mean loss: %f, mean relative duality_gap: %f, number of iterations: %f' %(np.mean(optim_info[0,:]),np.mean(optim_info[2,:]),np.mean(optim_info[3,:]))
+
+cur_ind = 0
+W_org = np.zeros_like(W)
+for i_net in range(my_rsns_data.shape[0]):
+    regs_in_label = np.unique(rsn_aal_map[i_net, :])[1:]
+    for reg_label in regs_in_label:
+        reg_inds = np.where(rsn_aal_map[i_net, :] == reg_label)[0]
+        n_reg_vox = len(reg_inds)
+        
+        W_org[reg_inds, 0] = W[cur_ind:(cur_ind + n_reg_vox), 0]
+
+        cur_ind += n_reg_vox  # move behind size of current net
 
 out_fname = 'TOMaudio_vs_video_%s_lambda%.3f.nii.gz' % (
     param['regul'], param['lambda1']
 )
-nifti_masker.inverse_transform(W.T).to_filename(out_fname)
+nifti_masker.inverse_transform(W_org.T).to_filename(out_fname)
 
 # rsync -vza dbzdok@drago:/storage/workspace/danilo/prni2015/TOM* /git/srne/
 

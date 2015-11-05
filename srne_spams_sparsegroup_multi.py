@@ -58,10 +58,7 @@ print('Mask voxels: %i' % mask_nvox)
 # load MSDL rois
 import nilearn.datasets
 msdl_path = nilearn.datasets.fetch_msdl_atlas()['maps']
-
-msdl_path = 'resources/aal.nii'  # HACK !
 msdl_nii = nib.load(msdl_path)
-
 r_msdl_nii = resample_img(
     img=msdl_nii,
     target_affine=nifti_masker.mask_img_.get_affine(),
@@ -74,13 +71,13 @@ r_msdl_nii = nib.Nifti1Image(
     header = r_msdl_nii.get_header()
 )
 r_msdl_nii.to_filename('debug_rmsdl.nii.gz')
-msdl_labels = nifti_masker.transform(r_msdl_nii)
-msdl_labels += 1
+FS_msdl = nifti_masker.transform(r_msdl_nii).T
+msdl_labels = np.argmax(FS_msdl, axis=1)
+msdl_labels += 1 #  np.ones(len(FS_msdl))
 n_regions = len(np.unique(msdl_labels))
 
-assert n_regions == 117
+assert n_regions == 39
 nifti_masker.inverse_transform(msdl_labels).to_filename('dbg_msdl_labels.nii.gz')
-msdl_labels = msdl_labels[0]
 
 # load HCP task data
 print('Loading data...')
@@ -90,20 +87,18 @@ else:
     X_task, labels = joblib.load('/git/prni2015/preload_HT_3mm')
 
 labels = np.array(labels)
-inds1 = labels == 2  # TOM
-inds2 = labels == 3
+# inds1 = labels == 2  # TOM
+# inds2 = labels == 3
 # inds1 = labels == 4  # object grasp/orientation
 # inds2 = labels == 5
-inds = np.logical_or(inds1, inds2)
+inds = np.ones(len(labels), dtype=np.bool)
 
-X_task = X_task[inds]
+X = X_task[inds]
 Y = labels[inds].astype(np.float64)
-Y[Y==2] = -1
-Y[Y==3] = 1
 
-X = np.asfortranarray(X_task)
+X = np.asfortranarray(X)
 Y = np.asfortranarray(Y[:, np.newaxis])
-W0 = np.zeros((X.shape[1], Y.shape[1]), dtype=np.float64, order="FORTRAN")
+W0 = np.zeros((X.shape[1], 18), dtype=np.float64, order="FORTRAN")
 print('Done!')
 
 # prepare network dictionary
@@ -128,20 +123,22 @@ print('Done!')
 # net_labels.to_filename('dbg_net_labels.nii.gz')
 
 import spams
-param = {
- 'L0': 0.1,
+param = {'L0': 0.1,
  'a': 0.1,
  'b': 1000,
  'compute_gram': False,
  'intercept': False,
  'ista': False,
  'it0': 10,
- 'lambda1': 1.00,
- 'loss': 'logistic',
+ 'lambda1': 0.25,
+ 'lambda2': 0.1,
+ 'lambda3': 0.1,
+ 'loss': 'multi-logistic',
  'max_it': 2000,
  'numThreads': 1,
  'pos': False,
- 'regul': 'sparse-group-lasso-l2',
+ 'regul': 'l1l2',
+ # 'regul': 'l1',
  'groups': np.int32(msdl_labels),
  'subgrad': False,
  'tol': 0.001,

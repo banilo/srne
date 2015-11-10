@@ -12,6 +12,7 @@ print __doc__
 """
 Notes:
 """
+import spams
 
 import os
 import os.path as op
@@ -25,24 +26,21 @@ from sklearn.preprocessing import StandardScaler
 from nilearn.input_data import NiftiMasker
 from sklearn.metrics import precision_recall_fscore_support
 from sklearn.metrics import confusion_matrix
-import theano
-import theano.tensor as T
 from matplotlib import pylab as plt
-print('Running THEANO on %s' % theano.config.device)
 from nilearn.image import concat_imgs, resample_img
 import joblib
 import time
-import spams
 import scipy.sparse as ssp
 from nilearn.image import index_img
+from nilearn import datasets
 from scipy.stats import zscore
 
-RES_NAME = 'sre'
+RES_NAME = 'snre_benchmark'
 WRITE_DIR = op.join(os.getcwd(), RES_NAME)
 if not op.exists(WRITE_DIR):
     os.mkdir(WRITE_DIR)
 
-FORCE_TWO_CLASSES = False
+FORCE_TWO_CLASSES = True
 
 on_server = op.exists(r'/storage')
 
@@ -59,28 +57,26 @@ mask_nvox = nifti_masker.mask_img_.get_data().sum()
 print('Mask shape is %i/%i/%i' % nifti_masker.mask_img_.get_data().shape)
 print('Mask voxels: %i' % mask_nvox)
 
-# load MSDL rois
-msdl_path = 'resources/aal.nii'  # HACK !
-msdl_nii = nib.load(msdl_path)
+# load atlas rois
+# atlas_path = 'resources/aal.nii'  # HACK !
+crad = datasets.fetch_craddock_2012_atlas()
+atlas_nii = index_img(crad['scorr_mean'], 19) #42)
 
-r_msdl_nii = resample_img(
-    img=msdl_nii,
+r_atlas_nii = resample_img(
+    img=atlas_nii,
     target_affine=nifti_masker.mask_img_.get_affine(),
     target_shape=nifti_masker.mask_img_.shape,
     interpolation='nearest'
 )
-r_msdl_nii = nib.Nifti1Image(
-    np.float32(r_msdl_nii.get_data()),
-    r_msdl_nii.get_affine(),
-    header = r_msdl_nii.get_header()
-)
-r_msdl_nii.to_filename('debug_rmsdl.nii.gz')
-msdl_labels = nifti_masker.transform(r_msdl_nii)[0, :]
-msdl_labels += 1
-n_regions = len(np.unique(msdl_labels))
+r_atlas_nii.to_filename('debug_ratlas.nii.gz')
+atlas_labels = nifti_masker.transform(r_atlas_nii)[0, :]
+atlas_labels += 1
+n_regions = len(np.unique(atlas_labels))
+ratlas_data = atlas_labels
 
-assert n_regions == 117
-nifti_masker.inverse_transform(msdl_labels[np.newaxis, :]).to_filename('dbg_msdl_labels.nii.gz')
+assert n_regions == 196
+
+nifti_masker.inverse_transform(atlas_labels[np.newaxis, :]).to_filename('dbg_atlas_labels.nii.gz')
 
 # load HCP task data
 print('Loading data...')
@@ -108,16 +104,7 @@ print('Done!')
 
 # prepare Smith2009 ICA components
 from nilearn.image import resample_img
-rsn_nii4d = nib.load('resources/rsn20.nii.gz')
-aal_nii = nib.load('resources/aal.nii')
-raal_nii = resample_img(
-    aal_nii,
-    nifti_masker.mask_img_.get_affine(),
-    nifti_masker.mask_img_.shape,
-    interpolation='nearest'
-)
-raal_nii.to_filename('resources/dbg_raal.nii.gz')
-raal_data = nifti_masker.transform(raal_nii)[0]
+rsn_nii4d = nib.load(datasets.fetch_smith_2009()['rsn20'])
 
 my_rsns = index_img(
     rsn_nii4d,
@@ -130,7 +117,7 @@ class StructuredEstimator(BaseEstimator):
                  max_it=1000, n_threads=1, verbose=True):
         """
         Wrapper to enable access to SPAMS/Python-interface by
-        a sklearn-typical estimator class.
+        an sklearn-typical estimator class.
         
         Parameters
         ----------
@@ -169,12 +156,12 @@ class StructuredEstimator(BaseEstimator):
             if self.net_reg_map is None:
                 # define tree structure for SPAMS
                 reg_labels = np.unique(self.reg_data)[1:]
-                self.net_data = zscore(self.net_data, axis=1)  # no values from an RSN dominate
+                # self.net_data = zscore(self.net_data, axis=1)  # no values from an RSN dominate
                 combo_map = self.net_data.argmax(axis=0) + 1
 
                 self.net_reg_map = np.zeros(self.net_data.shape)
                 for reg_label in reg_labels:
-                    reg_inds = np.where(raal_data == reg_label)[0]
+                    reg_inds = np.where(self.reg_data == reg_label)[0]
                     rsn_assigns = np.argmax(self.net_data[:, reg_inds], axis=0)
                     bins = np.bincount(rsn_assigns)
                     i_assigned_rsn = np.argmax(bins)
@@ -186,12 +173,12 @@ class StructuredEstimator(BaseEstimator):
                     self.net_reg_map[i_assigned_rsn, reg_inds] = reg_label
 
                 net_reg_map_summed = np.sum(self.net_reg_map, axis=0)
-                assert len(np.unique(net_reg_map_summed)) - 1 == 116  # each region has been assigned to a RSN?
+                assert len(np.unique(net_reg_map_summed)) == n_regions # each region has been assigned to a RSN?
                 
                 self.N_own_variables = []
                 self.own_variables = []
-                self.eta_g = np.array(np.ones(129),dtype=np.float32)
-                self.groups = np.asfortranarray(np.zeros((129, 129)), dtype=np.bool)
+                self.eta_g = np.array(np.ones(13 + n_regions),dtype=np.float32)
+                self.groups = np.asfortranarray(np.zeros((13 + 789, 13 + n_regions)), dtype=np.bool)
 
                 # add net info
                 self.N_own_variables += list(np.zeros((13), dtype=np.int32))  # for root group + net groups
@@ -230,14 +217,17 @@ class StructuredEstimator(BaseEstimator):
 
                 # all region sizes add up to the number of non-zero voxels in network label map?
                 assert cur_ind == len(net_reg_map_summed) - (net_reg_map_summed == 0).sum()
-                assert self.groups.sum() - 12 == 116  # one dependence per region
-                assert i_gr == 129
-                assert len(self.N_own_variables) == 129
+                assert self.groups.sum() - 12 == n_regions - 1 # one dependence per region
+                assert i_gr == 13 + n_regions - 1
+                assert len(self.N_own_variables) == 13 + n_regions - 1
             
                 self.own_variables =  np.array(self.own_variables, dtype=np.int32)
                 self.N_own_variables =  np.array(self.N_own_variables,dtype=np.int32)
                 self.groups = np.asfortranarray(self.groups)
                 self.groups = ssp.csc_matrix(self.groups, dtype=np.bool)
+                
+                nifti_masker.inverse_transform(clf.net_reg_map).to_filename(
+                    'resources/rsn_12_assigned_craddock_nostd.nii.gz')
             
             cur_ind = 0
             for i_net in range(self.net_data.shape[0]):
@@ -258,7 +248,7 @@ class StructuredEstimator(BaseEstimator):
                      'verbose' : self.verbose,
                      'lambda1' : float(self.lambda1),
                      'it0' : 10, 'max_it' : self.max_it,
-                     'L0' : 0.1, 'tol' : 1e-05,
+                     'L0' : 0.1, 'tol' : 1e-03,
                      'intercept' : False,
                      'pos' : False}
             tree = {
@@ -270,6 +260,8 @@ class StructuredEstimator(BaseEstimator):
             param['regul'] = self.regul
             param['loss'] = 'logistic'
 
+            print(param)
+            stop
             (W, optim_info) = spams.fistaTree(
                 np.float64(Y), np.float64(X), # U: double m x n matrix   (input signals) m is the signal size
                 W0, tree, True,
@@ -306,10 +298,11 @@ class StructuredEstimator(BaseEstimator):
              'pos': False,
              'regul': self.regul,
              'subgrad': False,
-             'tol': 1e-05,
+             'tol': 1e-03,
              'verbose': self.verbose}
             if self.group_labels is not None:
                 param['groups'] = np.int32(self.group_labels)
+            print(param)
             (self.W_, optim_info) = spams.fistaFlat(Y, X, W0, True, **param)            
         
         self.optim_info_ = optim_info
@@ -338,6 +331,7 @@ class StructuredEstimator(BaseEstimator):
 # run SPAMs
 from sklearn.cross_validation import StratifiedShuffleSplit
 
+# all estimators will have the same training set due to random_state
 folder = StratifiedShuffleSplit(Y, n_iter=10, test_size=0.1,
                                 random_state=42)
 inds_train, inds_test = iter(folder).next()
@@ -348,28 +342,47 @@ Y_test = Y[inds_test]
 
 clf = StructuredEstimator(
     lambda1=0.25,
-    regul='l2',
-    reg_data=raal_data,
+    regul='tree-l0',
+    reg_data=ratlas_data,
     net_data=my_rsns_data,
-    max_it=2000,
-    group_labels=None #np.int32(msdl_labels)
+    max_it=100,
+    group_labels=None #np.int32(atlas_labels)
 )
-
 
 from sklearn.grid_search import GridSearchCV
 from sklearn.multiclass import OneVsRestClassifier
 
-param_grid = {'estimator__lambda1': np.float32(np.linspace(0, 0.5, 11))}
-# param_grid = {'estimator__lambda1': [0.001, 0.25]}
+param_grid = {'estimator__lambda1': np.linspace(0, 1., 11)}
 
-clf_ovr = OneVsRestClassifier(clf, n_jobs=10)
+# start time
+start_time = time.time()
+
+clf_ovr = OneVsRestClassifier(clf, n_jobs=1)
 clf_ovr_gs = GridSearchCV(clf_ovr, param_grid, n_jobs=1, cv=3)
 clf_ovr_gs.fit(X_train, Y_train)
 
-test_acc = clf_ovr_gs.score(X_test, Y_test)
-print('Accuracy: %.2f' % test_acc)
+train_acc = clf_ovr_gs.score(X_train, Y_train)
+print('Train-Accuracy: %.2f' % train_acc)
 
-# ovr_ests = clf_ovr_gs.best_estimator_
+test_acc = clf_ovr_gs.score(X_test, Y_test)
+print('Test-Accuracy: %.2f' % test_acc)
+y_pred = clf_ovr_gs.predict(X_test)
+test_prfs = precision_recall_fscore_support(y_pred, Y_test)
+
+clf_ovr_gs.train_acc = train_acc
+clf_ovr_gs.test_acc = test_acc
+clf_ovr_gs.test_prfs = test_prfs
+
+# stop time
+dur = time.time() - start_time
+total_mins = dur / 60
+hs, mins = divmod(total_mins, 60)
+print('-' * 80)
+print("Elapsed time: %i hours and %i minutes" % (hs, mins))
+
+out_fname = '%s_dataratio%i' % (clf.regul, 100)
+out_path = op.join(WRITE_DIR, out_fname)
+joblib.dump(clf_ovr_gs, out_path, compress=9)
 
 
 
@@ -382,7 +395,5 @@ print('Accuracy: %.2f' % test_acc)
 # )
 # nifti_masker.inverse_transform(clf.W_.T).to_filename(out_fname)
 
-# rsync -vza dbzdok@drago:/storage/workspace/danilo/prni2015/TOM* /git/srne/
-
-
+# rsync -vza dbzdok@drago:/storage/workspace/danilo/srne/srne_benchmark/* /git/srne/srne_benchmark/
 

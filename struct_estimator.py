@@ -1,5 +1,5 @@
 """
-HCP: sparse region estimator
+HCP: sparse region-network estimator
 
 "One of the greatest challenges left for systems
 neuroscience is to understand the normal and dysfunctional
@@ -11,6 +11,12 @@ Buzsaki 2007 Nature
 print __doc__
 """
 Notes:
+- turn eta_g multiplier for all netowrks and for all regions into
+a model HYPERPARAMETER -> both these could be transformed into a
+contjoint reg/net ratio
+- test max_it=100 versus max_it=500
+- 2-class versus 18-class problems
+- test known inseparable 2-class problem
 """
 import spams
 
@@ -35,12 +41,25 @@ from nilearn.image import index_img
 from nilearn import datasets
 from scipy.stats import zscore
 
-RES_NAME = 'snre_benchmark'
+FORCE_TWO_CLASSES = True
+# REG_PEN = 'l1'
+# REG_PEN = 'l2'
+REG_PEN = 'sparse-group-lasso-l2'
+# REG_PEN = 'sparse-group-lasso-linf'
+# REG_PEN = 'tree-l0'
+# REG_PEN = 'tree-l2'
+# REG_PEN = 'trace-norm'
+MY_MAX_IT = 500
+MY_DATA_RATIO = 100
+LAMBDA_GRID = np.linspace(0, 1.0, 11)
+
+RES_NAME = 'srne_benchmark'
+if FORCE_TWO_CLASSES:
+    RES_NAME += '_2cl'
 WRITE_DIR = op.join(os.getcwd(), RES_NAME)
 if not op.exists(WRITE_DIR):
     os.mkdir(WRITE_DIR)
 
-FORCE_TWO_CLASSES = True
 
 on_server = op.exists(r'/storage')
 
@@ -71,12 +90,16 @@ r_atlas_nii = resample_img(
 r_atlas_nii.to_filename('debug_ratlas.nii.gz')
 atlas_labels = nifti_masker.transform(r_atlas_nii)[0, :]
 atlas_labels += 1
+
+# impose continuity and 1-based indexing in label numbers (for SPAMs)
+atlas2 = np.zeros_like(atlas_labels)
+for i_label, label in enumerate(np.unique(atlas_labels)):
+    atlas2[np.where(atlas_labels == label)[0]] = i_label + 1  # one-based indexing
+atlas_labels = atlas2
+
 n_regions = len(np.unique(atlas_labels))
-ratlas_data = atlas_labels
 
 assert n_regions == 196
-
-nifti_masker.inverse_transform(atlas_labels[np.newaxis, :]).to_filename('dbg_atlas_labels.nii.gz')
 
 # load HCP task data
 print('Loading data...')
@@ -87,8 +110,10 @@ else:
 
 labels = np.array(labels)
 if FORCE_TWO_CLASSES:
-    inds1 = labels == 2  # TOM
-    inds2 = labels == 3
+    inds1 = labels == 0  # TOM
+    inds2 = labels == 1
+    # inds1 = labels == 2  # TOM
+    # inds2 = labels == 3
     # inds1 = labels == 4  # object grasp/orientation
     # inds2 = labels == 5
     inds = np.logical_or(inds1, inds2)
@@ -100,7 +125,7 @@ if FORCE_TWO_CLASSES:
 else:
     Y = np.float64(labels)
 
-print('Done!')
+print('Done (%.2f MB)!' % (X_task.nbytes / 1e6))
 
 # prepare Smith2009 ICA components
 from nilearn.image import resample_img
@@ -146,6 +171,11 @@ class StructuredEstimator(BaseEstimator):
     def fit(self, X, y):
         if self.verbose:
             print(self)
+            print('Unique Y: ')
+            print(np.unique(y))
+        
+        # SPAMS expects -1/+1 labelling
+        y[y == 0] = -1
 
         Y = np.asfortranarray(np.float64(y[:, np.newaxis]))
         W0 = np.zeros((X.shape[1], Y.shape[1]), dtype=np.float64, order="FORTRAN")
@@ -177,8 +207,8 @@ class StructuredEstimator(BaseEstimator):
                 
                 self.N_own_variables = []
                 self.own_variables = []
-                self.eta_g = np.array(np.ones(13 + n_regions),dtype=np.float32)
-                self.groups = np.asfortranarray(np.zeros((13 + 789, 13 + n_regions)), dtype=np.bool)
+                self.eta_g = np.array(np.ones(13 + n_regions - 1),dtype=np.float32)
+                self.groups = np.asfortranarray(np.zeros((13 + n_regions - 1, 13 + n_regions - 1)), dtype=np.bool)
 
                 # add net info
                 self.N_own_variables += list(np.zeros((13), dtype=np.int32))  # for root group + net groups
@@ -226,8 +256,8 @@ class StructuredEstimator(BaseEstimator):
                 self.groups = np.asfortranarray(self.groups)
                 self.groups = ssp.csc_matrix(self.groups, dtype=np.bool)
                 
-                nifti_masker.inverse_transform(clf.net_reg_map).to_filename(
-                    'resources/rsn_12_assigned_craddock_nostd.nii.gz')
+                nifti_masker.inverse_transform(self.net_reg_map).to_filename(
+                    'dbg_rsn_12_assigned_craddock_nostd.nii.gz')
             
             cur_ind = 0
             for i_net in range(self.net_data.shape[0]):
@@ -247,7 +277,7 @@ class StructuredEstimator(BaseEstimator):
             param = {'numThreads' : self.n_threads,
                      'verbose' : self.verbose,
                      'lambda1' : float(self.lambda1),
-                     'it0' : 10, 'max_it' : self.max_it,
+                     'it0' : 1, 'max_it' : self.max_it,
                      'L0' : 0.1, 'tol' : 1e-03,
                      'intercept' : False,
                      'pos' : False}
@@ -261,7 +291,6 @@ class StructuredEstimator(BaseEstimator):
             param['loss'] = 'logistic'
 
             print(param)
-            stop
             (W, optim_info) = spams.fistaTree(
                 np.float64(Y), np.float64(X), # U: double m x n matrix   (input signals) m is the signal size
                 W0, tree, True,
@@ -290,7 +319,7 @@ class StructuredEstimator(BaseEstimator):
              'compute_gram': False,
              'intercept': False,
              'ista': False,
-             'it0': 10,
+             'it0': 1,
              'lambda1': float(self.lambda1),
              'loss': 'logistic',
              'max_it': self.max_it,
@@ -325,40 +354,63 @@ class StructuredEstimator(BaseEstimator):
         else:
             return acc
 
-
-
+# subsample input data
+from sklearn.cross_validation import StratifiedShuffleSplit
+if MY_DATA_RATIO != 100:
+    ratio = MY_DATA_RATIO / 100.
+    print('DATA SUBSELECTION at %.2f!!!' % ratio)
+    folder = StratifiedShuffleSplit(Y, n_iter=10, train_size=ratio,
+                                    random_state=42)
+    inds_train, _ = iter(folder).next()
+    X_task = X_task[inds_train]
+    Y = Y[inds_train]
 
 # run SPAMs
-from sklearn.cross_validation import StratifiedShuffleSplit
 
-# all estimators will have the same training set due to random_state
 folder = StratifiedShuffleSplit(Y, n_iter=10, test_size=0.1,
                                 random_state=42)
 inds_train, inds_test = iter(folder).next()
 X_train = X_task[inds_train]
+# all estimators will have the same training set due to random_state
 Y_train = Y[inds_train]
 X_test = X_task[inds_test]
 Y_test = Y[inds_test]
 
+if (REG_PEN == 'l1') or (REG_PEN == 'l2') or (REG_PEN == 'trace-norm'):
+    cur_atlas_labels = None
+    cur_net_data = None
+    cur_group_labels = None
+elif 'tree' in REG_PEN:
+    cur_atlas_labels = atlas_labels
+    cur_net_data = my_rsns_data
+    cur_group_labels = None
+elif 'sparse-group-lasso' in REG_PEN:
+    cur_atlas_labels = None
+    cur_net_data = None
+    cur_group_labels = np.int32(atlas_labels)
+else:
+    raise Exception('Unknown penalty term!')
+
 clf = StructuredEstimator(
     lambda1=0.25,
-    regul='tree-l0',
-    reg_data=ratlas_data,
-    net_data=my_rsns_data,
-    max_it=100,
-    group_labels=None #np.int32(atlas_labels)
+    regul=REG_PEN,
+    reg_data=cur_atlas_labels,
+    net_data=cur_net_data,
+    max_it=MY_MAX_IT,
+    group_labels=cur_group_labels
 )
 
 from sklearn.grid_search import GridSearchCV
 from sklearn.multiclass import OneVsRestClassifier
 
-param_grid = {'estimator__lambda1': np.linspace(0, 1., 11)}
+param_grid = {'estimator__lambda1': LAMBDA_GRID}
+# param_grid = {'estimator__lambda1': [0.1]}
 
 # start time
 start_time = time.time()
 
 clf_ovr = OneVsRestClassifier(clf, n_jobs=1)
-clf_ovr_gs = GridSearchCV(clf_ovr, param_grid, n_jobs=1, cv=3)
+clf_ovr_gs = GridSearchCV(clf_ovr, param_grid, n_jobs=2, cv=3)
 clf_ovr_gs.fit(X_train, Y_train)
 
 train_acc = clf_ovr_gs.score(X_train, Y_train)
@@ -380,11 +432,12 @@ hs, mins = divmod(total_mins, 60)
 print('-' * 80)
 print("Elapsed time: %i hours and %i minutes" % (hs, mins))
 
-out_fname = '%s_dataratio%i' % (clf.regul, 100)
+out_fname = '%s_dataratio%i_maxit%i' % (clf.regul, MY_DATA_RATIO, clf.max_it)
 out_path = op.join(WRITE_DIR, out_fname)
 joblib.dump(clf_ovr_gs, out_path, compress=9)
 
 
+STOP
 
 # test_acc = gs.best_estimator_.score(X_test, Y_test)
 # print('Accuracy: %.2f' % test_acc)
@@ -395,5 +448,109 @@ joblib.dump(clf_ovr_gs, out_path, compress=9)
 # )
 # nifti_masker.inverse_transform(clf.W_.T).to_filename(out_fname)
 
-# rsync -vza dbzdok@drago:/storage/workspace/danilo/srne/srne_benchmark/* /git/srne/srne_benchmark/
+def dump_comps(masker, compressor, components, threshold=2, fwhm=None,
+               perc=None):
+    from scipy.stats import zscore
+    from nilearn.plotting import plot_stat_map
+    from nilearn.image import smooth_img
+    from scipy.stats import scoreatpercentile
+
+    n_comp = len(components)
+    if isinstance(compressor, basestring):
+        comp_name = compressor
+    else:
+        comp_name = compressor.__str__().split('(')[0]
+
+    for i_c, comp in enumerate(components):
+        path_mask = op.join(WRITE_DIR, '%s_%i-%i' % (comp_name,
+                                                     n_comp, i_c + 1))
+        nii_raw = masker.inverse_transform(comp)
+        nii_raw.to_filename(path_mask + '.nii.gz')
+        
+        comp_z = zscore(comp)
+        
+        if perc is not None:
+            cur_thresh = scoreatpercentile(np.abs(comp_z), per=perc)
+            path_mask += '_perc%i' % perc
+            print('Applying percentile %.2f (threshold: %.2f)' % (perc, cur_thresh))
+        else:
+            cur_thresh = threshold
+            path_mask += '_thr%.2f' % cur_thresh
+            print('Applying threshold: %.2f' % cur_thresh)
+
+        nii_z = masker.inverse_transform(comp_z)
+        gz_path = path_mask + '_zmap.nii.gz'
+        nii_z.to_filename(gz_path)
+        plot_stat_map(gz_path, bg_img='colin.nii', threshold=cur_thresh,
+                      cut_coords=(0, -2, 0), draw_cross=False,
+                      output_file=path_mask + 'zmap.png')
+                      
+        # optional: do smoothing
+        if fwhm is not None:
+            nii_z_fwhm = smooth_img(nii_z, fwhm=fwhm)
+            plot_stat_map(nii_z_fwhm, bg_img='colin.nii', threshold=cur_thresh,
+                          cut_coords=(0, -2, 0), draw_cross=False,
+                          output_file=path_mask +
+                          ('zmap_%imm.png' % fwhm))
+
+n_est = len(clf_ovr_gs.best_estimator_.estimators_)
+coef_per_class = [est.W_ for est in clf_ovr_gs.best_estimator_.estimators_]
+coef_per_class = np.squeeze(coef_per_class)
+
+# dump_comps(nifti_masker, 'trace_dataratio%i_maxit100', coef_per_class, threshold=0.0)
+
+
+
+# rsync -vza dbzdok@drago:/storage/workspace/danilo/srne/snre_benchmark/* /git/srne/srne_benchmark
+# rsync -vza dbzdok@drago:/storage/workspace/danilo/srne/srne_benchmark_2cl/* /git/srne/srne_benchmark_2cl
+
+REGS = ['l1', 'l2', 'sparse-group-lasso-l2', 'sparse-group-lasso-linf',
+    'trace-norm', 'tree-l0', 'tree-l2']
+
+import matplotlib
+matplotlib.style.use('ggplot')
+import matplotlib.pyplot as plt
+import re
+%matplotlib qt
+
+for r in REGS:
+    anal_str = '%s_dataratio100_maxit500' % r
+    tar_dump_file = 'srne_benchmark_2cl/%s' % anal_str
+    if not op.exists(tar_dump_file):
+        print('SKIPPED: %s' % tar_dump_file)
+        continue
+    clf_ovr_gs = joblib.load(tar_dump_file)
+    plt.close('all')
+    plt.figure()
+    means = []
+    stds = []
+    lbds = []
+    for grid_str in clf_ovr_gs.grid_scores_:
+        mean, std, lbd = re.findall("\d+.\d+", str(grid_str))
+        mean, std, lbd = np.float(mean), np.float(std), np.float(lbd)
+        means.append(mean)
+        stds.append(std)
+        lbds.append(lbd)
+
+    plt.errorbar(lbds, y=means, yerr=stds, color='r', linewidth=2)
+    plt.xlabel('$\lambda$')
+    plt.ylabel('accuracy (mean)')
+    plt.ylim(0.4, 1.0)
+    plt.xticks(lbds)
+    plt.title('GridSearch: ' + anal_str)
+    plt.savefig(tar_dump_file + '_gs.png')
+
+for reg in REGS:
+    anal_str = '%s_dataratio100_maxit500' % reg
+    tar_dump_file = 'srne_benchmark_2cl/%s' % anal_str
+    if not op.exists(tar_dump_file):
+        print('SKIPPED: %s' % tar_dump_file)
+        continue
+    clf_ovr_gs = joblib.load(tar_dump_file)
+    weights = clf_ovr_gs.best_estimator_.estimators_[0].W_.T
+    dump_comps(
+        nifti_masker,
+        anal_str + '_weights',
+        weights,
+        threshold=0.0)
 

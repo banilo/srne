@@ -41,17 +41,17 @@ from nilearn.image import index_img
 from nilearn import datasets
 from scipy.stats import zscore
 
-FORCE_TWO_CLASSES = True
+FORCE_TWO_CLASSES = False
 # REG_PEN = 'l1'
 # REG_PEN = 'l2'
-REG_PEN = 'sparse-group-lasso-l2'
+# REG_PEN = 'sparse-group-lasso-l2'
 # REG_PEN = 'sparse-group-lasso-linf'
 # REG_PEN = 'tree-l0'
 # REG_PEN = 'tree-l2'
 # REG_PEN = 'trace-norm'
-MY_MAX_IT = 500
+MY_MAX_IT = 100
 MY_DATA_RATIO = 100
-LAMBDA_GRID = np.linspace(0, 1.0, 11)
+LAMBDA_GRID = np.linspace(0.1, 1.0, 10)
 
 RES_NAME = 'srne_benchmark'
 if FORCE_TWO_CLASSES:
@@ -60,6 +60,13 @@ WRITE_DIR = op.join(os.getcwd(), RES_NAME)
 if not op.exists(WRITE_DIR):
     os.mkdir(WRITE_DIR)
 
+REGS = ['tree-l2', 'tree-l0']
+# REGS = ['sparse-group-lasso-linf', 'sparse-group-lasso-l2']
+
+# REGS = ['tree-l0', 'tree-l2',
+#     'sparse-group-lasso-linf', 'sparse-group-lasso-l2',
+#     'l1', 'l2',
+#     'trace-norm']
 
 on_server = op.exists(r'/storage')
 
@@ -366,75 +373,75 @@ if MY_DATA_RATIO != 100:
     Y = Y[inds_train]
 
 # run SPAMs
+for REG_PEN in REGS:
+    folder = StratifiedShuffleSplit(Y, n_iter=10, test_size=0.1,
+                                    random_state=42)
+    inds_train, inds_test = iter(folder).next()
+    X_train = X_task[inds_train]
+    # all estimators will have the same training set due to random_state
+    Y_train = Y[inds_train]
+    X_test = X_task[inds_test]
+    Y_test = Y[inds_test]
 
-folder = StratifiedShuffleSplit(Y, n_iter=10, test_size=0.1,
-                                random_state=42)
-inds_train, inds_test = iter(folder).next()
-X_train = X_task[inds_train]
-# all estimators will have the same training set due to random_state
-Y_train = Y[inds_train]
-X_test = X_task[inds_test]
-Y_test = Y[inds_test]
+    if (REG_PEN == 'l1') or (REG_PEN == 'l2') or (REG_PEN == 'trace-norm'):
+        cur_atlas_labels = None
+        cur_net_data = None
+        cur_group_labels = None
+    elif 'tree' in REG_PEN:
+        cur_atlas_labels = atlas_labels
+        cur_net_data = my_rsns_data
+        cur_group_labels = None
+    elif 'sparse-group-lasso' in REG_PEN:
+        cur_atlas_labels = None
+        cur_net_data = None
+        cur_group_labels = np.int32(atlas_labels)
+    else:
+        raise Exception('Unknown penalty term!')
 
-if (REG_PEN == 'l1') or (REG_PEN == 'l2') or (REG_PEN == 'trace-norm'):
-    cur_atlas_labels = None
-    cur_net_data = None
-    cur_group_labels = None
-elif 'tree' in REG_PEN:
-    cur_atlas_labels = atlas_labels
-    cur_net_data = my_rsns_data
-    cur_group_labels = None
-elif 'sparse-group-lasso' in REG_PEN:
-    cur_atlas_labels = None
-    cur_net_data = None
-    cur_group_labels = np.int32(atlas_labels)
-else:
-    raise Exception('Unknown penalty term!')
+    clf = StructuredEstimator(
+        lambda1=0.25,
+        regul=REG_PEN,
+        reg_data=cur_atlas_labels,
+        net_data=cur_net_data,
+        max_it=MY_MAX_IT,
+        group_labels=cur_group_labels
+    )
 
-clf = StructuredEstimator(
-    lambda1=0.25,
-    regul=REG_PEN,
-    reg_data=cur_atlas_labels,
-    net_data=cur_net_data,
-    max_it=MY_MAX_IT,
-    group_labels=cur_group_labels
-)
+    from sklearn.grid_search import GridSearchCV
+    from sklearn.multiclass import OneVsRestClassifier
 
-from sklearn.grid_search import GridSearchCV
-from sklearn.multiclass import OneVsRestClassifier
+    param_grid = {'estimator__lambda1': LAMBDA_GRID}
+    # param_grid = {'estimator__lambda1': [0.1]}
 
-param_grid = {'estimator__lambda1': LAMBDA_GRID}
-# param_grid = {'estimator__lambda1': [0.1]}
+    # start time
+    start_time = time.time()
 
-# start time
-start_time = time.time()
+    clf_ovr = OneVsRestClassifier(clf, n_jobs=1)
+    clf_ovr_gs = GridSearchCV(clf_ovr, param_grid, n_jobs=5, cv=3)
+    clf_ovr_gs.fit(X_train, Y_train)
 
-clf_ovr = OneVsRestClassifier(clf, n_jobs=1)
-clf_ovr_gs = GridSearchCV(clf_ovr, param_grid, n_jobs=2, cv=3)
-clf_ovr_gs.fit(X_train, Y_train)
+    train_acc = clf_ovr_gs.score(X_train, Y_train)
+    print('Train-Accuracy: %.2f' % train_acc)
 
-train_acc = clf_ovr_gs.score(X_train, Y_train)
-print('Train-Accuracy: %.2f' % train_acc)
+    test_acc = clf_ovr_gs.score(X_test, Y_test)
+    print('Test-Accuracy: %.2f' % test_acc)
+    y_pred = clf_ovr_gs.predict(X_test)
+    test_prfs = precision_recall_fscore_support(y_pred, Y_test)
 
-test_acc = clf_ovr_gs.score(X_test, Y_test)
-print('Test-Accuracy: %.2f' % test_acc)
-y_pred = clf_ovr_gs.predict(X_test)
-test_prfs = precision_recall_fscore_support(y_pred, Y_test)
+    clf_ovr_gs.train_acc = train_acc
+    clf_ovr_gs.test_acc = test_acc
+    clf_ovr_gs.test_prfs = test_prfs
 
-clf_ovr_gs.train_acc = train_acc
-clf_ovr_gs.test_acc = test_acc
-clf_ovr_gs.test_prfs = test_prfs
+    # stop time
+    dur = time.time() - start_time
+    total_mins = dur / 60
+    hs, mins = divmod(total_mins, 60)
+    print('-' * 80)
+    print("Elapsed time: %i hours and %i minutes" % (hs, mins))
 
-# stop time
-dur = time.time() - start_time
-total_mins = dur / 60
-hs, mins = divmod(total_mins, 60)
-print('-' * 80)
-print("Elapsed time: %i hours and %i minutes" % (hs, mins))
-
-out_fname = '%s_dataratio%i_maxit%i' % (clf.regul, MY_DATA_RATIO, clf.max_it)
-out_path = op.join(WRITE_DIR, out_fname)
-joblib.dump(clf_ovr_gs, out_path, compress=9)
+    out_fname = '%s_dataratio%i_maxit%i' % (clf.regul, MY_DATA_RATIO, clf.max_it)
+    out_path = op.join(WRITE_DIR, out_fname)
+    joblib.dump(clf_ovr_gs, out_path, compress=9)
 
 
 STOP
@@ -493,19 +500,16 @@ def dump_comps(masker, compressor, components, threshold=2, fwhm=None,
                           output_file=path_mask +
                           ('zmap_%imm.png' % fwhm))
 
-n_est = len(clf_ovr_gs.best_estimator_.estimators_)
-coef_per_class = [est.W_ for est in clf_ovr_gs.best_estimator_.estimators_]
-coef_per_class = np.squeeze(coef_per_class)
+# n_est = len(clf_ovr_gs.best_estimator_.estimators_)
+# coef_per_class = [est.W_ for est in clf_ovr_gs.best_estimator_.estimators_]
+# coef_per_class = np.squeeze(coef_per_class)
 
 # dump_comps(nifti_masker, 'trace_dataratio%i_maxit100', coef_per_class, threshold=0.0)
 
 
 
-# rsync -vza dbzdok@drago:/storage/workspace/danilo/srne/snre_benchmark/* /git/srne/srne_benchmark
+# rsync -vza dbzdok@drago:/storage/workspace/danilo/srne/srne_benchmark/* /git/srne/srne_benchmark
 # rsync -vza dbzdok@drago:/storage/workspace/danilo/srne/srne_benchmark_2cl/* /git/srne/srne_benchmark_2cl
-
-REGS = ['l1', 'l2', 'sparse-group-lasso-l2', 'sparse-group-lasso-linf',
-    'trace-norm', 'tree-l0', 'tree-l2']
 
 import matplotlib
 matplotlib.style.use('ggplot')
@@ -513,12 +517,12 @@ import matplotlib.pyplot as plt
 import re
 %matplotlib qt
 
-for r in REGS:
-    anal_str = '%s_dataratio100_maxit500' % r
-    tar_dump_file = 'srne_benchmark_2cl/%s' % anal_str
+for reg in [REGS[0]]:
+    anal_str = '%s_dataratio%i_maxit%i' % (reg, MY_DATA_RATIO, MY_MAX_IT)
+    tar_dump_file = '%s/%s' % (WRITE_DIR, anal_str)
     if not op.exists(tar_dump_file):
         print('SKIPPED: %s' % tar_dump_file)
-        continue
+        # continue
     clf_ovr_gs = joblib.load(tar_dump_file)
     plt.close('all')
     plt.figure()
@@ -535,22 +539,65 @@ for r in REGS:
     plt.errorbar(lbds, y=means, yerr=stds, color='r', linewidth=2)
     plt.xlabel('$\lambda$')
     plt.ylabel('accuracy (mean)')
-    plt.ylim(0.4, 1.0)
+    plt.ylim(0.0, 1.0)
     plt.xticks(lbds)
     plt.title('GridSearch: ' + anal_str)
     plt.savefig(tar_dump_file + '_gs.png')
 
-for reg in REGS:
-    anal_str = '%s_dataratio100_maxit500' % reg
-    tar_dump_file = 'srne_benchmark_2cl/%s' % anal_str
+for reg in [REGS[0]]:
+    anal_str = '%s_dataratio%i_maxit%i' % (reg, MY_DATA_RATIO, MY_MAX_IT)
+    tar_dump_file = '%s/%s' % (WRITE_DIR, anal_str)
     if not op.exists(tar_dump_file):
         print('SKIPPED: %s' % tar_dump_file)
         continue
     clf_ovr_gs = joblib.load(tar_dump_file)
-    weights = clf_ovr_gs.best_estimator_.estimators_[0].W_.T
+    # weights = clf_ovr_gs.best_estimator_.estimators_[0].W_.T
+
+    n_est = len(clf_ovr_gs.best_estimator_.estimators_)
+    coef_per_class = [est.W_ for est in clf_ovr_gs.best_estimator_.estimators_]
+    coef_per_class = np.squeeze(coef_per_class)
     dump_comps(
         nifti_masker,
         anal_str + '_weights',
-        weights,
+        coef_per_class,
         threshold=0.0)
 
+plt.close('all')
+contrasts_names = [
+    'REWARD-PUNISH', 'PUNISH-REWARD', 'SHAPES-FACES', 'FACES-SHAPES',
+    'RANDOM-TOM', 'TOM-RANDOM',
+
+    'MATH-STORY', 'STORY-MATH',
+    'T-AVG', 'F-H', 'H-F',
+    'MATCH-REL', 'REL-MATCH',
+
+    'BODY-AVG', 'FACE-AVG', 'PLACE-AVG', 'TOOL-AVG',
+    '2BK-0BK'
+]
+
+from nilearn import plotting
+from scipy.stats import zscore
+for i_cont, cont_name in enumerate(contrasts_names):
+    out_fname = 'plots/tree-l2_weights_%s' % cont_name
+    coef = coef_per_class[i_cont, :]
+    weight_nii = nifti_masker.inverse_transform(
+        coef)
+    plotting.plot_stat_map(weight_nii, cut_coords=(0, 0, 0),
+                           title='', bg_img='colin.nii',
+                           colorbar=True, draw_cross=False,
+                           black_bg=True)
+    plt.savefig(out_fname + '_raw.png',
+                dpi=200, transparent=True)
+    
+    coef_z = zscore(coef)
+    weight_nii = nifti_masker.inverse_transform(
+        coef_z)
+    plotting.plot_stat_map(weight_nii, cut_coords=(0, 0, 0),
+                           title='', bg_img='colin.nii',
+                           colorbar=True, draw_cross=False,
+                           black_bg=True)
+    plt.savefig(out_fname + '_zmap.png',
+                dpi=200, transparent=True)
+    
+    
+    

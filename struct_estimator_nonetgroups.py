@@ -51,9 +51,10 @@ FORCE_TWO_CLASSES = False
 # REG_PEN = 'trace-norm'
 MY_MAX_IT = 100
 MY_DATA_RATIO = 100
+N_JOBS = 5
 LAMBDA_GRID = np.linspace(0.1, 1.0, 10)
 
-RES_NAME = 'srne_benchmark_zeroreglevel'
+RES_NAME = 'srne_benchmark_nonetgroups'
 if FORCE_TWO_CLASSES:
     RES_NAME += '_2cl'
 WRITE_DIR = op.join(os.getcwd(), RES_NAME)
@@ -215,9 +216,6 @@ class StructuredEstimator(BaseEstimator):
                 self.own_variables = []
                 self.eta_g = np.array(np.ones(13 + n_regions - 1), dtype=np.float32)
                 
-                # HACK
-                self.eta_g[13:] = 0
-                
                 self.groups = np.asfortranarray(np.zeros((13 + n_regions - 1, 13 + n_regions - 1)), dtype=np.bool)
 
                 # add net info
@@ -280,6 +278,17 @@ class StructuredEstimator(BaseEstimator):
 
                     cur_ind += n_reg_vox  # move behind size of current net
             X = X_task_tree
+
+            # HACK !
+            self.N_own_variables = np.hstack((self.N_own_variables[0], self.N_own_variables[13:]))
+            self.own_variables = np.hstack((self.own_variables[0], self.own_variables[13:]))
+            self.eta_g = np.hstack((self.eta_g[0], self.eta_g[13:]))
+            self.groups = np.zeros((len(self.eta_g), len(self.eta_g)))
+            self.groups[1:, 0] = True
+            self.own_variables =  np.array(self.own_variables, dtype=np.int32)
+            self.N_own_variables =  np.array(self.N_own_variables,dtype=np.int32)
+            self.groups = np.asfortranarray(self.groups)
+            self.groups = ssp.csc_matrix(self.groups, dtype=np.bool)
 
             # run SPAMS
             X = np.asfortranarray(X)
@@ -420,7 +429,7 @@ for REG_PEN in REGS:
     start_time = time.time()
 
     clf_ovr = OneVsRestClassifier(clf, n_jobs=1)
-    clf_ovr_gs = GridSearchCV(clf_ovr, param_grid, n_jobs=5, cv=3)
+    clf_ovr_gs = GridSearchCV(clf_ovr, param_grid, n_jobs=N_JOBS, cv=3)
     clf_ovr_gs.fit(X_train, Y_train)
 
     train_acc = clf_ovr_gs.score(X_train, Y_train)

@@ -51,6 +51,7 @@ FORCE_TWO_CLASSES = False
 # REG_PEN = 'trace-norm'
 MY_MAX_IT = 100
 MY_DATA_RATIO = 100
+N_JOBS = 5
 LAMBDA_GRID = np.linspace(0.1, 1.0, 10)
 
 RES_NAME = 'srne_benchmark_zeroreglevel'
@@ -420,7 +421,7 @@ for REG_PEN in REGS:
     start_time = time.time()
 
     clf_ovr = OneVsRestClassifier(clf, n_jobs=1)
-    clf_ovr_gs = GridSearchCV(clf_ovr, param_grid, n_jobs=5, cv=3)
+    clf_ovr_gs = GridSearchCV(clf_ovr, param_grid, n_jobs=N_JOBS, cv=3)
     clf_ovr_gs.fit(X_train, Y_train)
 
     train_acc = clf_ovr_gs.score(X_train, Y_train)

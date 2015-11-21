@@ -454,7 +454,7 @@ for REG_PEN in REGS:
     print('-' * 80)
     print("Elapsed time: %i hours and %i minutes" % (hs, mins))
 
-    out_fname = '%s_dataratio%i_maxit%i' % (clf.regul, MY_DATA_RATIO, clf.max_it)
+    out_fname = '%s_ovr_gs_dataratio%i_maxit%i' % (clf.regul, MY_DATA_RATIO, clf.max_it)
     out_path = op.join(WRITE_DIR, out_fname)
     joblib.dump(clf_ovr_gs, out_path, compress=9)
 

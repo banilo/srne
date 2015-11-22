@@ -17,6 +17,7 @@ contjoint reg/net ratio
 - test max_it=100 versus max_it=500
 - 2-class versus 18-class problems
 - test known inseparable 2-class problem
+- spacenet versus treel2 in HCP/regression: age
 """
 import spams
 
@@ -51,10 +52,10 @@ FORCE_TWO_CLASSES = False
 # REG_PEN = 'trace-norm'
 MY_MAX_IT = 100
 MY_DATA_RATIO = 100
-N_JOBS = 15
+N_JOBS = 1
 LAMBDA_GRID = np.linspace(0.1, 1.0, 10)
 
-RES_NAME = 'srne_benchmark_noreggroups'
+RES_NAME = 'srne_benchmark_zeroreglevel2'
 if FORCE_TWO_CLASSES:
     RES_NAME += '_2cl'
 WRITE_DIR = op.join(os.getcwd(), RES_NAME)
@@ -216,6 +217,9 @@ class StructuredEstimator(BaseEstimator):
                 self.own_variables = []
                 self.eta_g = np.array(np.ones(13 + n_regions - 1), dtype=np.float32)
                 
+                # HACK
+                self.eta_g[13:] = 0
+                
                 self.groups = np.asfortranarray(np.zeros((13 + n_regions - 1, 13 + n_regions - 1)), dtype=np.bool)
 
                 # add net info
@@ -244,9 +248,7 @@ class StructuredEstimator(BaseEstimator):
                         reg_inds = np.where(self.net_reg_map[i_net, :] == reg_label)[0]
                         n_reg_vox = len(reg_inds)
                         self.own_variables += [np.int32(cur_ind)]
-                        
-                        # HACK!
-                        self.N_own_variables[i_net + 1] += n_reg_vox  # no region voxels have decendences
+                        self.N_own_variables += [n_reg_vox]  # no region voxels have decendences
                         
                         self.groups[i_gr, i_net + 1] = True  # cur reg belongs to cur net
                         i_gr += 1
@@ -259,7 +261,7 @@ class StructuredEstimator(BaseEstimator):
                 assert cur_ind == len(net_reg_map_summed) - (net_reg_map_summed == 0).sum()
                 assert self.groups.sum() - 12 == n_regions - 1 # one dependence per region
                 assert i_gr == 13 + n_regions - 1
-                # assert len(self.N_own_variables) == 13 + n_regions - 1
+                assert len(self.N_own_variables) == 13 + n_regions - 1
             
                 self.own_variables =  np.array(self.own_variables, dtype=np.int32)
                 self.N_own_variables =  np.array(self.N_own_variables,dtype=np.int32)
@@ -280,18 +282,6 @@ class StructuredEstimator(BaseEstimator):
 
                     cur_ind += n_reg_vox  # move behind size of current net
             X = X_task_tree
-
-            # HACK !
-            # self.N_own_variables = self.N_own_variables[0:13]
-            self.own_variables = self.own_variables[0:13]
-            self.eta_g = self.eta_g[0:13]
-            self.groups = np.zeros((len(self.eta_g), len(self.eta_g)))
-            self.groups[1:, 0] = True  # each of the 12 nets belongs to root group
-            
-            self.own_variables =  np.array(self.own_variables, dtype=np.int32)
-            self.N_own_variables =  np.array(self.N_own_variables,dtype=np.int32)
-            self.groups = np.asfortranarray(self.groups)
-            self.groups = ssp.csc_matrix(self.groups, dtype=np.bool)
 
             # run SPAMS
             X = np.asfortranarray(X)
@@ -454,7 +444,7 @@ for REG_PEN in REGS:
     print('-' * 80)
     print("Elapsed time: %i hours and %i minutes" % (hs, mins))
 
-    out_fname = '%s_ovr_gs_dataratio%i_maxit%i' % (clf.regul, MY_DATA_RATIO, clf.max_it)
+    out_fname = '%s_dataratio%i_maxit%i' % (clf.regul, MY_DATA_RATIO, clf.max_it)
     out_path = op.join(WRITE_DIR, out_fname)
     joblib.dump(clf_ovr_gs, out_path, compress=9)
 
@@ -532,6 +522,19 @@ import matplotlib.pyplot as plt
 import re
 %matplotlib qt
 
+plt.close('all')
+contrasts_names = [
+    'REWARD-PUNISH', 'PUNISH-REWARD', 'SHAPES-FACES', 'FACES-SHAPES',
+    'RANDOM-TOM', 'TOM-RANDOM',
+
+    'MATH-STORY', 'STORY-MATH',
+    'T-AVG', 'F-H', 'H-F',
+    'MATCH-REL', 'REL-MATCH',
+
+    'BODY-AVG', 'FACE-AVG', 'PLACE-AVG', 'TOOL-AVG',
+    '2BK-0BK'
+]
+
 for reg in [REGS[0]]:
     anal_str = '%s_dataratio%i_maxit%i' % (reg, MY_DATA_RATIO, MY_MAX_IT)
     tar_dump_file = '%s/%s' % (WRITE_DIR, anal_str)
@@ -556,8 +559,24 @@ for reg in [REGS[0]]:
     plt.ylabel('accuracy (mean)')
     plt.ylim(0.0, 1.0)
     plt.xticks(lbds)
+    plt.text(0.50, 0.95, 'Final train-set acc: %.2f%%' % (clf_ovr_gs.train_acc * 100),
+             fontsize=18)
+    plt.text(0.50, 0.90, 'Final test-set acc: %.2f%%' % (clf_ovr_gs.test_acc * 100),
+             fontsize=18)
     plt.title('GridSearch: ' + anal_str)
     plt.savefig(tar_dump_file + '_gs.png')
+
+    # PRFS
+    plt.figure(figsize=(8, 6))
+    plt.plot(range(len(contrasts_names)), clf_ovr_gs.test_prfs[0], label='precision')
+    plt.plot(range(len(contrasts_names)), clf_ovr_gs.test_prfs[1], label='recall')
+    plt.xticks(range(len(contrasts_names)), contrasts_names, rotation=90)
+    plt.ylabel('accuracy')
+    plt.title('Class-wise model performance', {'fontsize': 16})
+    plt.ylim(0, 1.02)
+    plt.tight_layout()
+    plt.legend(loc='lower right')
+    plt.savefig(tar_dump_file + '_precrec.png')
 
 for reg in [REGS[0]]:
     anal_str = '%s_dataratio%i_maxit%i' % (reg, MY_DATA_RATIO, MY_MAX_IT)
@@ -576,19 +595,6 @@ for reg in [REGS[0]]:
         anal_str + '_weights',
         coef_per_class,
         threshold=0.0)
-
-plt.close('all')
-contrasts_names = [
-    'REWARD-PUNISH', 'PUNISH-REWARD', 'SHAPES-FACES', 'FACES-SHAPES',
-    'RANDOM-TOM', 'TOM-RANDOM',
-
-    'MATH-STORY', 'STORY-MATH',
-    'T-AVG', 'F-H', 'H-F',
-    'MATCH-REL', 'REL-MATCH',
-
-    'BODY-AVG', 'FACE-AVG', 'PLACE-AVG', 'TOOL-AVG',
-    '2BK-0BK'
-]
 
 from nilearn import plotting
 from scipy.stats import zscore

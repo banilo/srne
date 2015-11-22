@@ -51,7 +51,7 @@ FORCE_TWO_CLASSES = False
 # REG_PEN = 'trace-norm'
 MY_MAX_IT = 100
 MY_DATA_RATIO = 100
-N_JOBS = 5
+N_JOBS = 15
 LAMBDA_GRID = np.linspace(0.1, 1.0, 10)
 
 RES_NAME = 'srne_benchmark_nonetgroups'
@@ -519,9 +519,7 @@ def dump_comps(masker, compressor, components, threshold=2, fwhm=None,
 # dump_comps(nifti_masker, 'trace_dataratio%i_maxit100', coef_per_class, threshold=0.0)
 
 
-
-# rsync -vza dbzdok@drago:/storage/workspace/danilo/srne/srne_benchmark/* /git/srne/srne_benchmark
-# rsync -vza dbzdok@drago:/storage/workspace/danilo/srne/srne_benchmark_2cl/* /git/srne/srne_benchmark_2cl
+# rsync -vza dbzdok@drago:/storage/workspace/danilo/srne/srne_benchmark_nonetgroups/* /git/srne/srne_benchmark_nonetgroups/
 
 import matplotlib
 matplotlib.style.use('ggplot')

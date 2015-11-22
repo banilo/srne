@@ -1,0 +1,393 @@
+\documentclass{article} % For LaTeX2e
+\usepackage{nips14submit_e,times}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{amsmath,amsfonts,amsthm}
+\usepackage{bbm}
+\usepackage{algorithm,algorithmic}
+\usepackage{graphicx}
+\usepackage{bm}
+\usepackage{bbm}
+\usepackage[titletoc]{appendix}
+\usepackage{wrapfig}
+\usepackage{afterpage}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{ulem}
+\usepackage{multirow}
+
+\def\B#1{\bm{#1}}
+%\def\B#1{\mathbf{#1}}
+\def\trans{\mathsf{T}}
+
+%\renewcommand{\labelitemi}{--}
+
+\newtheorem{theorem}{Theorem} \newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}{Remark}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{Introducing region-network priors
+to statistical estimators for fMRI data}
+
+\newcommand{\fix}{\marginpar{FIX}}
+\newcommand{\new}{\marginpar{NEW}}
+\DeclareMathOperator{\proj}{proj}
+\DeclareMathOperator{\softmax}{softmax}
+\DeclareMathOperator{\prox}{prox}
+\DeclareMathOperator{\Prox}{Prox}
+\DeclareMathOperator{\im}{im}
+
+% macros from michael's .tex
+\DeclareMathOperator{\dist}{dist} % The distance.
+\DeclareMathOperator{\argmin}{argmin}
+\DeclareMathOperator{\argmax}{argmax}
+\DeclareMathOperator{\Id}{Id}
+\DeclareMathOperator{\abs}{abs}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{cor}[thm]{Corollary}
+
+
+\newcommand{\suggestadd}[1]{{\color{blue} #1}}
+\newcommand{\suggestremove}[1]{{\color{red} \sout{#1}}}
+
+% \nipsfinalcopy % Uncomment for camera-ready version
+\nipsfinaltrue
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\author{Danilo Bzdok, Michael Eickenberg, Olivier Grisel,
+  Bertrand Thirion,
+  Ga\"el Varoquaux\\
+  INRIA, Parietal team, Saclay, France\\
+  CEA, Neurospin, Gif-sur-Yvette, France\\
+  firstname.lastname@inria.fr}
+
+\maketitle
+
+\begin{abstract}
+Imaging neuroscience links human behavior to aspects of brain
+biology in ever-increasing datasets.
+
+
+% OUR keywords
+%\textbf{\\keywords}: curse of dimensionality; semi-supervised learning;
+%fMRI; systems neuroscience
+
+% official NIPS keywords
+\textbf{\\keywords}: Brain Imaging, Functional Specialization,
+Functional Integration,
+Sparsity-inducing Norms, Systems Biology
+
+\end{abstract}
+
+\section{Introduction}
+%
+Many quantitative scientific domains underwent a
+recent passage from the classical regime (i.e., "long data")  to
+the high-dimensional regime (i.e., "wide data")
+\citep{jordan2015massive}.
+Also in the brain imaging domain,
+many contemporary methods for acquiring brain signals yield
+more variables per observation than
+total observations available in a data sample.
+This scenario challenges many statistical estimators from
+classical statistics.
+For instance,
+linear regression models without any additional assumptions
+yield an infinity of possible coefficients
+and, thus, no solutions.
+%
+\textit{Sparsity} assumptions have consequently been
+introduced and made many ill-posed estimation problems tractable
+\cite{hastie2015statistical}.
+Domain-specific structural knowledge can be imposed on the 
+statistical estimation by preassuming that not all variables will be
+equally important.
+Sparsified statistical estimators have proven to yield
+statistical relationships that can be
+estimated, reproduced, and interpreted
+\cite{giraud2014introduction}.
+%
+Yet, what would be the most pertinent neurobiological structure
+that can successfully tackle the curse of dimensionality in
+functional neuroimaging research?
+
+
+
+abc
+in current fMRI,
+large-scale integration prevails over regional specialization,
+although both notions are inextricably linked (Tononi et al., 1998).
+
+It however remains elusive how brain regions and networks relate to
+the organism's repertoire of mental operations.
+
+Both regions and netoworks are
+probably mechanistically relevant for emerging behavior.
+
+
+The organization of the cerebral cortex into distinct modules may be described along several dimensions, most importantly, structure, connectivity and function. This conclusion was mainly derived from concurrent invasive examination of microstructure (histological preparation), connectivity (axonal tracing) and functional properties (single cell recordings) in same animals. 
+Regarding the (micro-)structural dimension, early histological investigations into the microscopic heterogeneity of the human cerebral cortex have resulted in several detailed, though partially incongruent, anatomical maps (Brodmann 1909; Vogt and Vogt 1919). More recent advances in structural brain mapping have led to the development of observer-independent probabilistic cytoarchitectonic maps in stereotaxic space (Zilles and Amunts 2010). Moreover, the constantly growing field strength of fMRI scanners permits increasingly fin-grained microstructural recordings of the living human brain (Walters et al. 2007).
+Regarding the connectional dimension, each cortical area is assumed to possess a unique set of input and output connections. Axonal connectivity between areas can be revealed by injection of a tracing dye that is transported to interconnected brain regions in animals. Axonal tracing studies in primates suggest that cortical areas tend to be connected hierarchically and reciprocally by feed-forward and feed-backward connections (Maunsell and van Essen 1983). Mapping connectivity patterns of a particular part of the cortex may thus allow identifying cortical areas by demonstrating differences between the connections of neighbouring grey matter locations.
+
+
+Slightly reframing the concept of structure, connectivity and function as three pillars of brain organization, regional specialization of computational processes (i.e., function) can be conceived as being a consequence of both the local (micro-)structural and global connectional properties, as suggested by research in animals. That is, specialization of a particular function is not regarded as an intrinsic property of a brain region that is independent of its connectivity. Rather, input and output connectivity of an area in combination with the local "infrastructure" provided, e.g., by cyto- and chemoarchitecture, crucially determine what particular functions that area can perform (Passingham et al. 2002). Conversely, each particular cortical module is probably characterized by a unique set of input and output connections, which is supported by statistical analyses of cortical connectivity in the primate (Young 1993) and feline (Scannell et al. 1995) cortex. More generally, cortical modules and connections between those actually reflect functional segregation and functional integration, respectively (Friston 2002). In sum, a cortical module of functional specialization is likely to be defined by the intersection of regionally specific microstructure and connectivity patterns. 
+
+
+
+
+
+
+SPECIAL
+
+Functional
+specialization emphasizes that microanatomically distinguishable brain
+regions realize distinct functions (Brodmann 1909; Zeki 1978). Indeed,
+each microanatomical cortical area has a unique connectional, and thus
+perhaps functional, profile in cats (Scannell et al. 1995), monkeys
+(Young et al., 1993), and humans (Passingham et al., 2002).
+
+
+Consistently, early lesion studies of induced behavioral
+impairments in rats challenged the dogmatic localization of brain
+function (Franz \& Lashley, 1917). Analogously in humans, even
+extensive prefrontal lesions do not necessarily become apparant in
+everyday behavior (Mesulam, 1990). An implicit preference for
+functional specialization might therefore hinder consensus in
+fundamental, still unresolved questions in neuroscience, such as the
+relation between cognition and emotion (cf. Pessoa 2010, Overwalle
+2011).
+
+locally characteristic neuronal populations
+
+
+
+
+INTEGRAL
+
+Hebb, D. O. The Organization Of Behaviour (Wiley,
+1949).
+
+Only recently we have shifted the main interpretational focus
+from single region to macroscopical networks
+in systems neuroscience \citep{yuste2015}.
+
+
+eemrgent properties emerge from the interaction
+
+In
+contrast, functional integration emphasizes that function is an
+emergent property of collaborating areas. In fact, the higher the
+hierarchical level, the more one cortical area connects to different
+large-scale networks, which makes their boundaries less clear
+(Yeo/Buckner 2011). The above network-network models naturally embody
+functional integration as they capture (partially overlapping)
+patterns of spatial coherence.
+
+Systems neuroscience has established existence of a
+set of fluctuating yet robust brain networks in humans. 
+
+
+Identical neural networks have reappeared across cognitive domains
+using diverging methods. These observations prompted widely-adopted
+notions, including the ``default-mode network'' \cite{raichle2001} (DMN; Raichle et al.,
+2001), ``salience network'' (SN; Seeley et al., 2007), and ``dorsal
+attention network'' (DAN; Corbetta and Shulmann,
+2002). Developmentally, such large-scale networks emerge during late
+fetal growth (Doria et al., 2010), before cognitive capacities mature
+in childhood. In adults, nodes of a same cohesive network have more
+similar functional profiles than nodes from different networks
+(Anderson et al., 2013).
+This
+suggests network-network relationships as an under-appreciated unit of
+functional brain organization.
+
+
+
+Onset of a given cognitive task might induce
+characteristic changes in functional coupling between large-scale
+networks. Indeed, a working-memory task entailed increase in metabolic
+activity in DAN regions but decrease in default-mode regions (Fransson
+et al., 2006). Notably, the functional connectivity did not change
+significantly within either DAN or DMN. Additionally, during auditory
+event transitions in another experimental fMRI study, both DAN and SN
+increased in activity, whereas the DMN decreased in activity
+(Sridharan et al., 2008). 
+ 
+
+Such mediation between supraordinate networks
+has been proposed to involve the right anterior insula (Sridharan et
+al., 2008) and right temporo-parietal junction (Bzdok et al.,
+2013).
+The relevance of networks
+possibly extends to psychiatric, neurological, and neurodegenerative
+disorders (Seeley et al., 2009; Menon 2011).
+
+
+
+
+
+
+
+STUDY
+
+The present investigation reframed network-network dynamics as a
+multivariate statistical learning problem.
+capitalized on two independent, large datasets (n=500 and n=80) with
+18 typical neuroimaging tasks each, covering a spectrum of humans'
+cognitive apparatus. 
+
+determined a plausible, quantitative
+combination of the brain signal's modes of variation. This allowed
+avoiding the curse of dimensionality and making the machine-learning
+results human-interpretable by quantitative association with
+psychological concepts.
+
+neurobiologically motivated restrictions to complexity circumvented the curse of dimensionality and allowed for useful, simplified views on brain function.
+
+
+
+\section{Methods}
+%
+\paragraph{Data.}
+As the currently biggest openly-accessible reference dataset,
+we chose resources from the Human Connectome Project (HCP)
+\cite{barch2013}.
+Neuroimaging task data with labels of ongoing cognitive processes
+were drawn from 500
+healthy HCP participants (cf. Appendix for details on datasets).
+18 HCP tasks 
+were selected that are known to elicit reliable neural activity
+across participants (Table \ref{table_tasks}).
+In sum, the HCP task data incorporated 8650 first-level activity maps
+from 18 diverse paradigms administered to 498 participants (2 removed
+due to incomplete data).
+All maps were resampled to a common $60\times72\times60$ space of
+3mm isotropic voxels and gray-matter masked (at least 10\% tissue
+probability).
+The supervised analyses were thus based on labeled HCP task maps with
+79,941 voxels of interest representing z-values in gray matter.
+
+\begin{table}[h]
+  \resizebox{0.98\textwidth}{!}{%
+  \begin{tabular}{l|l|l}
+    \hline
+  {\bf Cognitive Task} & {\bf Stimuli}                         & {\bf Instruction for participants}                                                \\ \hline
+  1 Reward             & \multirow{2}{*}{Card game}            & \multirow{2}{*}{Guess the number of a mystery card for gain/loss of money}        \\ \cline{1-1}
+  2 Punish             &                                       &                                                                                   \\ \hline
+  3 Shapes             & Shape pictures                        & Decide which of two shapes matches another shape geometrically                    \\ \hline
+  4 Faces              & Face pictures                         & Decide which of two faces matches another face emotionally                        \\ \hline
+  5 Random             & \multirow{2}{*}{Videos with objects}  & \multirow{2}{*}{Decide whether the objects act randomly or intentionally} \\ \cline{1-1}
+  6 Theory of mind     &                                       &                                                                                   \\ \hline
+  7 Mathematics        & Spoken numbers                        & Complete addition and subtraction problems                                        \\ \hline
+  8 Language           & Auditory stories                      & Choose answer about the topic of the story                                        \\ \hline
+  9 Tongue movement    & \multirow{3}{*}{Visual cues}          & Move tongue                                                                       \\ \cline{1-1} \cline{3-3} 
+  10 Food movement     &                                       & Squeezing of the left or right toe                                                \\ \cline{1-1} \cline{3-3} 
+  11 Hand movement     &                                       & Tapping of the left or right finger                                               \\ \hline
+  12 Matching          & \multirow{2}{*}{Shapes with textures} & Decide whether two objects match in shape or texture                             \\ \cline{1-1} \cline{3-3} 
+  13 Relations         &                                       & Decide whether object pairs differ both along either shape or texture             \\ \hline
+  14 View Bodies       & Pictures                              & Passive watching                                                                   \\ \hline
+  15 View Faces        & Pictures                              & Passive watching                                                                   \\ \hline
+  16 View Places       & Pictures                              & Passive watching                                                                   \\ \hline
+  17 View Tools        & Pictures                              & Passive watching                                                                   \\ \hline
+  18 Two-Back          & Various pictures                      & Indicate whether current stimulus is the same as two items earlier                \\ \hline
+  \end{tabular}
+}
+\vspace{-0.2cm}
+\caption{\textbf{Description of psychological tasks to predict.}}
+\label{table_tasks}
+\end{table}
+
+These labeled data were complemented by unlabeled activity maps
+from HCP acquisitions of unconstrained resting-state activity
+\cite{smith2013resting}.
+These reflect brain activity in the absence of controlled thought.
+In sum, the HCP rest data concatenated
+8000 unlabeled, noise-cleaned rest maps with
+40 brain maps from each of 200 randomly selected participants.
+
+We were further interested in the utility of the
+optimized low-rank projection
+in one task dataset for dimensionality reduction in another task dataset.
+To this end, the HCP-derived network decompositions were used as preliminary
+step in the classification problem of another large sample.
+The ARCHI dataset \cite{pinel07} provides activity maps from
+diverse experimental tasks, including auditory and visual perception, motor action,
+reading, language comprehension and mental calculation.
+Analogous to HCP data, the second task dataset thus incorporated 1404
+labeled, grey-matter masked, and z-scored activity maps
+from 18 diverse tasks acquired in 78 participants.
+
+
+
+
+
+sparse statistical models have only few nonzero parameters
+
+
+
+
+
+
+
+
+
+
+
+
+\paragraph{Implementation.}
+The analyses were performed in Python.
+We used \textit{nilearn} to handle
+the large quantities of neuroimaging data 
+\cite{abrah14}
+and
+\textit{Theano} for automatic, numerically stable
+differentiation of symbolic computation graphs
+\cite{bastien2012theano, bergstra2010theano}.
+All Python scripts that generated the results are
+accessible online for reproducibility and reuse
+% (\url{http://github.com/anonymous/anonymous}).
+(\url{http://github.com/banilo/nips2015}).
+
+
+
+\section{Experimental Results}
+\paragraph{Serial versus parallel structure discovery and classification.}
+
+
+
+\section{Discussion}
+
+neurobiologically motivated restrictions to complexity circumvented the curse of dimensionality and allowed for useful, simplified views on brain function.
+
+
+
+
+
+
+\paragraph{Acknowledgment}
+{\small The research leading to these results has received funding from the
+European Union Seventh Framework Programme (FP7/2007-2013)
+under grant agreement no. 604102 (Human Brain Project).
+Data were provided by the Human Connectome Project.
+Further support was received from
+the German National Academic Foundation (D.B.)
+and the MetaMRI associated team (B.T., G.V.).
+}
+
+\small
+\bibliographystyle{splncs03}
+\bibliography{paper_refs}
+
+
+
+\end{document}

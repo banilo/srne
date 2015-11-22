@@ -17,6 +17,7 @@ contjoint reg/net ratio
 - test max_it=100 versus max_it=500
 - 2-class versus 18-class problems
 - test known inseparable 2-class problem
+- spacenet versus treel2 in HCP/regression: age
 """
 import spams
 
@@ -54,7 +55,7 @@ MY_DATA_RATIO = 100
 N_JOBS = 5
 LAMBDA_GRID = np.linspace(0.1, 1.0, 10)
 
-RES_NAME = 'srne_benchmark_zeroreglevel'
+RES_NAME = 'srne_benchmark_zerobrainlevel'
 if FORCE_TWO_CLASSES:
     RES_NAME += '_2cl'
 WRITE_DIR = op.join(os.getcwd(), RES_NAME)
@@ -521,6 +522,19 @@ import matplotlib.pyplot as plt
 import re
 %matplotlib qt
 
+plt.close('all')
+contrasts_names = [
+    'REWARD-PUNISH', 'PUNISH-REWARD', 'SHAPES-FACES', 'FACES-SHAPES',
+    'RANDOM-TOM', 'TOM-RANDOM',
+
+    'MATH-STORY', 'STORY-MATH',
+    'T-AVG', 'F-H', 'H-F',
+    'MATCH-REL', 'REL-MATCH',
+
+    'BODY-AVG', 'FACE-AVG', 'PLACE-AVG', 'TOOL-AVG',
+    '2BK-0BK'
+]
+
 for reg in [REGS[0]]:
     anal_str = '%s_dataratio%i_maxit%i' % (reg, MY_DATA_RATIO, MY_MAX_IT)
     tar_dump_file = '%s/%s' % (WRITE_DIR, anal_str)
@@ -545,8 +559,24 @@ for reg in [REGS[0]]:
     plt.ylabel('accuracy (mean)')
     plt.ylim(0.0, 1.0)
     plt.xticks(lbds)
+    plt.text(0.50, 0.95, 'Final train-set acc: %.2f%%' % (clf_ovr_gs.train_acc * 100),
+             fontsize=18)
+    plt.text(0.50, 0.90, 'Final test-set acc: %.2f%%' % (clf_ovr_gs.test_acc * 100),
+             fontsize=18)
     plt.title('GridSearch: ' + anal_str)
     plt.savefig(tar_dump_file + '_gs.png')
+
+    # PRFS
+    plt.figure(figsize=(8, 6))
+    plt.plot(range(len(contrasts_names)), clf_ovr_gs.test_prfs[0], label='precision')
+    plt.plot(range(len(contrasts_names)), clf_ovr_gs.test_prfs[1], label='recall')
+    plt.xticks(range(len(contrasts_names)), contrasts_names, rotation=90)
+    plt.ylabel('accuracy')
+    plt.title('Class-wise model performance', {'fontsize': 16})
+    plt.ylim(0, 1.02)
+    plt.tight_layout()
+    plt.legend(loc='lower right')
+    plt.savefig(tar_dump_file + '_precrec.png')
 
 for reg in [REGS[0]]:
     anal_str = '%s_dataratio%i_maxit%i' % (reg, MY_DATA_RATIO, MY_MAX_IT)
@@ -565,19 +595,6 @@ for reg in [REGS[0]]:
         anal_str + '_weights',
         coef_per_class,
         threshold=0.0)
-
-plt.close('all')
-contrasts_names = [
-    'REWARD-PUNISH', 'PUNISH-REWARD', 'SHAPES-FACES', 'FACES-SHAPES',
-    'RANDOM-TOM', 'TOM-RANDOM',
-
-    'MATH-STORY', 'STORY-MATH',
-    'T-AVG', 'F-H', 'H-F',
-    'MATCH-REL', 'REL-MATCH',
-
-    'BODY-AVG', 'FACE-AVG', 'PLACE-AVG', 'TOOL-AVG',
-    '2BK-0BK'
-]
 
 from nilearn import plotting
 from scipy.stats import zscore

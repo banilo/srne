@@ -51,10 +51,10 @@ FORCE_TWO_CLASSES = False
 # REG_PEN = 'trace-norm'
 MY_MAX_IT = 100
 MY_DATA_RATIO = 100
-N_JOBS = 30
+N_JOBS = 5
 LAMBDA_GRID = np.linspace(0.1, 1.0, 10)
 
-RES_NAME = 'srne_benchmark_space'
+RES_NAME = 'srne_benchmark_space_ovr_gs'
 if FORCE_TWO_CLASSES:
     RES_NAME += '_2cl'
 WRITE_DIR = op.join(os.getcwd(), RES_NAME)
@@ -162,10 +162,8 @@ X_test_nii = nifti_masker.inverse_transform(X_test)
 
 clf = SpaceNetClassifier(
     penalty='tv-l1', loss='logistic',
-    max_iter=100, n_jobs=N_JOBS,
-    standardize=False, screening_percentile=100,  # keep ALL voxels
-    verbose=True, l1_ratios=0.5
-    # verbose=True, l1_ratios=LAMBDA_GRID
+    max_iter=100, n_jobs=1,
+    verbose=True
 )
 
 from sklearn.grid_search import GridSearchCV
@@ -177,23 +175,21 @@ param_grid = {'estimator__l1_ratios': LAMBDA_GRID}
 # start time
 start_time = time.time()
 
-clf.fit(X_train_nii, Y_train)
+clf_ovr = OneVsRestClassifier(clf, n_jobs=1)
+clf_ovr_gs = GridSearchCV(clf_ovr, param_grid, n_jobs=N_JOBS, cv=3)
+clf_ovr_gs.fit(X_train_nii, Y_train)
 
-# clf_ovr = OneVsRestClassifier(clf, n_jobs=1)
-# clf_ovr_gs = GridSearchCV(clf_ovr, param_grid, n_jobs=N_JOBS, cv=3)
-# clf_ovr_gs.fit(X_train, Y_train)
-
-train_acc = clf.score(X_train_nii, Y_train)
+train_acc = clf_ovr_gs.score(X_train_nii, Y_train)
 print('Train-Accuracy: %.2f' % train_acc)
 
-test_acc = clf.score(X_test_nii, Y_test)
+test_acc = clf_ovr_gs.score(X_test_nii, Y_test)
 print('Test-Accuracy: %.2f' % test_acc)
-y_pred = clf.predict(X_test_nii)
+y_pred = clf_ovr_gs.predict(X_test_nii)
 test_prfs = precision_recall_fscore_support(y_pred, Y_test)
 
-clf.train_acc = train_acc
-clf.test_acc = test_acc
-clf.test_prfs = test_prfs
+clf_ovr_gs.train_acc = train_acc
+clf_ovr_gs.test_acc = test_acc
+clf_ovr_gs.test_prfs = test_prfs
 
 # stop time
 dur = time.time() - start_time
@@ -202,7 +198,7 @@ hs, mins = divmod(total_mins, 60)
 print('-' * 80)
 print("Elapsed time: %i hours and %i minutes" % (hs, mins))
 
-out_fname = 'l10.50_grid_maxit%i' % (clf.max_iter)
+out_fname = 'l1%.2f_maxit%i' % (clf.l1_ratios, clf.max_iter)
 out_path = op.join(WRITE_DIR, out_fname)
 joblib.dump(clf, out_path, compress=9)
 
@@ -278,19 +274,6 @@ import matplotlib.pyplot as plt
 import re
 %matplotlib qt
 
-plt.close('all')
-contrasts_names = [
-    'REWARD-PUNISH', 'PUNISH-REWARD', 'SHAPES-FACES', 'FACES-SHAPES',
-    'RANDOM-TOM', 'TOM-RANDOM',
-
-    'MATH-STORY', 'STORY-MATH',
-    'T-AVG', 'F-H', 'H-F',
-    'MATCH-REL', 'REL-MATCH',
-
-    'BODY-AVG', 'FACE-AVG', 'PLACE-AVG', 'TOOL-AVG',
-    '2BK-0BK'
-]
-
 for reg in [REGS[0]]:
     anal_str = '%s_dataratio%i_maxit%i' % (reg, MY_DATA_RATIO, MY_MAX_IT)
     tar_dump_file = '%s/%s' % (WRITE_DIR, anal_str)
@@ -315,38 +298,63 @@ for reg in [REGS[0]]:
     plt.ylabel('accuracy (mean)')
     plt.ylim(0.0, 1.0)
     plt.xticks(lbds)
-    plt.text(0.50, 0.95, 'Final train-set acc: %.2f%%' % (clf_ovr_gs.train_acc * 100),
-             fontsize=18)
-    plt.text(0.50, 0.90, 'Final test-set acc: %.2f%%' % (clf_ovr_gs.test_acc * 100),
-             fontsize=18)
     plt.title('GridSearch: ' + anal_str)
     plt.savefig(tar_dump_file + '_gs.png')
 
-    # PRFS
-    plt.figure(figsize=(8, 6))
-    plt.plot(range(len(contrasts_names)), clf_ovr_gs.test_prfs[0], label='precision')
-    plt.plot(range(len(contrasts_names)), clf_ovr_gs.test_prfs[1], label='recall')
-    plt.xticks(range(len(contrasts_names)), contrasts_names, rotation=90)
-    plt.ylabel('accuracy')
-    plt.title('Class-wise model performance', {'fontsize': 16})
-    plt.ylim(0, 1.02)
-    plt.tight_layout()
-    plt.legend(loc='lower right')
-    plt.savefig(tar_dump_file + '_precrec.png')
-
 for reg in [REGS[0]]:
-    anal_str = 'l1%.2f_maxit%i' % (0.5, MY_MAX_IT)
+    anal_str = '%s_dataratio%i_maxit%i' % (reg, MY_DATA_RATIO, MY_MAX_IT)
     tar_dump_file = '%s/%s' % (WRITE_DIR, anal_str)
     if not op.exists(tar_dump_file):
         print('SKIPPED: %s' % tar_dump_file)
         continue
     clf_ovr_gs = joblib.load(tar_dump_file)
-    coef_per_class = nifti_masker.transform(clf_ovr_gs.coef_img_)
+    # weights = clf_ovr_gs.best_estimator_.estimators_[0].W_.T
 
+    n_est = len(clf_ovr_gs.best_estimator_.estimators_)
+    coef_per_class = [est.W_ for est in clf_ovr_gs.best_estimator_.estimators_]
+    coef_per_class = np.squeeze(coef_per_class)
     dump_comps(
         nifti_masker,
         anal_str + '_weights',
         coef_per_class,
         threshold=0.0)
+
+plt.close('all')
+contrasts_names = [
+    'REWARD-PUNISH', 'PUNISH-REWARD', 'SHAPES-FACES', 'FACES-SHAPES',
+    'RANDOM-TOM', 'TOM-RANDOM',
+
+    'MATH-STORY', 'STORY-MATH',
+    'T-AVG', 'F-H', 'H-F',
+    'MATCH-REL', 'REL-MATCH',
+
+    'BODY-AVG', 'FACE-AVG', 'PLACE-AVG', 'TOOL-AVG',
+    '2BK-0BK'
+]
+
+from nilearn import plotting
+from scipy.stats import zscore
+for i_cont, cont_name in enumerate(contrasts_names):
+    out_fname = 'plots/tree-l2_weights_%s' % cont_name
+    coef = coef_per_class[i_cont, :]
+    weight_nii = nifti_masker.inverse_transform(
+        coef)
+    plotting.plot_stat_map(weight_nii, cut_coords=(0, 0, 0),
+                           title='', bg_img='colin.nii',
+                           colorbar=True, draw_cross=False,
+                           black_bg=True)
+    plt.savefig(out_fname + '_raw.png',
+                dpi=200, transparent=True)
+    
+    coef_z = zscore(coef)
+    weight_nii = nifti_masker.inverse_transform(
+        coef_z)
+    plotting.plot_stat_map(weight_nii, cut_coords=(0, 0, 0),
+                           title='', bg_img='colin.nii',
+                           colorbar=True, draw_cross=False,
+                           black_bg=True)
+    plt.savefig(out_fname + '_zmap.png',
+                dpi=200, transparent=True)
+    
     
     

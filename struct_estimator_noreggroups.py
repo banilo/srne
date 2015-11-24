@@ -51,7 +51,7 @@ FORCE_TWO_CLASSES = False
 # REG_PEN = 'trace-norm'
 MY_MAX_IT = 100
 MY_DATA_RATIO = 100
-N_JOBS = 15
+N_JOBS = 20
 LAMBDA_GRID = np.linspace(0.1, 1.0, 10)
 
 RES_NAME = 'srne_benchmark_noreggroups'

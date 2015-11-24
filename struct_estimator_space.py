@@ -51,7 +51,7 @@ FORCE_TWO_CLASSES = False
 # REG_PEN = 'trace-norm'
 MY_MAX_IT = 100
 MY_DATA_RATIO = 100
-N_JOBS = 30
+N_JOBS = 10
 LAMBDA_GRID = np.linspace(0.1, 1.0, 10)
 
 RES_NAME = 'srne_benchmark_space'
@@ -161,18 +161,14 @@ X_train_nii = nifti_masker.inverse_transform(X_train)
 X_test_nii = nifti_masker.inverse_transform(X_test)
 
 clf = SpaceNetClassifier(
-    penalty='tv-l1', loss='logistic',
-    max_iter=100, n_jobs=N_JOBS,
+    penalty='tv-l1', loss='logistic', mask=nifti_masker,
+    max_iter=100, n_jobs=N_JOBS, cv=3,
     standardize=False, screening_percentile=100,  # keep ALL voxels
-    verbose=True, l1_ratios=0.5
-    # verbose=True, l1_ratios=LAMBDA_GRID
+    verbose=True, l1_ratios=LAMBDA_GRID
 )
 
 from sklearn.grid_search import GridSearchCV
 from sklearn.multiclass import OneVsRestClassifier
-
-param_grid = {'estimator__l1_ratios': LAMBDA_GRID}
-# param_grid = {'estimator__lambda1': [0.1]}
 
 # start time
 start_time = time.time()
@@ -292,7 +288,7 @@ contrasts_names = [
 ]
 
 for reg in [REGS[0]]:
-    anal_str = '%s_dataratio%i_maxit%i' % (reg, MY_DATA_RATIO, MY_MAX_IT)
+    anal_str = 'l1%.2f_maxit%i' % (0.5, MY_MAX_IT)
     tar_dump_file = '%s/%s' % (WRITE_DIR, anal_str)
     if not op.exists(tar_dump_file):
         print('SKIPPED: %s' % tar_dump_file)

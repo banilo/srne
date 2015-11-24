@@ -30,8 +30,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\title{Introducing region-network priors
-to statistical estimators for fMRI data}
+\title{Introducing region-network priors to statistical estimators for fMRI data}
 
 \newcommand{\fix}{\marginpar{FIX}}
 \newcommand{\new}{\marginpar{NEW}}
@@ -65,8 +64,7 @@ to statistical estimators for fMRI data}
 \begin{document}
 
 \author{Danilo Bzdok, Michael Eickenberg, Olivier Grisel,
-  Bertrand Thirion,
-  Ga\"el Varoquaux\\
+  Ga\"el Varoquaux, Bertrand Thirion
   INRIA, Parietal team, Saclay, France\\
   CEA, Neurospin, Gif-sur-Yvette, France\\
   firstname.lastname@inria.fr}
@@ -78,19 +76,16 @@ Imaging neuroscience links human behavior to aspects of brain
 biology in ever-increasing datasets.
 
 
-% OUR keywords
-%\textbf{\\keywords}: curse of dimensionality; semi-supervised learning;
-%fMRI; systems neuroscience
-
-% official NIPS keywords
-\textbf{\\keywords}: Brain Imaging, Functional Specialization,
-Functional Integration,
-Sparsity-inducing Norms, Systems Biology
+\textbf{\\keywords}:
+Brain Imaging, Functional Specialization, Functional Integration,
+Sparsity-inducing Norms, Numerical Optimization, Systems Neuroscience
 
 \end{abstract}
 
+
+
 \section{Introduction}
-%
+% sparsity
 Many quantitative scientific domains underwent a
 recent passage from the classical regime (i.e., "long data")  to
 the high-dimensional regime (i.e., "wide data")
@@ -102,80 +97,122 @@ total observations available in a data sample.
 This scenario challenges many statistical estimators from
 classical statistics.
 For instance,
-linear regression models without any additional assumptions
+linear regression models without additional assumptions
 yield an infinity of possible coefficients
-and, thus, no solutions.
+and, thus, no solution.
 %
 \textit{Sparsity} assumptions have consequently been
 introduced and made many ill-posed estimation problems tractable
-\cite{hastie2015statistical}.
+\cite{buhlmann2011statistics, hastie2015statistical}.
 Domain-specific structural knowledge can be imposed on the 
 statistical estimation by preassuming that not all variables will be
-equally important.
-Sparsified statistical estimators have proven to yield
-statistical relationships that can be
+equally important
+\citep{bach2012optimization}.
+Sparsified supervised and unsupervised
+learning algorithms have proven to yield
+statistical relationships that can be readily
 estimated, reproduced, and interpreted
 \cite{giraud2014introduction}.
 %
-Yet, what would be the most pertinent neurobiological structure
-that can successfully tackle the curse of dimensionality in
+Yet, what is the most pertinent neurobiological structure
+that can successfully tackle the
+\textit{curse of dimensionality} in
 functional neuroimaging research?
 
 
 
-abc
-in current fMRI,
-large-scale integration prevails over regional specialization,
-although both notions are inextricably linked (Tononi et al., 1998).
+% specialization & integration
+Concepts on human brain organization have long been torn
+between the two extremes
+\textit{functional specialization} and \textit{functional integration}.
+Functional specialization emphasizes that microscopically distinguishable
+brain regions probably solve distinct classes of computational processes
+\citep{kanwisher2010functional}.
+Functional integration, in turn, emphasizes that brain function
+is probably enabled by complex connections between these
+distinct brain regions.
+%
+This notion was predominantly derived from
+invasive examination of \textit{structure} (i.e., histological preparation),
+\textit{connectivity}, (i.e., axonal tracing),
+and \textit{functional properties}
+(i.e., single cell recordings) in same animals.
+Regarding functional segregation into specialized regions,
+early histological investigations into the microscopic heterogeneity of
+the human cerebral cortex have resulted
+in several detailed anatomical maps
+\citep{{brodmann1909vergleichende, vogt1919allgemeine}.
+Regarding axonal connections,
+each such cortical area has been observed
+to possess a unique set of incoming and outgoing connections
+\citep{passingham2002, young93monkey, scannell95cat}.
+%
+In particular,
+the realization of computational processes (i.e., function)
+is probably a consequence of both
+local cyto- and chemoarchitectonic infrastructure
+and its unique global connectivity profile.
+While
+cortical modules versus connections between those
+reflect 
+functional specialization versus functional integration,
+\citep{friston2002beyond},
+these architectural principles are conceptually inextricable in
+the realization of mental operations
+\citep{tononi1998complexity}.
 
-It however remains elusive how brain regions and networks relate to
-the organism's repertoire of mental operations.
-
-Both regions and netoworks are
-probably mechanistically relevant for emerging behavior.
 
 
-The organization of the cerebral cortex into distinct modules may be described along several dimensions, most importantly, structure, connectivity and function. This conclusion was mainly derived from concurrent invasive examination of microstructure (histological preparation), connectivity (axonal tracing) and functional properties (single cell recordings) in same animals. 
-Regarding the (micro-)structural dimension, early histological investigations into the microscopic heterogeneity of the human cerebral cortex have resulted in several detailed, though partially incongruent, anatomical maps (Brodmann 1909; Vogt and Vogt 1919). More recent advances in structural brain mapping have led to the development of observer-independent probabilistic cytoarchitectonic maps in stereotaxic space (Zilles and Amunts 2010). Moreover, the constantly growing field strength of fMRI scanners permits increasingly fin-grained microstructural recordings of the living human brain (Walters et al. 2007).
-Regarding the connectional dimension, each cortical area is assumed to possess a unique set of input and output connections. Axonal connectivity between areas can be revealed by injection of a tracing dye that is transported to interconnected brain regions in animals. Axonal tracing studies in primates suggest that cortical areas tend to be connected hierarchically and reciprocally by feed-forward and feed-backward connections (Maunsell and van Essen 1983). Mapping connectivity patterns of a particular part of the cortex may thus allow identifying cortical areas by demonstrating differences between the connections of neighbouring grey matter locations.
-
-
-Slightly reframing the concept of structure, connectivity and function as three pillars of brain organization, regional specialization of computational processes (i.e., function) can be conceived as being a consequence of both the local (micro-)structural and global connectional properties, as suggested by research in animals. That is, specialization of a particular function is not regarded as an intrinsic property of a brain region that is independent of its connectivity. Rather, input and output connectivity of an area in combination with the local "infrastructure" provided, e.g., by cyto- and chemoarchitecture, crucially determine what particular functions that area can perform (Passingham et al. 2002). Conversely, each particular cortical module is probably characterized by a unique set of input and output connections, which is supported by statistical analyses of cortical connectivity in the primate (Young 1993) and feline (Scannell et al. 1995) cortex. More generally, cortical modules and connections between those actually reflect functional segregation and functional integration, respectively (Friston 2002). In sum, a cortical module of functional specialization is likely to be defined by the intersection of regionally specific microstructure and connectivity patterns. 
-
-
-
-
+method -> type of discovery
 
 
 SPECIAL
+Functional specialization has been investigated in many ways.
+%
+Single cell recordings and microscopic examination
+revealed, for instance, the
+specialization in the visual cortex into V1, V2, V3, V3A, and V4
+\citep{hubel1962receptive, zeki1978functional}.
 
-Functional
-specialization emphasizes that microanatomically distinguishable brain
-regions realize distinct functions (Brodmann 1909; Zeki 1978). Indeed,
-each microanatomical cortical area has a unique connectional, and thus
-perhaps functional, profile in cats (Scannell et al. 1995), monkeys
-(Young et al., 1993), and humans (Passingham et al., 2002).
+
+example: fusiform gyrus
+-> lesion -> does not work anymore
 
 
-Consistently, early lesion studies of induced behavioral
-impairments in rats challenged the dogmatic localization of brain
-function (Franz \& Lashley, 1917). Analogously in humans, even
-extensive prefrontal lesions do not necessarily become apparant in
-everyday behavior (Mesulam, 1990). An implicit preference for
-functional specialization might therefore hinder consensus in
-fundamental, still unresolved questions in neuroscience, such as the
-relation between cognition and emotion (cf. Pessoa 2010, Overwalle
-2011).
+Non-invasive brain imaging with
+functional magnetic resonance imaging (fMRI) and
+positron emission tomography (PET)
+enabled the localization of
+sensory, motor, and emotional functions to cortical areas
+in the living brain
+\citep{fristen1997imaging}.
 
-locally characteristic neuronal populations
+
+
+Radioactive mapping the distribution of
+neurotransmitter receptors added yet another
+local characteristic of neuronal populations
+\citep{zilles2009receptor}.
+
+
+clustering
+\citep{behrens03}
+
+
+High-thoughput computing enabled an 
+ultahigh-resolution 3D model of brain anatomy
+at macroscopical to near-cellular scale
+\citep{amunts2013bigbrain}.
+
+
+
+=> methods: non-overlapping, discrete region units
 
 
 
 
 INTEGRAL
 
-Hebb, D. O. The Organization Of Behaviour (Wiley,
-1949).
 
 Only recently we have shifted the main interpretational focus
 from single region to macroscopical networks
@@ -195,6 +232,8 @@ patterns of spatial coherence.
 
 Systems neuroscience has established existence of a
 set of fluctuating yet robust brain networks in humans. 
+
+example: DMN network?
 
 
 Identical neural networks have reappeared across cognitive domains
@@ -232,13 +271,35 @@ The relevance of networks
 possibly extends to psychiatric, neurological, and neurodegenerative
 disorders (Seeley et al., 2009; Menon 2011).
 
+=> methods: overlapping, continuous network units
+invasive axonal tracing studies,
+ICA,
+seed-based analyses of BOLD fluctations or
+electrophysiological oscillations,
+as well as
+effective connectivity models
+and
+graph-theoretical measurements
+\citep{friston03dcm, buzsaki2004neuronal,
+beckmann2005, bullmore2009complex, jbabdi2013long}.
+
+
+analysis and integration of information
 
 
 
 
 
+% study
+The present study attempts a combination of specialization and
+integration aspects by means of structured sparsity
+for high-dimensional inference.
+%
 
-STUDY
+adaptive estimator
+biologically plausible
+
+recent advances in high-dimensional statistics enable
 
 The present investigation reframed network-network dynamics as a
 multivariate statistical learning problem.
@@ -252,11 +313,34 @@ avoiding the curse of dimensionality and making the machine-learning
 results human-interpretable by quantitative association with
 psychological concepts.
 
-neurobiologically motivated restrictions to complexity circumvented the curse of dimensionality and allowed for useful, simplified views on brain function.
+neurobiologically motivated restrictions to complexity circumvented
+the curse of dimensionality and
+allowed for useful, simplified views on brain function.
+
+importance of brain regions and networks is probably a matter of
+degree.
+We estimate that degree from the data
+
+help reintegrate the divorced
+interpretational streams based on
+region- and network-focused neuroscientific investigations.
+
 
 
 
 \section{Methods}
+%
+\paragraph{Rationale}
+
+we need to inject domain knowledge into
+statistical estimations to harness the curse of dimensionality.
+
+
+should be able to estimate voxel level
+while taking into account known supravoxel structure.
+
+
+
 %
 \paragraph{Data.}
 As the currently biggest openly-accessible reference dataset,
@@ -367,7 +451,18 @@ accessible online for reproducibility and reuse
 
 \section{Discussion}
 
-neurobiologically motivated restrictions to complexity circumvented the curse of dimensionality and allowed for useful, simplified views on brain function.
+Functional specialization and functional integration
+in the human brain are
+probably both mechanistically relevant for emerging behavior.
+However, there is a scarcity of statistical methods
+that concomitantly relate brain regions and networks to
+an organism's repertoire of mental operations.
+
+
+
+neurobiologically motivated restrictions to
+complexity circumvented the curse of dimensionality and allowed
+for useful, simplified views on brain function.
 
 
 

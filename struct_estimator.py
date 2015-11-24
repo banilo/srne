@@ -18,6 +18,11 @@ contjoint reg/net ratio
 - 2-class versus 18-class problems
 - test known inseparable 2-class problem
 - spacenet versus treel2 in HCP/regression: age
+- run on structure/VBM with regression -> nilearn example
+- introduce reg-net hyperparameter 0..1 [only regs -> only nets] to be
+gridsearched (cf. Lin/Yuan 2007)
+- inverse gridsearch layer and one-versus-rest layer in wrappers to
+get optimal reg-net ratio for each class
 """
 import spams
 
@@ -53,9 +58,10 @@ FORCE_TWO_CLASSES = False
 MY_MAX_IT = 100
 MY_DATA_RATIO = 100
 N_JOBS = 5
-LAMBDA_GRID = np.linspace(0.1, 1.0, 10)
+# LAMBDA_GRID = np.linspace(0.1, 1.0, 10)
+LAMBDA_GRID = np.logspace(-2, 1, 11)
 
-RES_NAME = 'srne_benchmark_zerobrainlevel'
+RES_NAME = 'srne_benchmark_loggrid_zerobrainlevel_weighted'
 if FORCE_TWO_CLASSES:
     RES_NAME += '_2cl'
 WRITE_DIR = op.join(os.getcwd(), RES_NAME)
@@ -179,8 +185,8 @@ class StructuredEstimator(BaseEstimator):
     def fit(self, X, y):
         if self.verbose:
             print(self)
-            print('Unique Y: ')
-            print(np.unique(y))
+            # print('Unique Y: ')
+            # print(np.unique(y))
         
         # SPAMS expects -1/+1 labelling
         y[y == 0] = -1
@@ -216,9 +222,6 @@ class StructuredEstimator(BaseEstimator):
                 self.N_own_variables = []
                 self.own_variables = []
                 self.eta_g = np.array(np.ones(13 + n_regions - 1), dtype=np.float32)
-                
-                # HACK
-                self.eta_g[13:] = 0
                 
                 self.groups = np.asfortranarray(np.zeros((13 + n_regions - 1, 13 + n_regions - 1)), dtype=np.bool)
 
@@ -282,10 +285,20 @@ class StructuredEstimator(BaseEstimator):
 
                     cur_ind += n_reg_vox  # move behind size of current net
             X = X_task_tree
+            
+            # group weighting (cf. Yuan 2007)
+            self.eta_g[0] = 0
+            for i_n, net_vect in enumerate(self.net_reg_map):
+                p_j = len(np.where(net_vect != 0)[0])
+                weight = 1. / np.sqrt(p_j)
+                self.eta_g[i_n + 1] = weight
+                print('Weighting net group %i (n_vox=%i) to %.4f' % (i_n + 1, p_j, weight))
+            for i_r, n_reg_vox in enumerate(self.N_own_variables[13:]):
+                p_j = n_reg_vox
+                self.eta_g[i_r + 12 + 1] = 1. / np.sqrt(p_j)
 
             # run SPAMS
             X = np.asfortranarray(X)
-
             param = {'numThreads' : self.n_threads,
                      'verbose' : self.verbose,
                      'lambda1' : float(self.lambda1),
@@ -409,6 +422,7 @@ for REG_PEN in REGS:
         reg_data=cur_atlas_labels,
         net_data=cur_net_data,
         max_it=MY_MAX_IT,
+        n_threads=1,
         group_labels=cur_group_labels
     )
 
@@ -517,7 +531,7 @@ def dump_comps(masker, compressor, components, threshold=2, fwhm=None,
 # rsync -vza dbzdok@drago:/storage/workspace/danilo/srne/srne_benchmark_2cl/* /git/srne/srne_benchmark_2cl
 
 import matplotlib
-matplotlib.style.use('ggplot')
+# matplotlib.style.use('ggplot')
 import matplotlib.pyplot as plt
 import re
 %matplotlib qt
@@ -535,6 +549,7 @@ contrasts_names = [
     '2BK-0BK'
 ]
 
+LOG_LBD = False
 for reg in [REGS[0]]:
     anal_str = '%s_dataratio%i_maxit%i' % (reg, MY_DATA_RATIO, MY_MAX_IT)
     tar_dump_file = '%s/%s' % (WRITE_DIR, anal_str)
@@ -554,14 +569,23 @@ for reg in [REGS[0]]:
         stds.append(std)
         lbds.append(lbd)
 
-    plt.errorbar(lbds, y=means, yerr=stds, color='r', linewidth=2)
-    plt.xlabel('$\lambda$')
+    if LOG_LBD:
+        plt.errorbar(np.log10(lbds), y=means, yerr=stds, color='r', linewidth=2)
+    else:
+        plt.errorbar(lbds, y=means, yerr=stds, color='r', linewidth=2)
+    if LOG_LBD:
+        plt.xlabel('log_10($\lambda$)')
+    else:
+        plt.xlabel('$\lambda$')
     plt.ylabel('accuracy (mean)')
     plt.ylim(0.0, 1.0)
-    plt.xticks(lbds)
-    plt.text(0.50, 0.95, 'Final train-set acc: %.2f%%' % (clf_ovr_gs.train_acc * 100),
+    if LOG_LBD:
+        plt.xticks(np.log10(lbds))
+    else:
+        plt.xticks(lbds)
+    plt.text(0.5, 0.95, 'Final train-set acc: %.2f%%' % (clf_ovr_gs.train_acc * 100),
              fontsize=18)
-    plt.text(0.50, 0.90, 'Final test-set acc: %.2f%%' % (clf_ovr_gs.test_acc * 100),
+    plt.text(0.5, 0.90, 'Final test-set acc: %.2f%%' % (clf_ovr_gs.test_acc * 100),
              fontsize=18)
     plt.title('GridSearch: ' + anal_str)
     plt.savefig(tar_dump_file + '_gs.png')

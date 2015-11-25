@@ -30,7 +30,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\title{Introducing region-network priors to statistical estimators for fMRI data}
+\title{Region-network sparsity priors for high-dimensional inference in fMRI data}
 
 \newcommand{\fix}{\marginpar{FIX}}
 \newcommand{\new}{\marginpar{NEW}}
@@ -63,7 +63,7 @@
 
 \begin{document}
 
-\author{Danilo Bzdok, Michael Eickenberg, Olivier Grisel,
+\author{Danilo Bzdok, Karl Zilles, Michael Eickenberg,
   Ga\"el Varoquaux, Bertrand Thirion
   INRIA, Parietal team, Saclay, France\\
   CEA, Neurospin, Gif-sur-Yvette, France\\
@@ -167,46 +167,49 @@ method -> type of discovery
 
 
 SPECIAL
-Functional specialization has been investigated in many ways.
+Functional specialization has been
+explored with many different research methods.
 %
 Single cell recordings and microscopic examination
 revealed, for instance, the
 specialization in the visual cortex into V1, V2, V3, V3A, and V4
 \citep{hubel1962receptive, zeki1978functional}.
-
-
-example: fusiform gyrus
--> lesion -> does not work anymore
-
-
-Non-invasive brain imaging with
+Tissue lesion reports of the mid-fusiform gyrus of the visual system
+frequently indicated impaired
+recognition of others' identity from faces
+\citep{iaria2008contribution}.
+The localization of
+sensory, motor, and emotional cognitive functions to cortical areas
+in the living brain
+has later been enabled by
+non-invasive brain imaging with
 functional magnetic resonance imaging (fMRI) and
 positron emission tomography (PET)
-enabled the localization of
-sensory, motor, and emotional functions to cortical areas
-in the living brain
 \citep{fristen1997imaging}.
-
-
-
-Radioactive mapping the distribution of
-neurotransmitter receptors added yet another
+Further,
+radioactive mapping the distribution of
+neurotransmitter receptors rendered accessible yet another
 local characteristic of neuronal populations
 \citep{zilles2009receptor}.
-
-
-clustering
-\citep{behrens03}
-
-
-High-thoughput computing enabled an 
-ultahigh-resolution 3D model of brain anatomy
+% allude to our many-regions layer in the methods
+In the computational era,
+automatic clustering methods are increasingly employed to
+regionally differentiation of the cerebral cortex,
+which partly turned out to be more fine-grained than
+classical cytoarchitectonic mapping
+\citep{behrens03, cbp2015review}.
+Today,
+high-thoughput computing enables 
+ultahigh-resolution 3D models of brain anatomy
 at macroscopical to near-cellular scale
 \citep{amunts2013bigbrain}.
-
-
-
-=> methods: non-overlapping, discrete region units
+%
+As a crucial common point,
+all these methodological classes
+yielded neuroscientific findings
+that were naturally interpreted
+non-overlapping, discrete region compartments
+as the basic architectonic framework of cortical organization.
 
 
 
@@ -324,6 +327,10 @@ We estimate that degree from the data
 help reintegrate the divorced
 interpretational streams based on
 region- and network-focused neuroscientific investigations.
+
+
+a compartmental model of
+functional organization in the cerebral cortex can be derived
 
 
 
@@ -459,11 +466,39 @@ that concomitantly relate brain regions and networks to
 an organism's repertoire of mental operations.
 
 
+We assume regions and networks but can estimate 
+importance of each voxel.
 
 neurobiologically motivated restrictions to
 complexity circumvented the curse of dimensionality and allowed
 for useful, simplified views on brain function.
 
+
+
+
+
+curse of dimensionality has classically been circumvented
+by treating a high-dimensional problem
+as a mass-univariate problem.
+Problem was postponed to the inference step
+this is why we never solved the multiple comparisons problem in fMRI
+
+regularization with sparsity penalties
+restrictions to complexity according to neurobiological facts
+-> bias-variance tradeoff: negigible increase in bias but large decrease in variance
+-> VC: decrease complexitiy capactiy -> better chance for generalization out of sample
+
+multiple comparisons problem has the curse of dimensionality
+as its close correspondence in statistical learning
+sparsity -> solves the curse at the estimation level
+
+
+
+OUTLOOK:
+robust high-dimensional inference will be key
+to prediction in single individual,
+such as for personalized medicine
+\citep{gabrieli2015prediction}
 
 
 

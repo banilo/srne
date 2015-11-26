@@ -289,7 +289,7 @@ contrasts_names = [
 ]
 
 for reg in [REGS[0]]:
-    anal_str = 'l1%.2f_maxit%i' % (0.5, MY_MAX_IT)
+    anal_str = 'l1%.2f_grid_maxit%i' % (0.5, MY_MAX_IT)
     tar_dump_file = '%s/%s' % (WRITE_DIR, anal_str)
     if not op.exists(tar_dump_file):
         print('SKIPPED: %s' % tar_dump_file)
@@ -332,7 +332,7 @@ for reg in [REGS[0]]:
     plt.savefig(tar_dump_file + '_precrec.png')
 
 for reg in [REGS[0]]:
-    anal_str = 'l1%.2f_maxit%i' % (0.5, MY_MAX_IT)
+    anal_str = 'l1%.2f_grid_maxit%i' % (0.5, MY_MAX_IT)
     tar_dump_file = '%s/%s' % (WRITE_DIR, anal_str)
     if not op.exists(tar_dump_file):
         print('SKIPPED: %s' % tar_dump_file)

@@ -1,0 +1,176 @@
+\begin{thebibliography}{10}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+
+\bibitem{amunts2013bigbrain}
+Amunts, K., Lepage, C., Borgeat, L., Mohlberg, H., Dickscheid, T., Rousseau,
+  M.E., Bludau, S., Bazin, P.L., Lewis, L.B., Oros-Peusquens, A.M., et~al.:
+  Bigbrain: an ultrahigh-resolution 3d human brain model. Science  340(6139),
+  1472--1475 (2013)
+
+\bibitem{bach2012optimization}
+Bach, F., Jenatton, R., Mairal, J., Obozinski, G.: Optimization with
+  sparsity-inducing penalties. Foundations and Trends{\textregistered} in
+  Machine Learning  4(1),  1--106 (2012)
+
+\bibitem{beckmann2005}
+Beckmann, C.F., DeLuca, M., Devlin, J.T., Smith, S.M.: Investigations into
+  resting-state connectivity using independent component analysis. Philos Trans
+  R Soc Lond B Biol Sci  360(1457),  1001--13 (2005)
+
+\bibitem{behrens03}
+Behrens, T.E., Johansen-Berg, H., Woolrich, M.W., Smith, S.M.,
+  Wheeler-Kingshott, C.A., Boulby, P.A., Barker, G.J., Sillery, E.L., Sheehan,
+  K., Ciccarelli, O., Thompson, A.J., Brady, J.M., Matthews, P.M.: Non-invasive
+  mapping of connections between human thalamus and cortex using diffusion
+  imaging. Nat Neurosci  6(7),  750--7 (2003)
+
+\bibitem{brodmann1909vergleichende}
+Brodmann, K.: Vergleichende Lokalisationslehre der Groshirnrinde (1909)
+
+\bibitem{buckner2013opportunities}
+Buckner, R.L., Krienen, F.M., Yeo, B.T.: Opportunities and limitations of
+  intrinsic functional connectivity mri. Nature neuroscience  16(7),  832--837
+  (2013)
+
+\bibitem{buhlmann2011statistics}
+B{\"u}hlmann, P., Van De~Geer, S.: Statistics for high-dimensional data:
+  methods, theory and applications. Springer Science \& Business Media (2011)
+
+\bibitem{bullmore2009complex}
+Bullmore, E., Sporns, O.: Complex brain networks: graph theoretical analysis of
+  structural and functional systems. Nature Reviews Neuroscience  10(3),
+  186--198 (2009)
+
+\bibitem{buzsaki2004neuronal}
+Buzs{\'a}ki, G., Draguhn, A.: Neuronal oscillations in cortical networks.
+  science  304(5679),  1926--1929 (2004)
+
+\bibitem{bzdok2013tpj}
+Bzdok, D., Langner, R., Schilbach, L., Jakobs, O., Roski, C., Caspers, S.,
+  Laird, A.R., Fox, P.T., Zilles, K., Eickhoff, S.B.: Characterization of the
+  temporo-parietal junction by combining data-driven parcellation,
+  complementary connectivity analyses, and functional decoding. Neuroimage  81,
+   381–392 (2013)
+
+\bibitem{corbettashul2008}
+Corbetta, M., Patel, G., Shulman, G.L.: The reorienting system of the human
+  brain: from environment to theory of mind. Neuron  58(3),  306--24 (2008)
+
+\bibitem{cbp2015review}
+Eickhoff, S.B., Thirion, B., Varoquaux, G., Bzdok, D.: Connectivity-based
+  parcellation: Critique and implications. Hum Brain Mapp  (2015)
+
+\bibitem{fransson2006}
+Fransson, P.: How default is the default mode of brain function? further
+  evidence from intrinsic bold signal fluctuations. Neuropsychologia  44,
+  2836–2845 (2006)
+
+\bibitem{fristen1997imaging}
+Fristen, K.J.: Imaging cognitive anatomy. Trends in cognitive sciences  1(1),
+  21--27 (1997)
+
+\bibitem{friston2002beyond}
+Friston, K.: Beyond phrenology: what can neuroimaging tell us about distributed
+  circuitry? Annual review of neuroscience  25(1),  221--250 (2002)
+
+\bibitem{giraud2014introduction}
+Giraud, C.: Introduction to High-Dimensional Statistics. CRC Press (2014)
+
+\bibitem{hastie2015statistical}
+Hastie, T., Tibshirani, R., Wainwright, M.: Statistical Learning with Sparsity:
+  The Lasso and Generalizations. CRC Press (2015)
+
+\bibitem{hubel1962receptive}
+Hubel, D.H., Wiesel, T.N.: Receptive fields, binocular interaction and
+  functional architecture in the cat's visual cortex. The Journal of physiology
+   160(1),  106 (1962)
+
+\bibitem{iaria2008contrib}
+Iaria, G., Fox, C.J., Waite, C.T., Aharon, I., Barton, J.J.: The contribution
+  of the fusiform gyrus and superior temporal sulcus in processing facial
+  attractiveness: neuropsychological and neuroimaging evidence. Neuroscience
+  155(2),  409--22 (2008)
+
+\bibitem{jbabdi2013long}
+Jbabdi, S., Behrens, T.E.: Long-range connectomics. Annals of the New York
+  Academy of Sciences  1305(1),  83--93 (2013)
+
+\bibitem{jordan2015massive}
+Jordan, M.I.: Frontiers in massive data analysis. National Academies Report
+  (2015)
+
+\bibitem{kanwisher2010functional}
+Kanwisher, N.: Functional specificity in the human brain: a window into the
+  functional architecture of the mind. Proceedings of the National Academy of
+  Sciences  107(25),  11163--11170 (2010)
+
+\bibitem{mesulam_sensation}
+Mesulam, M.M.: From sensation to cognition. Brain  121,  1013--52 (1998)
+
+\bibitem{passingham2002}
+Passingham, R.E., Stephan, K.E., Kotter, R.: The anatomical basis of functional
+  localization in the cortex. Nat Rev Neurosci  3(8),  606--16 (2002)
+
+\bibitem{raichle2001pnas}
+Raichle, M.E., MacLeod, A.M., Snyder, A.Z., Powers, W.J., Gusnard, D.A.,
+  Shulman, G.L.: A default mode of brain function. Proc Natl Acad Sci U S A
+  98(2),  676--82 (2001)
+
+\bibitem{scannell95cat}
+Scannell, J.W., Blakemore, C., Young, M.P.: Analysis of connectivity in the cat
+  cerebral cortex. J Neurosci  15(2),  1463--83 (1995)
+
+\bibitem{seeley2007dissociable}
+Seeley, W.W., Menon, V., Schatzberg, A.F., Keller, J., Glover, G.H., Kenna, H.,
+  Reiss, A.L., Greicius, M.D.: Dissociable intrinsic connectivity networks for
+  salience processing and executive control. J Neurosci  27(9),  2349--2356
+  (2007)
+
+\bibitem{sporns14nn}
+Sporns, O.: Contributions and challenges for network models in cognitive
+  neuroscience. Nat Neurosci  17(5),  652--60 (2014)
+
+\bibitem{sridh2008}
+Sridharan, D., Levitin, D.J., Menon, V.: A critical role for the right
+  fronto-insular cortex in switching between central-executive and default-mode
+  networks. Proc Natl Acad Sci U S A  105(34),  12569--74 (2008)
+
+\bibitem{stephan_dys}
+Stephan, K.E., Friston, K.J., Frith, C.D.: Dysconnection in schizophrenia: from
+  abnormal synaptic plasticity to failures of self-monitoring. Schizophr Bull
+  35(3),  509--27 (2009)
+
+\bibitem{tononi1998complexity}
+Tononi, G., Edelman, G.M., Sporns, O.: Complexity and coherency: integrating
+  information in the brain. Trends in cognitive sciences  2(12),  474--484
+  (1998)
+
+\bibitem{vogt1919allgemeine}
+Vogt, C., Vogt, O.: Allgemeine Ergebnisse unserer Hirnforschung, vol.~21. JA
+  Barth (1919)
+
+\bibitem{yeo11}
+Yeo, B.T., Krienen, F.M., Sepulcre, J., Sabuncu, M.R., Lashkari, D.,
+  Hollinshead, M., Roffman, J.L., Smoller, J.W., Zollei, L., Polimeni, J.R.,
+  Fischl, B., Liu, H., Buckner, R.L.: The organization of the human cerebral
+  cortex estimated by intrinsic functional connectivity. J Neurophysiol
+  106(3),  1125--65 (2011)
+
+\bibitem{young93monkey}
+Young, M.P.: The organization of neural systems in the primate cerebral cortex.
+  Proc Biol Sci  252(1333),  13--8 (1993)
+
+\bibitem{yuste2015}
+Yuste, R.: From the neuron doctrine to neural networks. Nat Rev Neurosci
+  16(8),  487--497 (2015)
+
+\bibitem{zeki1978functional}
+Zeki, S.M.: Functional specialisation in the visual cortex of the rhesus
+  monkey. Nature  274(5670),  423--428 (1978)
+
+\bibitem{zilles2009receptor}
+Zilles, K., Amunts, K.: Receptor mapping: architecture of the human cerebral
+  cortex. Current opinion in neurology  22(4),  331--339 (2009)
+
+\end{thebibliography}

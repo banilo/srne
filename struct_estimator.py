@@ -23,6 +23,8 @@ contjoint reg/net ratio
 gridsearched (cf. Lin/Yuan 2007)
 - inverse gridsearch layer and one-versus-rest layer in wrappers to
 get optimal reg-net ratio for each class
+- for each task a histogramm: f1 score across reg-net ratios -> haights
+probably at different positions
 """
 import spams
 

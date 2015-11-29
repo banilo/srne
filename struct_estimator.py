@@ -61,16 +61,17 @@ MY_MAX_IT = 100
 MY_DATA_RATIO = 100
 N_JOBS = 5
 # LAMBDA_GRID = np.linspace(0.1, 1.0, 10)
-LAMBDA_GRID = np.logspace(-2, 1, 11)
+LAMBDA_GRID = np.logspace(-4, 0, 9)
+# LAMBDA_GRID = [0.1]
 
-RES_NAME = 'srne_benchmark_loggrid_zerobrainlevel_weighted'
+RES_NAME = 'srne_benchmark_l1_regloggrid'
 if FORCE_TWO_CLASSES:
     RES_NAME += '_2cl'
 WRITE_DIR = op.join(os.getcwd(), RES_NAME)
 if not op.exists(WRITE_DIR):
     os.mkdir(WRITE_DIR)
 
-REGS = ['tree-l2']
+REGS = ['l1']
 
 # REGS = ['tree-l0', 'tree-l2',
 #     'sparse-group-lasso-linf', 'sparse-group-lasso-l2',
@@ -533,7 +534,7 @@ def dump_comps(masker, compressor, components, threshold=2, fwhm=None,
 # rsync -vza dbzdok@drago:/storage/workspace/danilo/srne/srne_benchmark_2cl/* /git/srne/srne_benchmark_2cl
 
 import matplotlib
-# matplotlib.style.use('ggplot')
+matplotlib.style.use('ggplot')
 import matplotlib.pyplot as plt
 import re
 %matplotlib qt
@@ -551,7 +552,7 @@ contrasts_names = [
     '2BK-0BK'
 ]
 
-LOG_LBD = False
+LOG_LBD = True
 for reg in [REGS[0]]:
     anal_str = '%s_dataratio%i_maxit%i' % (reg, MY_DATA_RATIO, MY_MAX_IT)
     tar_dump_file = '%s/%s' % (WRITE_DIR, anal_str)
@@ -585,9 +586,9 @@ for reg in [REGS[0]]:
         plt.xticks(np.log10(lbds))
     else:
         plt.xticks(lbds)
-    plt.text(0.5, 0.95, 'Final train-set acc: %.2f%%' % (clf_ovr_gs.train_acc * 100),
+    plt.text(-2, 0.95, 'Final train-set acc: %.2f%%' % (clf_ovr_gs.train_acc * 100),
              fontsize=18)
-    plt.text(0.5, 0.90, 'Final test-set acc: %.2f%%' % (clf_ovr_gs.test_acc * 100),
+    plt.text(-2, 0.90, 'Final test-set acc: %.2f%%' % (clf_ovr_gs.test_acc * 100),
              fontsize=18)
     plt.title('GridSearch: ' + anal_str)
     plt.savefig(tar_dump_file + '_gs.png')
@@ -622,29 +623,89 @@ for reg in [REGS[0]]:
         coef_per_class,
         threshold=0.0)
 
-from nilearn import plotting
-from scipy.stats import zscore
-for i_cont, cont_name in enumerate(contrasts_names):
-    out_fname = 'plots/tree-l2_weights_%s' % cont_name
-    coef = coef_per_class[i_cont, :]
-    weight_nii = nifti_masker.inverse_transform(
-        coef)
-    plotting.plot_stat_map(weight_nii, cut_coords=(0, 0, 0),
-                           title='', bg_img='colin.nii',
-                           colorbar=True, draw_cross=False,
-                           black_bg=True)
-    plt.savefig(out_fname + '_raw.png',
-                dpi=200, transparent=True)
+
+BASE_PATH = '/git/srne/srne_benchmark_rnratio%s_zerobrainlevel_weighted'
+rnratios = [500, 100, 50, 10, 5, 2, 1,
+            0.5, 0.2, 0.1, 0.02, 0.01, 0.004, 0.002, 0.001]
+ratio_score_cont = np.zeros((len(rnratios), 18))
+ratio_weight_mean = np.zeros((len(rnratios), 18))
+ratio_weight_max = np.zeros((len(rnratios), 18))
+# ratio_weight_std = np.zeros((len(rnratios), 18))
+ratio_weight_nonzero = np.zeros((len(rnratios), 18))
+for i, ratio in enumerate(rnratios):
+    if np.log10(ratio) >= 0:
+        ratio_str = '%.0f' % ratio
+    elif np.log10(ratio) >= -1:
+        ratio_str = '%.1f' % ratio
+    elif np.log10(ratio) >= -2:
+        ratio_str = '%.2f' % ratio
+    else:
+        ratio_str = '%.3f' % ratio
+    cur_path = BASE_PATH % ratio_str
+    print(cur_path)
     
-    coef_z = zscore(coef)
-    weight_nii = nifti_masker.inverse_transform(
-        coef_z)
-    plotting.plot_stat_map(weight_nii, cut_coords=(0, 0, 0),
-                           title='', bg_img='colin.nii',
-                           colorbar=True, draw_cross=False,
-                           black_bg=True)
-    plt.savefig(out_fname + '_zmap.png',
-                dpi=200, transparent=True)
+    tar_dump_file = op.join(cur_path, 'tree-l2_dataratio100_maxit100')
+    assert op.exists(tar_dump_file)
     
+    # save f1 score per class
+    clf_ovr_gs = joblib.load(tar_dump_file)
+    ratio_score_cont[i, :] = clf_ovr_gs.test_prfs[2]
     
+    # save high/std of absolute non-zero weights
+    coef_per_class = [est.W_ for est in clf_ovr_gs.best_estimator_.estimators_]
+    coef_per_class = np.squeeze(coef_per_class)
+    for i_cl, cl_coefs in enumerate(coef_per_class):
+        inds = np.where(cl_coefs != 0)[0]
+        if len(inds) == 0:
+            continue
+        w = zscore(np.abs(cl_coefs[inds]))
+        ratio_weight_mean[i, i_cl] = np.mean(w)
+        ratio_weight_nonzero[i, i_cl] = len(inds)
+        ratio_weight_max[i, i_cl] = np.max(w)
+
+plt.figure()
+plt.close('all')
+plt.vlines(rnratios.index(1), 0., 1.025, linewidth=3)
+for i_task in range(18):
+    plt.plot(np.arange(len(rnratios)), ratio_score_cont[:, i_task])
+plt.xticks(np.arange(len(rnratios)), rnratios)
+plt.ylabel('accuracy (F1 score)')
+plt.xlabel('reg-net ratio')
+plt.ylim(0., 1.025)
+plt.title('Task discriminability by region/network prior importance')
+plt.savefig('per_class_rnratio.png')
+plt.show()
+
+plt.figure()
+for i_task in range(18):
+    plt.plot(np.arange(len(rnratios)), ratio_weight_max[:, i_task])
+plt.xticks(np.arange(len(rnratios)), rnratios)
+plt.ylabel('max absolute model weight (z-scored)')
+plt.xlabel('reg-net ratio')
+plt.vlines(rnratios.index(1), 0., plt.ylim()[1], linewidth=3)
+plt.title('Model weights by region/network prior importance')
+plt.savefig('per_class_weight_max.png')
+plt.show()
+
+plt.figure()
+for i_task in range(18):
+    plt.plot(np.arange(len(rnratios)), np.abs(ratio_weight_mean[:, i_task]))
+plt.xticks(np.arange(len(rnratios)), rnratios)
+plt.ylabel('mean of absolute model weights (z-scored)')
+plt.xlabel('reg-net ratio')
+plt.vlines(rnratios.index(1), 0., plt.ylim()[1], linewidth=3)
+plt.title('Model weights by region/network prior importance')
+plt.savefig('per_class_weight_mean.png')
+plt.show()
+
+plt.figure()
+for i_task in range(18):
+    plt.plot(np.arange(len(rnratios)), np.abs(ratio_weight_nonzero[:, i_task]))
+plt.xticks(np.arange(len(rnratios)), rnratios)
+plt.ylabel('non-zero weights')
+plt.xlabel('reg-net ratio')
+plt.vlines(rnratios.index(1), 0., plt.ylim()[1], linewidth=3)
+plt.title('Model weights by region/network prior importance')
+plt.savefig('per_class_weight_nonzero.png')
+plt.show()
     

@@ -20,6 +20,7 @@
 \def\B#1{\bm{#1}}
 %\def\B#1{\mathbf{#1}}
 \def\trans{\mathsf{T}}
+\DeclareMathOperator*{\argmin}{arg\,min}
 
 %\renewcommand{\labelitemi}{--}
 
@@ -285,7 +286,6 @@ and generalize better to new samples
 than domain-na\"ive models.
 
 
-\begin{comment}
 
 
 \section{Methods}
@@ -310,10 +310,65 @@ In adults, nodes of a same cohesive network have more
 similar functional profiles than nodes from different networks
 (Anderson et al., 2013).
 
+data exhibit natural correlations between neighboring voxels forming clusters
+
 neurobiologically motivated restrictions to complexity circumvented
 the curse of dimensionality
 
 
+\paragraph{Numerical Optimization}
+
+
+
+for every column u of U, it compute a column v of V solving
+
+we aim at learning a weight vector w ∈ Rp and an intercept b ∈ R
+such that the prediction of y can be based on the value of w⊤x + b.
+
+We omit a bias term, since the data were mean-centered
+and unit-variance scaled.
+The scalar b is not particularly informative
+
+however the vector w corresponds to a volume that
+can be represented in brain space as a volume
+
+more precisely, we denote by X ∈ Rn×p the design matrix
+assembled from n fMRI volumes and by y ∈ Rn the corresponding n targets.
+In other words, each row of X is a p-dimensional sample,
+i.e., an activation map of p voxels related to one stimulus presentation.
+for visualization of the predictive pattern of voxels. 
+
+Learning the parameters (w, b) remains challenging
+since the number of features (104 to 105 voxels) exceeds
+by far the number of samples (a few hundreds of volumes). 
+
+To address this issue, dimensionality reduction attempts to
+find a low dimensional subspace that concentrates
+as much of the predictive power of
+the original set as possible for the problem at hand.
+-> we do not want to do preliminary feature selection or
+dimensionality reduction
+or feature agglomeration because we want to fit one model parameter
+to each brain voxel for maximal interpretability
+This corresponds to discarding some columns of X.
+
+
+
+
+\begin{equation}
+  \argmin 0.5||u-v||_2^2 + \lambda\sum_{g \in T} \eta_g||v_g||_2
+\end{equation}
+
+
+
+
+
+
+
+
+
+\begin{comment}
+  
 %
 \paragraph{Data.}
 As the currently biggest openly-accessible reference dataset,
@@ -440,6 +495,13 @@ complexity circumvented the curse of dimensionality and allowed
 for useful, simplified views on brain function.
 
 
+The same classification performance can be reached by
+many different models -> we naturally want to priviledge those
+among the equally performing models that are closest to
+what we know about the brain
+
+-> interpreta bility and accuracy typically exclude each other
+(cf. Hastie)
 
 
 

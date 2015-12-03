@@ -82,7 +82,8 @@ high-dimensional inference in fMRI data}
 
 \textbf{\\keywords}:
 Brain Imaging, Functional Specialization, Functional Integration,
-Sparsity-inducing Norms, Numerical Optimization, Systems Neuroscience
+Sparsity-inducing Norms, Structured Sparsity,
+Numerical Optimization, Systems Neuroscience
 
 \end{abstract}
 
@@ -163,7 +164,7 @@ functional specialization versus functional integration
 \cite{friston2002beyond, mesulam_sensation},
 both architectural principles are conceptually inextricable when
 explaining the emergence of mental operations
-\cite{tononi1998complexity}.
+\cite{tononi1998complexity, saygin2012}.
 
 
 
@@ -285,7 +286,15 @@ yield many more human-interpretable results,
 and generalize better to new samples
 than domain-na\"ive models.
 
+higher-order prior knowledge
 
+structured sparsity
+extend trend in stastical modelling from
+genetics \cite{rapaport2008classification, kim2012tree},
+natural image processing \cite{harzallah2009combining}
+
+
+to brain imaging domain.
 
 
 \section{Methods}
@@ -314,11 +323,30 @@ data exhibit natural correlations between neighboring voxels forming clusters
 
 neurobiologically motivated restrictions to complexity circumvented
 the curse of dimensionality
+three-dimensional spatial arrangement that respects
+the functional anatomy of the brain
+not ignore the spatial configuration
+
+incorporate rich prior knowledge
+
+If meaningful structures exist,
+ÇÇçwe show that one can take advantage of such structures
 
 
-\paragraph{Numerical Optimization}
+\paragraph{Problem formulation}
+
+Sparse linear models
+encode geometric prior information
+topology
+local sets of voxels
+
+structured regularization
+We might therefore gain in the quality of the factors
+induced by enforcing directly this a priori 
 
 
+
+l1 = unstructured sparsity-inducing penalty
 
 for every column u of U, it compute a column v of V solving
 
@@ -332,6 +360,8 @@ The scalar b is not particularly informative
 however the vector w corresponds to a volume that
 can be represented in brain space as a volume
 
+hierarchial tree = more generally into a directed acyclic graph
+
 more precisely, we denote by X ∈ Rn×p the design matrix
 assembled from n fMRI volumes and by y ∈ Rn the corresponding n targets.
 In other words, each row of X is a p-dimensional sample,
@@ -341,6 +371,14 @@ for visualization of the predictive pattern of voxels.
 Learning the parameters (w, b) remains challenging
 since the number of features (104 to 105 voxels) exceeds
 by far the number of samples (a few hundreds of volumes). 
+
+The scalar b is not particularly informative,
+however the vector w corresponds to a volume that
+can be represented in brain space as a volume
+for visualization of the predictive pattern of voxels.
+
+each row of X is a p-dimensional sample,
+i.e., an activation map of p voxels related to one stimulus presentation.
 
 To address this issue, dimensionality reduction attempts to
 find a low dimensional subspace that concentrates
@@ -352,23 +390,158 @@ or feature agglomeration because we want to fit one model parameter
 to each brain voxel for maximal interpretability
 This corresponds to discarding some columns of X.
 
+The essential shortcoming of the Elastic net is that
+it does not take into account the spatial structure of the data,
+which is crucial in this context
 
+Craddock clusters are often used for feature agglomeration
+into parcels
+-> exploits only a part of the data
+
+dual-level spatial structure
+sparse hierarchical regularization
+structured sparsity-inducing regularization
+the root of the tree T is the unique cluster that gathers all the voxels,
+
+It is a generalization of the traditional $\ell_1$-norm
+$\Omega(\mathbf{w}) = \sum_{j=1}^p|\mathbf{w}_j|$
+ignores structure
+
+
+\cite{jenatton2011multi}
+
+\textit{structured sparsity}
+
+\cite{huang2011learning, morales2010family, jenatton2011structured}
+
+
+a node $j$ of $\mathcal{T}$,
+we denote by $g_j \subseteq \{1,..,q\}$ the set of indices that record
+all the descendants of $j$ in $\mathcal{T}$
+
+the family of sparsity-inducing norms has recently been extended
+by hierarchical sparsity penalty terms
+\cite{zhao2009composite}.
 
 
 \begin{equation}
-  \argmin 0.5||u-v||_2^2 + \lambda\sum_{g \in T} \eta_g||v_g||_2
+  \Omega(\mathbf{w}) = \sum_{g \in G}||\mathbf{w}_g||_2 = \sum_{g \in G}\sqrt{\sum_{j \in g}\mathbf{w}_j^2}
 \end{equation}
 
+For example, when G is the set of all singletons, Ω is the
+usual l1 norm (assuming that all the weights are equal to 1).
+
+l1/l2 mixed norm is convex
+
+
+Discarding coefficients belonging to a network group will naturally enforce
+discarding the coefficients belonging to each of its descendent region groups.
+Conversely,
+variable selection of a network group will also enforce
+selection of all voxel of its descendent group regions.
+Single region groups can however be set to zero (unselected)
+or non-zero (selected)
+without analogous effect on the parent network group.
 
 
 
 
+At the between-group level,...
+$\Omega$ exerts $\ell_1$-like variable selection on
+the (||\mathbf{w}_g||_2)_{g\inG} groups,
+yielding a maximum of $g \in G$ to be zeroed out
+\cite{jenatton2011structured}.
+The important consequence is that also all descentes of such a zeroed
+group $g \in G$ will be descarded.
+Conversely,
+if one group $g$ is selected,
+then all the ancestral groups will also be selected.
+Thus, statistical estimation will be improved by enticing
+entire voxel sets to be selected or discarded as predictive, 
+although one individual coefficient is computed for each voxel.
+
+-> it is a $(\ell_1, \ell_2)$-mixed norm
+-> between-group sparsity effect by l1
+-> within-group shrinkage effect by l2
+
+
+\begin{equation}
+  \Omega(\mathbf{w}) = \sum_{g \in G} \eta_g ||\mathbf{w}_g||_2
+\end{equation}
+
+(\eta_g)_{g \in G} are positive weights for the groups
+
+
+fit to the data is measured through
+a convex loss function (w, b) 􏰀→ L(y, X, w, b) ∈ R+. 
+
+
+\paragraph{Classification}
+
+logistic loss function
+
+\begin{equation}
+  P(y=k|x, W, b) = \frac{exp\{x^Tw^k + b_k\}}{\sum_{m=1}^cexp\{x^Tw^m + b_m\}}
+
+  \argmin \frac{1}{2}||u-v||_2^2 + \lambda\Omega(\mathbf{w})
+
+\end{equation}
+
+\lambda > 0.
+
+bias is omitted because \mathbf{X} and \mathbf{y}
+are mean-centered and unit-variance scaled.
+
+In this setting, and given a new fMRI volume x,
+we make predictions by choosing the label that maximizes
+the class-conditional probabil- ities (3.1), that is, argmaxk∈{1,...,c}Prob(y = k|x; W∗, b∗)
+
+One-versus-rest scheme
+
+
+\paragraph{Regression}
+
+squared error as loss
+
+\begin{equation}
+  \argmin \frac{1}{2}||\mathbf{y - Xw}||_2^2 + \lambda\Omega(\mathbf{w})
+\end{equation}
+
+\lambda > 0.
+
+Prediction for a new fMRI volume x is then simply performed by computing
+the dot product x⊤w∗
+
+\paragraph{Numerical optimization}
+
+Difficult because high-dimensional setting
+
+empirical risk minimization was performed by
+
+
+The intercept $b$ is left unregularized
 
 
 
 
 \begin{comment}
+
+
+\paragraph{Implementation.}
+The analyses were performed in Python.
+We used \textit{nilearn} to handle
+the large quantities of neuroimaging data 
+\cite{abrah14}
+and
+\textit{Theano} for automatic, numerically stable
+differentiation of symbolic computation graphs
+\cite{bastien2012theano, bergstra2010theano}.
+All Python scripts that generated the results are
+accessible online for reproducibility and reuse
+% (\url{http://github.com/anonymous/anonymous}).
+(\url{http://github.com/banilo/nips2015}).
   
+
 %
 \paragraph{Data.}
 As the currently biggest openly-accessible reference dataset,
@@ -452,32 +625,16 @@ sparse statistical models have only few nonzero parameters
 
 
 
-
-
-
-
-\paragraph{Implementation.}
-The analyses were performed in Python.
-We used \textit{nilearn} to handle
-the large quantities of neuroimaging data 
-\cite{abrah14}
-and
-\textit{Theano} for automatic, numerically stable
-differentiation of symbolic computation graphs
-\cite{bastien2012theano, bergstra2010theano}.
-All Python scripts that generated the results are
-accessible online for reproducibility and reuse
-% (\url{http://github.com/anonymous/anonymous}).
-(\url{http://github.com/banilo/nips2015}).
-
-
-
 \section{Experimental Results}
 \paragraph{Serial versus parallel structure discovery and classification.}
 
 
 
 \section{Discussion}
+
+exploit known structure for variable selection and prediction
+in classification and regression
+
 
 Functional specialization and functional integration
 in the human brain are
@@ -503,6 +660,8 @@ what we know about the brain
 -> interpreta bility and accuracy typically exclude each other
 (cf. Hastie)
 
+alternatives would be dimensionality reduction
+and dictionary learning
 
 
 curse of dimensionality has classically been circumvented
@@ -528,7 +687,22 @@ to prediction in single individual,
 such as for personalized medicine
 \cite{gabrieli2015prediction}
 
+More generally, our regularization scheme could also be used for various
+learning tasks, as soon
+as prior knowledge on the structure of the sparse representation
+is available, e.g.,
+for multiple kernel learning (Micchelli and Pontil, 2006),
+multi-task learning (Argyriou et al., 2008; Obozinski et al., 2009;
+Kim and Xing, 2009) and sparse matrix factorization
+problems (Mairal et al., 2010; Jenatton et al., 2010).
 
+
+this type of prior knowledge is of clear interest for the spatially and tempo-
+rally structured data typical in bioinformatics, computer vision and neuroscience applications
+
+structured sparsity can even be used for
+unsupervised data modelling,
+such as in PCA \cite{jenatton2009structured}
 
 
 

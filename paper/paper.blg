@@ -3,7 +3,7 @@ Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: paper.aux
 The style file: splncs03.bst
 Database file #1: paper_refs.bib
-Repeated entry---line 6143 of file paper_refs.bib
+Repeated entry---line 6161 of file paper_refs.bib
  : @article{buzsaki2004neuronal
  :                             ,
 I'm skipping whatever remains of this entry

@@ -290,8 +290,16 @@ higher-order prior knowledge
 
 structured sparsity
 extend trend in stastical modelling from
-genetics \cite{rapaport2008classification, kim2012tree},
-natural image processing \cite{harzallah2009combining}
+processing of auditory signals \cite{daudet2004sparse},
+natural images \cite{harzallah2009combining} and
+videos \cite{kang2015structured, kim2010sparse}
+to
+genetics \cite{rapaport2008classification, kim2012tree}
+and
+conformational dynamics of protein complexes \cite{jenatton2009structured}.
+
+
+tructured-sparsity-inducing penalty
 
 
 to brain imaging domain.
@@ -305,6 +313,7 @@ we need to inject domain knowledge into
 statistical estimations to harness the curse of dimensionality.
 two neurobiological design principles
 
+imposing parsimony
 integrative processes
 
 
@@ -321,6 +330,8 @@ similar functional profiles than nodes from different networks
 
 data exhibit natural correlations between neighboring voxels forming clusters
 
+representing some phenomenon with as few variables as possible
+
 neurobiologically motivated restrictions to complexity circumvented
 the curse of dimensionality
 three-dimensional spatial arrangement that respects
@@ -330,7 +341,16 @@ not ignore the spatial configuration
 incorporate rich prior knowledge
 
 If meaningful structures exist,
-ÇÇçwe show that one can take advantage of such structures
+we show that one can take advantage of such structures
+
+Statistically,
+l1 and l2 are local sparsity priors
+-> resulting sparsity does yield structure
+we want to priviledge representations with structure
+
+
+=> 
+ a biologically and statistically desirable bias 
 
 
 \paragraph{Problem formulation}
@@ -340,13 +360,25 @@ encode geometric prior information
 topology
 local sets of voxels
 
+Group-sparsity is a first step towards the more general idea that
+a regularization function can encourage sparse solutions with a particular structure. 
+
+
 structured regularization
 We might therefore gain in the quality of the factors
 induced by enforcing directly this a priori 
 
+groups at multiple granularity
 
+tree-guided group lasso
+
+encourage structured shrinkage effect 
 
 l1 = unstructured sparsity-inducing penalty
+
+Our method extends the L1/L2 penalty to the tree-lasso penalty
+by letting the hierarchically-defined groups overlap. 
+the tree lasso is a special case of overlapping group lasso
 
 for every column u of U, it compute a column v of V solving
 
@@ -663,6 +695,9 @@ what we know about the brain
 alternatives would be dimensionality reduction
 and dictionary learning
 
+Among a collection of plausible models,
+the simplest one should be preferred
+
 
 curse of dimensionality has classically been circumvented
 by treating a high-dimensional problem
@@ -703,6 +738,13 @@ rally structured data typical in bioinformatics, computer vision and neuroscienc
 structured sparsity can even be used for
 unsupervised data modelling,
 such as in PCA \cite{jenatton2009structured}
+
+
+
+Differences to Bertrands structured sparsity paper:
+- they derive the tree from the data, we use a priori knowledge from
+the existing literature
+- 
 
 
 

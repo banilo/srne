@@ -294,7 +294,8 @@ processing of auditory signals \cite{daudet2004sparse},
 natural images \cite{harzallah2009combining} and
 videos \cite{kang2015structured, kim2010sparse}
 to
-genetics \cite{rapaport2008classification, kim2012tree}
+genetics \cite{rapaport2008classification, kim2012tree},
+astrophysics \cite{vinci2014estimating},
 and
 conformational dynamics of protein complexes \cite{jenatton2009structured}.
 
@@ -311,12 +312,16 @@ to brain imaging domain.
 
 we need to inject domain knowledge into
 statistical estimations to harness the curse of dimensionality.
-two neurobiological design principles
+two neurobiological design principles 
 
 imposing parsimony
 integrative processes
 
+ This L1/L2 norm for group lasso has been extended to a more general setting to
 
+designed groups
+ the child nodes enter the set of relevant inputs only if its parent node does. 
+ 
 should be able to estimate voxel level
 while taking into account known supravoxel structure.
 is instrumental in
@@ -363,6 +368,7 @@ local sets of voxels
 Group-sparsity is a first step towards the more general idea that
 a regularization function can encourage sparse solutions with a particular structure. 
 
+it is not realistic to assume that all of the tasks share the same set of rele- vant inputs as in the L1/L2-regularized regression. A subset of highly related outputs may share a common set of relevant inputs, whereas weakly related outputs are less likely to be affected by the same inputs.
 
 structured regularization
 We might therefore gain in the quality of the factors
@@ -667,6 +673,8 @@ sparse statistical models have only few nonzero parameters
 exploit known structure for variable selection and prediction
 in classification and regression
 
+Among a collection of plau- sible models, the simplest one is often preferred
+
 
 Functional specialization and functional integration
 in the human brain are
@@ -674,6 +682,8 @@ probably both mechanistically relevant for emerging behavior.
 However, there is a scarcity of statistical methods
 that concomitantly relate brain regions and networks to
 an organism's repertoire of mental operations.
+
+However, in the problem of multi-task regression, where the output is a multivariate vector with an internal sparsity struc- ture, the estimation of the regression parameters can potentially benefit from taking into account this spar- sity structure in the estimation process. This will allow the strongly related output variables to be mapped to the input factors in a synergistic way, which is not possible in the standard lasso.
 
 
 We assume regions and networks but can estimate 

@@ -32,8 +32,8 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\title{Region-network sparsity priors for\\
-high-dimensional inference in fMRI data}
+\title{Region-network hierarchical sparsity priors for\\
+high-dimensional inference in brain imaging}
 
 \newcommand{\fix}{\marginpar{FIX}}
 \newcommand{\new}{\marginpar{NEW}}
@@ -66,7 +66,7 @@ high-dimensional inference in fMRI data}
 
 \begin{document}
 
-\author{Danilo Bzdok, Karl Zilles, Michael Eickenberg,
+\author{Danilo Bzdok, Michael Eickenberg,
   Ga\"el Varoquaux, Bertrand Thirion\\
   Department of Psychiatry, Psychotherapy and Psychosomatics, RWTH Aachen, Germany\\
   INRIA, Parietal team, Saclay, France\\
@@ -81,9 +81,9 @@ high-dimensional inference in fMRI data}
 
 
 \textbf{\\keywords}:
-Brain Imaging, Functional Specialization, Functional Integration,
-Sparsity-inducing Norms, Structured Sparsity,
-Numerical Optimization, Systems Neuroscience
+Sparsity-inducing Norms, Structured Sparsity, Numerical Optimization,
+Systems Neuroscience, Brain Imaging,
+Functional Specialization, Functional Integration
 
 \end{abstract}
 
@@ -562,8 +562,6 @@ The intercept $b$ is left unregularized
 
 
 
-\begin{comment}
-
 
 \paragraph{Implementation.}
 The analyses were performed in Python.
@@ -665,6 +663,123 @@ sparse statistical models have only few nonzero parameters
 
 \section{Experimental Results}
 \paragraph{Serial versus parallel structure discovery and classification.}
+\paragraph{Serial versus parallel structure discovery and classification.}
+\paragraph{Serial versus parallel structure discovery and classification.}
+
+
+\begin{figure}
+\begin{centering}
+\includegraphics[width=1.00\textwidth]{figures/reg_net_prior.pdf}
+\end{centering}
+\vspace{-0.5cm}
+\caption{\textbf{Building blocks of the region-network tree.}
+Depicts neurobiological priors introduced into supervised estimation
+by means of hierarchical structured sparsity.
+\textit{Left:} Continuous, partially overlapping brain network priors
+(\textit{hot-colored}, taken from \cite{smith2009})
+accommodate the functional integration
+perspective of functional brain organization.
+\textit{Right:} Discrete, non-overlapping brain region priors
+(\textit{single-colored}, taken from \cite{crad12})
+accommodate the functional segregation perspective.
+\textit{Middle:} These predefined voxel groups are incorporated
+into hierarchical priors of brain networks with their
+assigned brain regions.
+\textit{Top to bottom:} Four examplary region-network priors
+are shown.
+They include the early cortex that processes
+visual and sound information from the environment,
+a well-known attentional circuit in the left brain hemisphere,
+and
+the cerebellum that realizes motor behavior.
+}
+\label{fig_priors}
+\end{figure}
+
+
+\begin{figure}
+\begin{centering}
+\includegraphics[width=1.00\textwidth]{figures/dataratio.pdf}
+\end{centering}
+\vspace{-0.5cm}
+\caption{\textbf{Ordinary versus structured sparse model estimation
+as a function of training set size.}
+Ordinary $ell_1$-penalized logistic regression
+(\textit{upper row})
+is compared
+to logistic regression estimation structured
+by hierarchical tree prior
+(\textit{lower row})
+with increasing fraction (\textit{columns})
+of the available training data.
+Unthresholded coronal maps of model weights are
+shown for comparison against
+the class-wise mean neural activty
+in the \textit{rightmost column}.
+The 18-class out-of-sample performance in percent.
+%
+In the data-scarce scenario,
+typical for common brain imaging studies,
+hierarchical tree sparsity achieves
+better support recovery with the biggest difference
+in model performance comparing to
+$ell_1$-penalized logistic regression.
+%
+In the data-riche scenario,
+neurobiologically informed logistic regression
+profits more from the increased information quantities than
+neurobiologically naive logistic regression.
+}
+\label{fig_dataratio}
+\end{figure}
+
+
+\begin{figure}
+\begin{centering}
+\includegraphics[width=1.00\textwidth]{figures/reg_net_ratio.pdf}
+\end{centering}
+\vspace{-0.5cm}
+\caption{\textbf{Support recovery as a function of
+region and network emphasis.}
+The relative impact of the region and network priors
+on model selection
+is systematically varied against each other.
+This region-network ratio (\textit{upper row}) weighted voxel groups
+to priviledge sparse models in function space
+that acknowledge known data neighborhoods underlying brain region
+(\textit{left columns}) or
+known compartments in the data that correspond to brain networks
+(\textit{right columns}).
+Among the 18 classes, the model weights are shown for the
+tasks (\textit{from top to bottom}) tongue movement, listening stories,
+taking somebody else's perspective (ToM, "theory of mind"),
+as well as
+perceiving locations and tools.
+The 18-class out-of-sample performance is indicated
+on the \textit{bottom} and
+the class-wise mean neural activty
+in the \textit{rightmost column}.
+%
+Different emphasis on regions versus networks
+in hierarchical structured sparsity can
+yield essentially similar model performance.
+%
+Priviledging region versus network structure during model selection
+recovers complementary aspects of the brain activity pattern.
+%
+Equal region and network emphasis yields more dispersed,
+less interpretable predictive model choices.
+}
+\label{fig_ratio}
+\end{figure}
+
+
+
+DATARATIO
+
+tell #maps per percent
+
+
 
 
 
@@ -764,12 +879,11 @@ European Union Seventh Framework Programme (FP7/2007-2013)
 under grant agreement no. 604102 (Human Brain Project).
 Data were provided by the Human Connectome Project.
 Further support was received from
-the German National Academic Foundation (D.B.)
+the German National Academic Foundation (D.B.),
+the German Research Foundation (BZ2/2-1 and BZ2/3-1 to D.B.),
 and the MetaMRI associated team (B.T., G.V.).
 }
 
-
-\end{comment}
   
 \small
 % \bibliographystyle{plainnat}

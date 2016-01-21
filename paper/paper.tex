@@ -81,9 +81,10 @@ high-dimensional inference in brain imaging}
 
 
 \textbf{\\keywords}:
-Sparsity-inducing Norms, Structured Sparsity, Numerical Optimization,
-Systems Neuroscience, Brain Imaging,
-Functional Specialization, Functional Integration
+Sparsity-inducing norms, hierarchical structured sparsity,
+numerical optimization,
+systems neuroscience, brain imaging,
+functional specialization, functional integration
 
 \end{abstract}
 
@@ -98,33 +99,35 @@ the high-dimensional regime (i.e., "wide data")
 Also in the brain imaging domain,
 many contemporary methods for acquiring brain signals yield
 more variables per observation than
-total observations available in a data sample.
-This scenario challenges many statistical estimators from
+total observations per data sample.
+This high-dimensional scenario challenges many statistical estimators from
 classical statistics.
 For instance,
-linear regression models without additional assumptions
-yield an infinity of possible coefficients
+the general linear model without additional assumptions
+yields an infinity of possible coefficients
 and, thus, no solution.
 %
-\textit{Sparsity} assumptions have consequently been
-introduced and made many ill-posed estimation problems tractable
+Many such ill-posed estimation problems
+have become tractable by means of
+\textit{sparsity} assumptions
 \cite{buhlmann2011statistics, hastie2015statistical}.
-Domain-specific structure can be imposed on the 
-statistical estimation,
-thus preassuming that variables have unequal importance
-and follow existing knowledge
-\cite{bach2012optimization}.
 Sparsified supervised and unsupervised
 learning algorithms have proven to yield
 statistical relationships that can be readily
 estimated, reproduced, and interpreted
 \cite{giraud2014introduction}.
 %
+Further, \textit{structured sparsity} can impose
+domain knowledge on the 
+statistical estimation,
+thus preassuming the variables to have unequal importance
+and to obey expected data distributions
+\cite{bach2012optimization}.
 Yet, what neurobiological structure suggests itself
-to successfully tackle the
-\textit{curse of dimensionality} in
-functional neuroimaging research?
-
+to harness the
+\textit{curse of dimensionality} with
+$\textgreater$100,000 variables
+in neuroimaging research?
 
 
 % specialization & integration
@@ -132,17 +135,17 @@ Concepts on human brain organization have long been torn
 between the two extremes
 \textit{functional specialization} and \textit{functional integration}.
 Functional specialization emphasizes that microscopically distinguishable
-brain regions probably solve distinct classes of computational processes
+brain regions solve distinct classes of computational processes
 \cite{kanwisher2010functional}.
 Functional integration, in turn, emphasizes that brain function
-is probably enabled by complex connections between these
+is enabled by complex connections between these
 distinct brain regions \cite{sporns14nn}.
 %
 These notions were predominantly derived from
-invasive examination of \textit{structure} (i.e., histological preparation),
-\textit{connectivity}, (i.e., axonal tracing),
-and \textit{functional properties}
-(i.e., single cell recordings) in same animals.
+invasive examination of anatomy (i.e., histological preparation),
+connectivity, (i.e., axonal tracing),
+and functional properties
+(i.e., single cell recordings) in animals.
 Regarding functional segregation into specialized regions,
 early histological investigations into the microscopic heterogeneity of
 the human cerebral cortex have resulted
@@ -154,16 +157,21 @@ to possess a unique set of incoming and outgoing connections
 \cite{passingham2002, young93monkey, scannell95cat}.
 %
 Both
-local cyto- and chemoarchitectonic infrastructure
+local
+%cyto- and chemoarchitectonic
+infrastructure
 and its unique global connectivity profile
-together realize computational processes (i.e., function).
-While
-cortical modules versus connections between those
+together are thought to realize brain function.
+%
+In sum,
+cortical brain modules versus connections between those
 reflect 
 functional specialization versus functional integration
-\cite{friston2002beyond, mesulam_sensation},
-both architectural principles are conceptually inextricable when
-explaining the emergence of mental operations
+\cite{friston2002beyond, mesulam_sensation}.
+Importantly,
+probably no existing brain analysis method acknowledges that
+both architectural principles are inextricably involved
+in the realization of mental operations
 \cite{tononi1998complexity, saygin2012}.
 
 
@@ -176,20 +184,21 @@ Single cell recordings and microscopic examination
 revealed, for instance, the
 specialization in the visual cortex into V1, V2, V3, V3A, and V4
 \cite{hubel1962receptive, zeki1978functional}.
-Tissue lesion of the mid-fusiform gyrus of the visual system
-were frequently reported to impair
+Tissue lesion of the mid-fusiform gyrus of the visual system,
+for instance,
+was frequently reported to impair
 recognition of others' identity from faces
 \cite{iaria2008contrib}.
-The localization of
-sensory, motor, and emotional cognitive functions to cortical areas
-in the living brain
+The whole-brain localization of
+sensory, motor, and emotional functions to cortical areas
+% in the living brain
 has later been enabled by
 non-invasive brain imaging with
 functional magnetic resonance imaging (fMRI) and
 positron emission tomography (PET)
 \cite{fristen1997imaging}.
 Further,
-radioactive mapping of neurotransmitter receptor distributions
+radioactive mapping of neurotransmitter receptors
 rendered accessible yet another
 local characteristic of neuronal populations
 \cite{zilles2009receptor}.
@@ -198,12 +207,12 @@ In the computational era,
 automatic clustering methods are increasingly employed to
 regionally differentiate the cerebral cortex,
 which can partly be more fine-grained than
-classical cytoarchitectonic borders
+classical microscopical borders
 \cite{behrens03, cbp2015review}.
 Today,
-high-thoughput computing enables 
+high-thoughput approaches enable
 ultahigh-resolution 3D models of brain anatomy
-at macroscopical to near-cellular scale
+at near-cellular scale
 \cite{amunts2013bigbrain}.
 %
 As a crucial common point,
@@ -211,7 +220,7 @@ all these methodological approaches
 yield neuroscientific findings
 that are naturally interpreted according to
 non-overlapping, discrete region compartments
-as the basic architectonic framework of brain organization.
+as the basic architecture of brain organization.
 
 
 
@@ -220,13 +229,9 @@ It is more recent
 that the main interpretational focus has shifted
 from circumscribed regions to network stratifications
 in systems neuroscience \cite{yuste2015, stephan_dys}.
-The higher the processing hierarchy level,
-the more a cortical area is known to
-connect to different large-scale networks
-\cite{yeo11}.
 %
 Invasive axonal tracing studies in monkeys were complemented
-by in-vivo diffusion MRI tractography in humans
+by diffusion MRI tractography in humans
 as a now frequently employed method to
 outline fiber bundles between brain regions
 \cite{jbabdi2013long}.
@@ -239,7 +244,7 @@ studies of
 functional connectivity \cite{buckner2013opportunities} and
 independent component analysis (ICA) \cite{beckmann2005}
 became the workhorses of network discovery
-in functional neuroimaging.
+in neuroimaging.
 These revealed the important implication of
 canonical brain networks across cognitive domains,
 including the so-called
@@ -247,7 +252,7 @@ including the so-called
 ``salience network'' \cite{seeley2007dissociable},
 and ``dorsal attention network'' \cite{corbettashul2008}. 
 Characteristic changes in the configuration of
-these large-scale networks
+these macroscopical networks
 were repeatedly observed to be induced
 by the onset of given cognitive tasks \cite{fransson2006}.
 Such task-induced mechanisms orchastrating supraordinate networks
@@ -258,39 +263,29 @@ Ultimately,
 interpretation of findings from all these methods naturally embraces
 cross-regional integration by
 overlapping network compartments
-as the basic architectonic framework of brain organization,
+as the basic architecture of brain organization,
 in stark constrast to methods examining regional specialization.
 
 
 
 % study
-Building on these interpretational traditions,
+Building on these two major interpretational streams in systems neuroscience,
 the present study proposes to incorporate
-known architectonic aspects from both
-anatomical segregation and integration
-into unified classification and regression algorithms
-by means  of structured sparsity assumptions.
-The "true" relative importance of 
-local region compartments and global network compartments
-is typically unknown
-but
-probably varying in degree
-across diverse neuroscientific questions.
-Recent advances in multivariate statistical learning techniques
-enable such adaptive estimators with
-neurobiologically plausible region and network priors.
-Using a large reference dataset,
-we demonstrated that domain-informed supervised models
-gracefully handle the curse of dimensionality,
-yield many more human-interpretable results,
-and generalize better to new samples
-than domain-na\"ive models.
-
-higher-order prior knowledge
-
-structured sparsity
-extend trend in stastical modelling from
-processing of auditory signals \cite{daudet2004sparse},
+established neurobiological structure underlying
+functional segregation and integration
+into supervised estimators
+by hierarchical structured sparsity.
+% The "true" relative importance of 
+% local region compartments and global network compartments
+% is typically unknown
+% but
+% probably varying in degree
+% across diverse neuroscientific questions.
+%
+Learning techniques
+exploiting structured sparsity 
+have recently made much progress in various application domains
+from processing of auditory signals \cite{daudet2004sparse},
 natural images \cite{harzallah2009combining} and
 videos \cite{kang2015structured, kim2010sparse}
 to
@@ -298,12 +293,18 @@ genetics \cite{rapaport2008classification, kim2012tree},
 astrophysics \cite{vinci2014estimating},
 and
 conformational dynamics of protein complexes \cite{jenatton2009structured}.
+%
+This is extended by the present work that
+enables neuroscience-specific estimators capitalizing on
+neurobiologically plausible region and network priors.
+%
+Using a large reference dataset,
+we demonstrated that domain-informed supervised models
+gracefully tackle the curse of dimensionality,
+yield more human-interpretable results,
+and generalize better to new samples
+than domain-na\"ive estimators.
 
-
-tructured-sparsity-inducing penalty
-
-
-to brain imaging domain.
 
 
 \section{Methods}
@@ -781,95 +782,79 @@ tell #maps per percent
 
 
 
-
-
 \section{Discussion}
+Relevant structure in brain imaging data has long been
+separately investigated
+along two distinct organizational principles:
+functional segregation into discrete brain regions
+and functional integration by inter-regional brain networks.
+%
+This paper demonstrates the simultaneous exploitation of
+both these neurobiological compartments
+for sparse variable selection and high-dimensional prediction.
+%
+Introducing existing domain knowledge into model selection
+naturally priviledges model hypotheses in the function space
+that are most neurobiologically plausible.
+%
+The neurobiologically informed
+hierarchical structured sparsity penalty is shown to enhance
+model interpretability and generalization performance,
+although these statistical goals are typically in conflict.
 
-exploit known structure for variable selection and prediction
-in classification and regression
-
-Among a collection of plau- sible models, the simplest one is often preferred
 
 
-Functional specialization and functional integration
-in the human brain are
-probably both mechanistically relevant for emerging behavior.
-However, there is a scarcity of statistical methods
-that concomitantly relate brain regions and networks to
-an organism's repertoire of mental operations.
 
-However, in the problem of multi-task regression, where the output is a multivariate vector with an internal sparsity struc- ture, the estimation of the regression parameters can potentially benefit from taking into account this spar- sity structure in the estimation process. This will allow the strongly related output variables to be mapped to the input factors in a synergistic way, which is not possible in the standard lasso.
-
-
+1) each voxel
 We assume regions and networks but can estimate 
 importance of each voxel.
-
 neurobiologically motivated restrictions to
 complexity circumvented the curse of dimensionality and allowed
 for useful, simplified views on brain function.
+previously laborious feature engineering / selection procedures
 
 
-The same classification performance can be reached by
-many different models -> we naturally want to priviledge those
-among the equally performing models that are closest to
-what we know about the brain
-
--> interpreta bility and accuracy typically exclude each other
-(cf. Hastie)
-
-alternatives would be dimensionality reduction
-and dictionary learning
-
-Among a collection of plausible models,
-the simplest one should be preferred
-
-
-curse of dimensionality has classically been circumvented
-by treating a high-dimensional problem
-as a mass-univariate problem.
-Problem was postponed to the inference step
-this is why we never solved the multiple comparisons problem in fMRI
-
-regularization with sparsity penalties
-restrictions to complexity according to neurobiological facts
+2) restrictions to complexity according to neurobiological facts
 -> bias-variance tradeoff: negigible increase in bias but large decrease in variance
 -> VC: decrease complexitiy capactiy -> better chance for generalization out of sample
 
+
+3)
 multiple comparisons problem has the curse of dimensionality
 as its close correspondence in statistical learning
 sparsity -> solves the curse at the estimation level
 
-
-
-OUTLOOK:
-robust high-dimensional inference will be key
-to prediction in single individual,
-such as for personalized medicine
-\cite{gabrieli2015prediction}
-
-More generally, our regularization scheme could also be used for various
-learning tasks, as soon
-as prior knowledge on the structure of the sparse representation
-is available, e.g.,
-for multiple kernel learning (Micchelli and Pontil, 2006),
-multi-task learning (Argyriou et al., 2008; Obozinski et al., 2009;
-Kim and Xing, 2009) and sparse matrix factorization
-problems (Mairal et al., 2010; Jenatton et al., 2010).
-
-
-this type of prior knowledge is of clear interest for the spatially and tempo-
-rally structured data typical in bioinformatics, computer vision and neuroscience applications
-
-structured sparsity can even be used for
-unsupervised data modelling,
-such as in PCA \cite{jenatton2009structured}
+4) region-constrained or network-constrained model estimation
+can lead to similar predictive performance
 
 
 
-Differences to Bertrands structured sparsity paper:
-- they derive the tree from the data, we use a priori knowledge from
-the existing literature
-- 
+In the future,
+the proposed regularization scheme can be used for various
+learning tasks in systems neuroscience.
+This includes supervised classification and regression
+with one or several target variables.
+%
+Region-network sparsity priors could even be used to inform
+unsupervised statistical estimators,
+including principal component analysis
+\cite{jenatton2009structured}
+and
+k-means clustering \cite{???}.
+%
+Additionally,
+the structured sparsity penalty could be extended
+from the spatial domain of neural activity to
+spatiotemporally coherent neural activity patterns
+\cite{gramfort2011tracking}.
+%
+Ultimately,
+successful high-dimensional inference is
+an important prerequisite
+for prediction of diagnosis,
+disease trajectories, and treatment responses
+for personalized medicine in psychiatry and neurology
+\cite{gabrieli2015prediction}.
 
 
 

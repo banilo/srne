@@ -53,9 +53,10 @@ FORCE_TWO_CLASSES = False
 MY_MAX_IT = 100
 MY_DATA_RATIO = 100
 N_JOBS = 1
-LAMBDA_GRID = np.linspace(0.1, 1.0, 10)
+# LAMBDA_GRID = np.linspace(0.1, 1.0, 10)
+LAMBDA_GRID = np.logspace(-2, 1, 9)
 
-RES_NAME = 'srne_benchmark_zeronetlevel'
+RES_NAME = 'srne_benchmark_zeronetlevel_loggrid'
 if FORCE_TWO_CLASSES:
     RES_NAME += '_2cl'
 WRITE_DIR = op.join(os.getcwd(), RES_NAME)

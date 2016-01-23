@@ -579,6 +579,8 @@ accessible online for reproducibility and reuse
 (\url{http://github.com/banilo/nips2015}).
   
 
+all algorithm from a same software library -> SPAMs
+
 %
 \paragraph{Data.}
 As the currently biggest openly-accessible reference dataset,
@@ -672,23 +674,23 @@ sparse statistical models have only few nonzero parameters
 \begin{centering}
 \includegraphics[width=1.00\textwidth]{figures/reg_net_prior.pdf}
 \end{centering}
-\vspace{-0.5cm}
+\vspace{-0.6cm}
 \caption{\textbf{Building blocks of the region-network tree.}
-Depicts neurobiological priors introduced into supervised estimation
-by means of hierarchical structured sparsity.
+Depicts neurobiological priors introduced into the supervised classification
+by hierarchical structured sparsity.
 \textit{Left:} Continuous, partially overlapping brain network priors
 (\textit{hot-colored}, taken from \cite{smith2009})
 accommodate the functional integration
-perspective of functional brain organization.
+perspective of brain organization.
 \textit{Right:} Discrete, non-overlapping brain region priors
 (\textit{single-colored}, taken from \cite{crad12})
 accommodate the functional segregation perspective.
-\textit{Middle:} These predefined voxel groups are incorporated
-into hierarchical priors of brain networks with their
-assigned brain regions.
+\textit{Middle:} These two types of predefined voxel groups are incorporated
+into hierarchical priors of parent networks with their
+descending region nodes.
 \textit{Top to bottom:} Four examplary region-network priors
-are shown.
-They include the early cortex that processes
+are shown, including
+the early cortex that processes
 visual and sound information from the environment,
 a well-known attentional circuit in the left brain hemisphere,
 and
@@ -702,31 +704,32 @@ the cerebellum that realizes motor behavior.
 \begin{centering}
 \includegraphics[width=1.00\textwidth]{figures/dataratio.pdf}
 \end{centering}
-\vspace{-0.5cm}
-\caption{\textbf{Ordinary versus structured sparse model estimation
-as a function of training set size.}
-Ordinary $ell_1$-penalized logistic regression
+\vspace{-0.6cm}
+\caption{\textbf{Na\"ive versus informed sparse model selection
+across training set sizes.}
+Ordinary $\ell_1$-penalized logistic regression
 (\textit{upper row})
 is compared
-to logistic regression estimation structured
-by hierarchical tree prior
+to hierarchical-tree-penalized logistic regression
 (\textit{lower row})
-with increasing fraction (\textit{columns})
-of the available training data.
-Unthresholded coronal maps of model weights are
-shown for comparison against
-the class-wise mean neural activty
+with increasing fraction
+of the available training data (\textit{columns}).
+For one example from 18 classes,
+unthresholded coronal maps of model weights
+are shown for comparison against
+the class sample average
 in the \textit{rightmost column}.
-The 18-class out-of-sample performance in percent.
+The corresponding 18-class (``View tools'')
+out-of-sample accuracy
+is given in percent.
 %
 In the data-scarce scenario,
-typical for common brain imaging studies,
+typical for brain imaging,
 hierarchical tree sparsity achieves
 better support recovery with the biggest difference
-in model performance comparing to
-$ell_1$-penalized logistic regression.
+in model performance.
 %
-In the data-riche scenario,
+In the data-rich scenario,
 neurobiologically informed logistic regression
 profits more from the increased information quantities than
 neurobiologically naive logistic regression.
@@ -739,7 +742,7 @@ neurobiologically naive logistic regression.
 \begin{centering}
 \includegraphics[width=1.00\textwidth]{figures/reg_net_ratio.pdf}
 \end{centering}
-\vspace{-0.5cm}
+\vspace{-0.6cm}
 \caption{\textbf{Support recovery as a function of
 region and network emphasis.}
 The relative impact of the region and network priors
@@ -747,16 +750,16 @@ on model selection
 is systematically varied against each other.
 This region-network ratio (\textit{upper row}) weighted voxel groups
 to priviledge sparse models in function space
-that acknowledge known data neighborhoods underlying brain region
+that acknowledge known brain region neighborhoods
 (\textit{left columns}) or
-known compartments in the data that correspond to brain networks
+known brain networks compartments
 (\textit{right columns}).
 Among the 18 classes, the model weights are shown for the
-tasks (\textit{from top to bottom}) tongue movement, listening stories,
+tasks (\textit{from top to bottom}): tongue movement, listening stories,
 taking somebody else's perspective (ToM, "theory of mind"),
 as well as
-perceiving locations and tools.
-The 18-class out-of-sample performance is indicated
+viewing locations and tools.
+The 18-class out-of-sample accuracy is indicated
 on the \textit{bottom} and
 the class-wise mean neural activty
 in the \textit{rightmost column}.
@@ -776,9 +779,52 @@ less interpretable predictive model choices.
 
 
 
-DATARATIO
+\paragraph{Sample complexity of na\"ive versus informed sparse model selection.}
+Subsequently, the sample complexity of
+$\ell_1$-penalized and hierarchical-tree-penalized logistic regression
+were quantitatively compared (Figure \ref{fig_dimred}).
+Region-network priors should bias/guide model selection towards more
+neurobiologically plausible classification estimators.
+This should yield better out-of-sample generalization and
+support recovery than
+$\ell_1$-constrained logistic regression na\"ive to neurobiology
+in the data-scarce and data-rich scenarios.
+%
+The HCP task data from 18 tasks was first divided into
+90\% training set (i.e., 7584 maps) and
+10\% test set (i.e., 842 maps).
+Both learning algorithms were fed by the
+training set that was subsampled to fractions of
+25\% (X neural activity maps),
+50\% (Y maps),
+75\% (Z maps).
+The estimators were submitted to a nested cross-validation scheme
+for model selection and assessment.
 
-tell #maps per percent
+In the inner CV layer, the logistic regression estimators
+have been fitted in a one-versus-rest design that
+distinguishes each class from
+the respective other 17 classes
+(number of maximal iterations=100, tolerance=$0.001$).
+
+In the out CV layer, grid search
+
+
+
+A grid of $\lambda$ candidates was searched between $10^-2$ and $10$
+in 9 steps on a log scale.
+
+evaluated on the allows same test set
+
+
+
+
+\paragraph{Support recovery as a function of region and network emphasis.}
+
+
+
+
+
 
 
 
@@ -818,6 +864,7 @@ previously laborious feature engineering / selection procedures
 -> bias-variance tradeoff: negigible increase in bias but large decrease in variance
 -> VC: decrease complexitiy capactiy -> better chance for generalization out of sample
 
+guide model selection
 
 3)
 multiple comparisons problem has the curse of dimensionality
@@ -858,7 +905,7 @@ for personalized medicine in psychiatry and neurology
 
 
 
-\paragraph{Acknowledgment}
+\paragraph{Acknowledgment.}
 {\small The research leading to these results has received funding from the
 European Union Seventh Framework Programme (FP7/2007-2013)
 under grant agreement no. 604102 (Human Brain Project).

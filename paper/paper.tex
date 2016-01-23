@@ -782,41 +782,70 @@ less interpretable predictive model choices.
 \paragraph{Sample complexity of na\"ive versus informed sparse model selection.}
 Subsequently, the sample complexity of
 $\ell_1$-penalized and hierarchical-tree-penalized logistic regression
-were quantitatively compared (Figure \ref{fig_dimred}).
-Region-network priors should bias/guide model selection towards more
+were quantitatively compared (Figure \ref{fig_dataratio}).
+Region-network priors should bias model selection towards more
 neurobiologically plausible classification estimators.
 This should yield better out-of-sample generalization and
 support recovery than
 $\ell_1$-constrained logistic regression na\"ive to neurobiology
 in the data-scarce and data-rich scenarios.
 %
-The HCP task data from 18 tasks was first divided into
-90\% training set (i.e., 7584 maps) and
-10\% test set (i.e., 842 maps).
-Both learning algorithms were fed by the
-training set that was subsampled to fractions of
-25\% (X neural activity maps),
-50\% (Y maps),
-75\% (Z maps).
-The estimators were submitted to a nested cross-validation scheme
-for model selection and assessment.
-
+The HCP task data with examples from 18 classes were first divided into
+90\% of training set (i.e., 7584 neural activity maps) and
+10\% of test set (i.e., 842 maps).
+Both learning algorithms were fitted based on the
+training set at different subsampling fractions:
+20\% (1516 maps),
+40\% (3033 maps),
+60\% (4550 maps),
+80\% (6067 maps), and
+100\% (7584 maps).
+The stratified and shuffled training data were submitted to
+to a nested cross-validation scheme
+for model selection and model assessment.
 In the inner CV layer, the logistic regression estimators
-have been fitted in a one-versus-rest design that
+have been trained in a one-versus-rest design that
 distinguishes each class from
-the respective other 17 classes
-(number of maximal iterations=100, tolerance=$0.001$).
-
-In the out CV layer, grid search
-
-
-
-A grid of $\lambda$ candidates was searched between $10^-2$ and $10$
-in 9 steps on a log scale.
-
-evaluated on the allows same test set
-
-
+the respective 17 other classes
+(number of maximal iterations=$100$, tolerance=$0.001$).
+In the outer CV layer, grid search
+selected among candidates for the respective $\lambda$ parameter
+by searching between $10^{-2}$ and $10^{1}$ in 9 steps on a logarithmic scale.
+Importantly, the thus selected sparse logistic regression classifier was
+evaluated on an identical test set in all settings.
+%
+Three observation have been made.
+In the data-scarce scenario (i.e., 1/5 of actual training data),
+hierarchical tree sparsity achieved the biggest advantage
+in out-of-sample performance by 5,11\% as well as
+better support recovery with weight maps already much closer
+to the training data average.
+In the case of scarce training data, which is typical for the brain imaging domain,
+regularization by region-network priors indeed allowed for
+more effective extraction of classification-relevant structure
+from the neural activity scans.
+%
+Across scenarios,
+the weight maps from ordinary logistic regression exhibit
+higher variance and many more zero coefficients
+than hierarchical tree logistic regression.
+Given the usually high multicollinearity in neuroimaging data,
+this observation is likely to reflect instable selection of
+representatives among class-responsive predictor groups
+due to the $\ell_1$-norm penalization.
+%
+In the data-rich scenario (i.e., entire training data used for model fitting),
+neurobiologically informed logistic regression
+profits more from the increased information quantities than
+neurobiologically naive logistic regression.
+That is, the region-network priors actually further enhance the similarity
+to the weight maps even in abundant input data.
+This was the case although
+the maximal classification performance of $\approx$90\% has already
+been reached with small training data fractions by the structured estimator.
+In contrast, 
+the unstructured estimator reached this generalization performance
+only with bigger input data quantities.
 
 
 \paragraph{Support recovery as a function of region and network emphasis.}

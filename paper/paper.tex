@@ -45,7 +45,7 @@ high-dimensional inference in brain imaging}
 
 % macros from michael's .tex
 \DeclareMathOperator{\dist}{dist} % The distance.
-\DeclareMathOperator{\argmin}{argmin}
+%\DeclareMathOperator{\argmin}{argmin}
 \DeclareMathOperator{\argmax}{argmax}
 \DeclareMathOperator{\Id}{Id}
 \DeclareMathOperator{\abs}{abs}
@@ -487,7 +487,7 @@ without analogous effect on the parent network group.
 
 At the between-group level,...
 $\Omega$ exerts $\ell_1$-like variable selection on
-the (||\mathbf{w}_g||_2)_{g\inG} groups,
+the $(||\mathbf{w}_g||_2)_{g\in G}$ groups,
 yielding a maximum of $g \in G$ to be zeroed out
 \cite{jenatton2011structured}.
 The important consequence is that also all descentes of such a zeroed
@@ -508,7 +508,7 @@ although one individual coefficient is computed for each voxel.
   \Omega(\mathbf{w}) = \sum_{g \in G} \eta_g ||\mathbf{w}_g||_2
 \end{equation}
 
-(\eta_g)_{g \in G} are positive weights for the groups
+$(\eta_g)_{g \in G}$ are positive weights for the groups
 
 
 fit to the data is measured through
@@ -521,14 +521,12 @@ logistic loss function
 
 \begin{equation}
   P(y=k|x, W, b) = \frac{exp\{x^Tw^k + b_k\}}{\sum_{m=1}^cexp\{x^Tw^m + b_m\}}
-
   \argmin \frac{1}{2}||u-v||_2^2 + \lambda\Omega(\mathbf{w})
-
 \end{equation}
 
-\lambda > 0.
+$\lambda > 0$
 
-bias is omitted because \mathbf{X} and \mathbf{y}
+bias is omitted because $\mathbf{X} and \mathbf{y}$
 are mean-centered and unit-variance scaled.
 
 In this setting, and given a new fMRI volume x,
@@ -546,7 +544,7 @@ squared error as loss
   \argmin \frac{1}{2}||\mathbf{y - Xw}||_2^2 + \lambda\Omega(\mathbf{w})
 \end{equation}
 
-\lambda > 0.
+$\lambda > 0$
 
 Prediction for a new fMRI volume x is then simply performed by computing
 the dot product x⊤w∗

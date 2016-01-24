@@ -103,26 +103,27 @@ total observations per data sample.
 This high-dimensional scenario challenges many statistical estimators from
 classical statistics.
 For instance,
-the general linear model without additional assumptions
-yields an infinity of possible coefficients
-and, thus, no solution.
+the estimation of any generalized linear model without additional assumptions
+becomes underdetermined, i.e. yields full subspace of possible solutions, many or most of which will not generalize well in a predictive setting.
 %
 Many such ill-posed estimation problems
-have become tractable by means of
+have benefited from
 \textit{sparsity} assumptions
-\cite{buhlmann2011statistics, hastie2015statistical}.
-Sparsified supervised and unsupervised
+\cite{buhlmann2011statistics, hastie2015statistical}, which act as a 
+regularizer and can be used for model selection.
+Sparse supervised and unsupervised
 learning algorithms have proven to yield
 statistical relationships that can be readily
 estimated, reproduced, and interpreted
 \cite{giraud2014introduction}.
 %
-Further, \textit{structured sparsity} can impose
+Generally, \textit{structured sparsity} can impose
 domain knowledge on the 
 statistical estimation,
 thus preassuming the variables to have unequal importance
 and to obey expected data distributions
 \cite{bach2012optimization}.
+{\color{red}Michael: This is the definition of a prior, not of strutured sparsity}
 Yet, what neurobiological structure suggests itself
 to harness the
 \textit{curse of dimensionality} with

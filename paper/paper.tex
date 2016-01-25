@@ -45,7 +45,7 @@ high-dimensional inference in brain imaging}
 
 % macros from michael's .tex
 \DeclareMathOperator{\dist}{dist} % The distance.
-\DeclareMathOperator{\argmin}{argmin}
+%\DeclareMathOperator{\argmin}{argmin}
 \DeclareMathOperator{\argmax}{argmax}
 \DeclareMathOperator{\Id}{Id}
 \DeclareMathOperator{\abs}{abs}
@@ -93,8 +93,8 @@ functional specialization, functional integration
 \section{Introduction}
 % sparsity
 Many quantitative scientific domains underwent a
-recent passage from the classical regime (i.e., "long data")  to
-the high-dimensional regime (i.e., "wide data")
+recent passage from the classical regime (i.e., ``long data")  to
+the high-dimensional regime (i.e., ``wide data")
 \cite{jordan2015massive}.
 Also in the brain imaging domain,
 many contemporary methods for acquiring brain signals yield
@@ -103,31 +103,38 @@ total observations per data sample.
 This high-dimensional scenario challenges many statistical estimators from
 classical statistics.
 For instance,
-the general linear model without additional assumptions
-yields an infinity of possible coefficients
-and, thus, no solution.
+the estimation of any generalized linear model without additional assumptions
+becomes underdetermined, i.e. yields full subspace of possible solutions, many or most of which will not generalize well in a predictive setting.
 %
 Many such ill-posed estimation problems
-have become tractable by means of
+have benefited from
 \textit{sparsity} assumptions
-\cite{buhlmann2011statistics, hastie2015statistical}.
-Sparsified supervised and unsupervised
+\cite{buhlmann2011statistics, hastie2015statistical}, which act as a 
+regularizer and can be used for model selection.
+Sparse supervised and unsupervised
 learning algorithms have proven to yield
 statistical relationships that can be readily
 estimated, reproduced, and interpreted
 \cite{giraud2014introduction}.
 %
-Further, \textit{structured sparsity} can impose
+Generally, \textit{structured sparsity} can impose
 domain knowledge on the 
 statistical estimation,
 thus preassuming the variables to have unequal importance
 and to obey expected data distributions
 \cite{bach2012optimization}.
-Yet, what neurobiological structure suggests itself
-to harness the
-\textit{curse of dimensionality} with
-$\textgreater$100,000 variables
-in neuroimaging research?
+{\color{red}Michael: This is the definition of a prior, not of strutured sparsity}
+
+%% Yet, what neurobiological structure suggests itself
+%% to harness the
+%% \textit{curse of dimensionality} with
+%% $\textgreater$100,000 variables
+%% in neuroimaging research?
+In neuroimaging research, generalized linear models predicting external 
+variables from brain images, which can reach a dimensionality of several
+hundreds of thousands of voxels, necessarily need appropriate regularization.
+Which neurobiological prior knowledge lends itself to the construction of a
+structured sparse prior?
 
 
 % specialization & integration
@@ -164,7 +171,7 @@ and its unique global connectivity profile
 together are thought to realize brain function.
 %
 In sum,
-cortical brain modules versus connections between those
+cortical brain modules versus connections between them
 reflect 
 functional specialization versus functional integration
 \cite{friston2002beyond, mesulam_sensation}.
@@ -192,7 +199,7 @@ recognition of others' identity from faces
 The whole-brain localization of
 sensory, motor, and emotional functions to cortical areas
 % in the living brain
-has later been enabled by
+was later enabled by
 non-invasive brain imaging with
 functional magnetic resonance imaging (fMRI) and
 positron emission tomography (PET)
@@ -211,7 +218,7 @@ classical microscopical borders
 \cite{behrens03, cbp2015review}.
 Today,
 high-thoughput approaches enable
-ultahigh-resolution 3D models of brain anatomy
+ultrahigh-resolution 3D models of brain anatomy
 at near-cellular scale
 \cite{amunts2013bigbrain}.
 %
@@ -255,7 +262,7 @@ Characteristic changes in the configuration of
 these macroscopical networks
 were repeatedly observed to be induced
 by the onset of given cognitive tasks \cite{fransson2006}.
-Such task-induced mechanisms orchastrating supraordinate networks
+Such task-induced mechanisms orchestrating supraordinate networks
 might be subserved by the right anterior insula \cite{sridh2008}
 and temporo-parietal junction \cite{bzdok2013tpj}.
 %
@@ -487,7 +494,7 @@ without analogous effect on the parent network group.
 
 At the between-group level,...
 $\Omega$ exerts $\ell_1$-like variable selection on
-the (||\mathbf{w}_g||_2)_{g\inG} groups,
+the $(||\mathbf{w}_g||_2)_{g\in G}$ groups,
 yielding a maximum of $g \in G$ to be zeroed out
 \cite{jenatton2011structured}.
 The important consequence is that also all descentes of such a zeroed
@@ -508,7 +515,7 @@ although one individual coefficient is computed for each voxel.
   \Omega(\mathbf{w}) = \sum_{g \in G} \eta_g ||\mathbf{w}_g||_2
 \end{equation}
 
-(\eta_g)_{g \in G} are positive weights for the groups
+$(\eta_g)_{g \in G}$ are positive weights for the groups
 
 
 fit to the data is measured through
@@ -521,14 +528,12 @@ logistic loss function
 
 \begin{equation}
   P(y=k|x, W, b) = \frac{exp\{x^Tw^k + b_k\}}{\sum_{m=1}^cexp\{x^Tw^m + b_m\}}
-
   \argmin \frac{1}{2}||u-v||_2^2 + \lambda\Omega(\mathbf{w})
-
 \end{equation}
 
-\lambda > 0.
+$\lambda > 0$
 
-bias is omitted because \mathbf{X} and \mathbf{y}
+bias is omitted because $\mathbf{X} and \mathbf{y}$
 are mean-centered and unit-variance scaled.
 
 In this setting, and given a new fMRI volume x,
@@ -546,7 +551,7 @@ squared error as loss
   \argmin \frac{1}{2}||\mathbf{y - Xw}||_2^2 + \lambda\Omega(\mathbf{w})
 \end{equation}
 
-\lambda > 0.
+$\lambda > 0$
 
 Prediction for a new fMRI volume x is then simply performed by computing
 the dot product x⊤w∗
@@ -702,6 +707,25 @@ the cerebellum that realizes motor behavior.
 
 \begin{figure}
 \begin{centering}
+\includegraphics[width=1.00\textwidth]{figures/sparsities.pdf}
+\end{centering}
+\vspace{-0.6cm}
+\caption{\textbf{Model performance across sparsity priors.}
+}
+\label{fig_sparsities}
+\end{figure}
+
+
+\paragraph{Sample complexity of na\"ive versus informed sparse model selection.}
+Subsequently, the sample complexity of
+$\ell_1$-penalized and hierarchical-tree-penalized logistic regression
+were quantitatively compared (Figure \ref{fig_sparsities}).
+
+
+
+
+\begin{figure}
+\begin{centering}
 \includegraphics[width=1.00\textwidth]{figures/dataratio.pdf}
 \end{centering}
 \vspace{-0.6cm}
@@ -715,9 +739,9 @@ to hierarchical-tree-penalized logistic regression
 with increasing fraction
 of the available training data (\textit{columns}).
 For one example from 18 classes,
-unthresholded coronal maps of model weights
+unthresholded axial maps of model weights
 are shown for comparison against
-the class sample average
+the class sample average {\color{red} thresholded at p $<$ 0.01 ???}
 in the \textit{rightmost column}.
 The corresponding 18-class (``View tools'')
 out-of-sample accuracy

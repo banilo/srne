@@ -738,46 +738,6 @@ neurobiologically naive logistic regression.
 \end{figure}
 
 
-\begin{figure}
-\begin{centering}
-\includegraphics[width=1.00\textwidth]{figures/reg_net_ratio.pdf}
-\end{centering}
-\vspace{-0.6cm}
-\caption{\textbf{Support recovery as a function of
-region and network emphasis.}
-The relative impact of the region and network priors
-on model selection
-is systematically varied against each other.
-This region-network ratio (\textit{upper row}) weighted voxel groups
-to priviledge sparse models in function space
-that acknowledge known brain region neighborhoods
-(\textit{left columns}) or
-known brain networks compartments
-(\textit{right columns}).
-Among the 18 classes, the model weights are shown for the
-tasks (\textit{from top to bottom}): tongue movement, listening stories,
-taking somebody else's perspective (ToM, "theory of mind"),
-as well as
-viewing locations and tools.
-The 18-class out-of-sample accuracy is indicated
-on the \textit{bottom} and
-the class-wise mean neural activty
-in the \textit{rightmost column}.
-%
-Different emphasis on regions versus networks
-in hierarchical structured sparsity can
-yield essentially similar model performance.
-%
-Priviledging region versus network structure during model selection
-recovers complementary aspects of the brain activity pattern.
-%
-Equal region and network emphasis yields more dispersed,
-less interpretable predictive model choices.
-}
-\label{fig_ratio}
-\end{figure}
-
-
 
 \paragraph{Sample complexity of na\"ive versus informed sparse model selection.}
 Subsequently, the sample complexity of
@@ -846,6 +806,46 @@ been reached with small training data fractions by the structured estimator.
 In contrast, 
 the unstructured estimator reached this generalization performance
 only with bigger input data quantities.
+
+
+\begin{figure}
+\begin{centering}
+\includegraphics[width=1.00\textwidth]{figures/reg_net_ratio.pdf}
+\end{centering}
+\vspace{-0.6cm}
+\caption{\textbf{Support recovery as a function of
+region and network emphasis.}
+The relative impact of the region and network priors
+on model selection
+is systematically varied against each other.
+This region-network ratio (\textit{upper row}) weighted voxel groups
+to priviledge sparse models in function space
+that acknowledge known brain region neighborhoods
+(\textit{left columns}) or
+known brain networks compartments
+(\textit{right columns}).
+Among the 18 classes, the model weights are shown for the
+tasks (\textit{from top to bottom}): tongue movement, listening stories,
+taking somebody else's perspective (ToM, "theory of mind"),
+as well as
+viewing locations and tools.
+The 18-class out-of-sample accuracy is indicated
+on the \textit{bottom} and
+the class-wise mean neural activty
+in the \textit{rightmost column}.
+%
+Different emphasis on regions versus networks
+in hierarchical structured sparsity can
+yield essentially similar model performance.
+%
+Priviledging region versus network structure during model selection
+recovers complementary aspects of the brain activity pattern.
+%
+Equal region and network emphasis yields more dispersed,
+less interpretable predictive model choices.
+}
+\label{fig_regnetratio}
+\end{figure}
 
 
 \paragraph{Support recovery as a function of region and network emphasis.}

@@ -987,80 +987,82 @@ might offer more performant and more interpretable classification models
 in the future.
 
 
+
 \section{Discussion}
-Relevant structure in brain imaging data has long been
-separately investigated
-along two distinct organizational principles:
+Relevant structure in brain imaging data has long been investigated
+separately
+according to two distinct organizational principles:
 functional segregation into discrete brain regions
-and functional integration by inter-regional brain networks.
+and functional integration by interregional brain networks.
 %
 This paper demonstrates the simultaneous exploitation of
 both these neurobiological compartments
-for sparse variable selection and high-dimensional prediction.
+for sparse variable selection and high-dimensional prediction
+in a reference dataset.
 %
 Introducing existing domain knowledge into model selection
-naturally priviledges model hypotheses in the function space
+allowed privileging members of the function space
 that are most neurobiologically plausible.
 %
-The neurobiologically informed
-hierarchical structured sparsity penalty is shown to enhance
-model interpretability and generalization performance,
-although these statistical goals are typically in conflict.
+Domain-informed hierarchical structured sparsity is shown to enhance
+both model interpretability and generalization performance,
+although these statistical-learning goals are typically in conflict.
 
 
 
-
-1) each voxel
-We assume regions and networks but can estimate 
-importance of each voxel.
-neurobiologically motivated restrictions to
-complexity circumvented the curse of dimensionality and allowed
-for useful, simplified views on brain function.
-previously laborious feature engineering / selection procedures
-
-
-2) restrictions to complexity according to neurobiological facts
--> bias-variance tradeoff: negigible increase in bias but large decrease in variance
--> VC: decrease complexitiy capactiy -> better chance for generalization out of sample
-
-guide model selection
-
-3)
-multiple comparisons problem has the curse of dimensionality
-as its close correspondence in statistical learning
-sparsity -> solves the curse at the estimation level
-
-4) region-constrained or network-constrained model estimation
-can lead to similar predictive performance
+The present approach has important advantages over previous
+neuroimaging studies that capitalized on dimensionality reduction to harness
+the curse of dimensionality.
+They often used preliminary region-wise pooling functions
+or regression against network templates
+for subsequent supervised learning on the aggregated feature space.
+Such two-step approaches of feature engineering and inference
+\textit{i)} can only account for either functional specialization or
+functional integration of brain organization,
+\textit{ii)} depend on the ground truth being a region or network effect,
+and
+\textit{iii)} cannot issue individual coefficients for every brain voxels.
+%
+Hierarchical region-network sparsity overcomes these shortcomings
+by estimating individual voxel contributions
+while benefitting from their functional segregation and integration
+to restrict statistical complexity.
+%
+Viewed from the bias-variance tradeoff,
+our modification to logistic regression estimators
+entailed a large decrease in model variance but only a modest
+increase in model bias.
+Viewed from the Vapnik-Chervonenkis dimensions,
+this entailed a healthy decrease in the complexity capactity of the prediction model
+with a higher chance of generalizing to unobserved data.
 
 
 
 In the future,
-the proposed regularization scheme can be used for various
-learning tasks in systems neuroscience.
-This includes supervised classification and regression
-with one or several target variables.
+region-network sparsity priors could be incorporated into various
+pattern-learning methods in systems neuroscience.
 %
-Region-network sparsity priors could even be used to inform
-unsupervised statistical estimators,
-including principal component analysis
+This includes supervised methods for whole-brain classification and regression
+with one or several target variables.
+The principled regularization scheme could even inform
+unsupervised structure discovery methods,
+such as principal component analysis
 \cite{jenatton2009structured}
 and
-k-means clustering \cite{???}.
+k-means clustering \cite{witten2010framework}.
 %
 Additionally,
-the structured sparsity penalty could be extended
+model regularization by hierarchical structured sparsity could be extended
 from the spatial domain of neural activity to
-spatiotemporally coherent neural activity patterns
+priors of coherent spatiotemporal activity structure
 \cite{gramfort2011tracking}.
 %
 Ultimately,
 successful high-dimensional inference is
 an important prerequisite
-for prediction of diagnosis,
+for predicting diagnosis,
 disease trajectories, and treatment responses
-for personalized medicine in psychiatry and neurology
-\cite{gabrieli2015prediction}.
+in personalized psychiatry and neurology.
 
 
 

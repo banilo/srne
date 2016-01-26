@@ -953,10 +953,10 @@ region-network ratio, while the
 $\eta_g$ group of network priors was biased by the corresponding
 network-region ratio. A region-network ratio of 3, for instance,
 increased the relative importance of known region structure
-by multiplying \frac{3}{1} to the
+by multiplying $\frac{3}{1}$ to the
 $\eta_g$ factor of all region groups
 and multiplying
-\frac{1}{3} to all network groups.
+$\frac{1}{3}$ to all network groups.
 The data splitting cross-validation scheme was identical to the
 above modelling experiments.
 %
@@ -964,7 +964,7 @@ As the most important observation,
 a range between region-dominant and network-dominant structured penalties
 yields quantitatively almost identical generalization to new data
 but qualitatively different decision functions manifested in the weight maps
-(Figure \ref{fig_regnetratio}, 2. and 4. column).
+(Figure \ref{fig_regnetratio}, second and forth column).
 Classification models with many zero coefficients but high absolute
 coefficients in either region compartments or network compartments
 can similarly extrapolation to unseen neural activity maps.
@@ -972,13 +972,13 @@ Second,
 these perform similar to equilibrated region-network priors
 that set less voxel coefficients to zero and spread the
 probability mass with lower absolute coefficients across the whole brain
-(Figure \ref{fig_regnetratix}, 3. column in the middle).
+(Figure \ref{fig_regnetratio}, third column in the middle).
 Third,
 overly strong emphasis on either level of the hierarchical prior
 can yield the neurobiologically informative maps
 of the most necessary region or network structure for
 statistically significant out-of-sample performance
-(Figure \ref{fig_regnetratix}, leftmost and rightmost columns).
+(Figure \ref{fig_regnetratio}, leftmost and rightmost columns).
 %
 In sum,
 stratifying the hierarchical tree penalty between region and network emphasis

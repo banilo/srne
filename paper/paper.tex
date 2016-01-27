@@ -100,16 +100,17 @@ Also in the brain imaging domain,
 many contemporary methods for acquiring brain signals yield
 more variables per observation than
 total observations per data sample.
-This high-dimensional scenario challenges many statistical estimators from
+This high-dimensional scenario challenges various statistical methods from
 classical statistics.
 For instance,
-the estimation of any generalized linear model without additional assumptions
-becomes underdetermined, i.e. yields full subspace of possible solutions, many or most of which will not generalize well in a predictive setting.
+estimating generalized linear models without additional assumptions
+yields an underdetermined system of equations.
 %
 Many such ill-posed estimation problems
 have benefited from
 \textit{sparsity} assumptions
-\cite{buhlmann2011statistics, hastie2015statistical}, which act as a 
+\cite{buhlmann2011statistics, hastie2015statistical}.
+They act as a 
 regularizer and can be used for model selection.
 Sparse supervised and unsupervised
 learning algorithms have proven to yield
@@ -120,21 +121,15 @@ estimated, reproduced, and interpreted
 Generally, \textit{structured sparsity} can impose
 domain knowledge on the 
 statistical estimation,
-thus preassuming the variables to have unequal importance
-and to obey expected data distributions
+thus shrinking and selecting variables guided by
+expected data distributions
 \cite{bach2012optimization}.
-{\color{red}Michael: This is the definition of a prior, not of strutured sparsity}
+Such restrictions to complexity are an attractive plan of attacked
+for the $\textgreater$100,000 variables of brain maps.
+Yet, what generally accepted neurobiological structure lends itself
+to harness the
+\textit{curse of dimensionality} by structured sparsity priors?
 
-%% Yet, what neurobiological structure suggests itself
-%% to harness the
-%% \textit{curse of dimensionality} with
-%% $\textgreater$100,000 variables
-%% in neuroimaging research?
-In neuroimaging research, generalized linear models predicting external 
-variables from brain images, which can reach a dimensionality of several
-hundreds of thousands of voxels, necessarily need appropriate regularization.
-Which neurobiological prior knowledge lends itself to the construction of a
-structured sparse prior?
 
 
 % specialization & integration
@@ -150,9 +145,9 @@ distinct brain regions \cite{sporns14nn}.
 %
 These notions were predominantly derived from
 invasive examination of anatomy (i.e., histological preparation),
-connectivity, (i.e., axonal tracing),
+connectivity (i.e., axonal tracing),
 and functional properties
-(i.e., single cell recordings) in animals.
+(i.e., single-cell recordings) in animals.
 Regarding functional segregation into specialized regions,
 early histological investigations into the microscopic heterogeneity of
 the human cerebral cortex have resulted
@@ -177,7 +172,7 @@ functional specialization versus functional integration
 \cite{friston2002beyond, mesulam_sensation}.
 Importantly,
 probably no existing brain analysis method acknowledges that
-both architectural principles are inextricably involved
+both functional organizations are inextricably involved
 in the realization of mental operations
 \cite{tononi1998complexity, saygin2012}.
 
@@ -187,12 +182,12 @@ in the realization of mental operations
 Functional specialization has been
 explored and interpreted based on many different research methods.
 %
-Single cell recordings and microscopic examination
+Single-cell recordings and microscopic examination
 revealed, for instance, the
 specialization in the visual cortex into V1, V2, V3, V3A, and V4
 \cite{hubel1962receptive, zeki1978functional}.
 Tissue lesion of the mid-fusiform gyrus of the visual system,
-for instance,
+in turn,
 was frequently reported to impair
 recognition of others' identity from faces
 \cite{iaria2008contrib}.
@@ -216,8 +211,7 @@ regionally differentiate the cerebral cortex,
 which can partly be more fine-grained than
 classical microscopical borders
 \cite{behrens03, cbp2015review}.
-Today,
-high-thoughput approaches enable
+High-thoughput approaches today enable
 ultrahigh-resolution 3D models of brain anatomy
 at near-cellular scale
 \cite{amunts2013bigbrain}.
@@ -253,7 +247,7 @@ independent component analysis (ICA) \cite{beckmann2005}
 became the workhorses of network discovery
 in neuroimaging.
 These revealed the important implication of
-canonical brain networks across cognitive domains,
+canonical brain networks across psychological tasks,
 including the so-called
 ``default-mode network'' \cite{raichle2001pnas},
 ``salience network'' \cite{seeley2007dissociable},
@@ -261,13 +255,13 @@ and ``dorsal attention network'' \cite{corbettashul2008}.
 Characteristic changes in the configuration of
 these macroscopical networks
 were repeatedly observed to be induced
-by the onset of given cognitive tasks \cite{fransson2006}.
-Such task-induced mechanisms orchestrating supraordinate networks
-might be subserved by the right anterior insula \cite{sridh2008}
-and temporo-parietal junction \cite{bzdok2013tpj}.
+by the onset of given psychological tasks \cite{fransson2006}.
+% Such task-induced mechanisms orchestrating supraordinate networks
+% might be subserved by the right anterior insula \cite{sridh2008}
+% and temporo-parietal junction \cite{bzdok2013tpj}.
 %
-Ultimately,
-interpretation of findings from all these methods naturally embraces
+As a common point of all these methods,
+interpretation of findings naturally embraces
 cross-regional integration by
 overlapping network compartments
 as the basic architecture of brain organization,
@@ -296,16 +290,16 @@ from processing of auditory signals \cite{daudet2004sparse},
 natural images \cite{harzallah2009combining} and
 videos \cite{kang2015structured, kim2010sparse}
 to
-genetics \cite{rapaport2008classification, kim2012tree},
 astrophysics \cite{vinci2014estimating},
+genetics \cite{rapaport2008classification, kim2012tree},
 and
 conformational dynamics of protein complexes \cite{jenatton2009structured}.
 %
 This is extended by the present work that
-enables neuroscience-specific estimators capitalizing on
+introduced neuroscience-specific estimators capitalizing on
 neurobiologically plausible region and network priors.
 %
-Using a large reference dataset,
+Based on the largest neuroimaging repository,
 we demonstrated that domain-informed supervised models
 gracefully tackle the curse of dimensionality,
 yield more human-interpretable results,
@@ -989,9 +983,8 @@ in the future.
 
 
 \section{Discussion}
-Relevant structure in brain imaging data has long been investigated
-separately
-according to two distinct organizational principles:
+Relevant structure in neuroimaging data has long been investigated
+according to two separate organizational principles:
 functional segregation into discrete brain regions
 and functional integration by interregional brain networks.
 %
@@ -1016,7 +1009,7 @@ the curse of dimensionality.
 They often used preliminary region-wise pooling functions
 or regression against network templates
 for subsequent supervised learning on the aggregated feature space.
-Such two-step approaches of feature engineering and inference
+Such lossy two-step approaches of feature engineering and inference
 \textit{i)} can only account for either functional specialization or
 functional integration of brain organization,
 \textit{ii)} depend on the ground truth being a region or network effect,
@@ -1033,7 +1026,7 @@ our modification to logistic regression estimators
 entailed a large decrease in model variance but only a modest
 increase in model bias.
 Viewed from the Vapnik-Chervonenkis dimensions,
-this entailed a healthy decrease in the complexity capactity of the prediction model
+this entailed a healthy decrease in the complexity capacity of the prediction model
 with a higher chance of generalizing to unobserved data.
 
 

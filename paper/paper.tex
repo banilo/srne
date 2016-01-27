@@ -205,7 +205,7 @@ functional magnetic resonance imaging (fMRI) and
 positron emission tomography (PET)
 \cite{fristen1997imaging}.
 Further,
-radioactive mapping of neurotransmitter receptors
+radioactive mapping {\color{red} Michael: is this the correct term?} of neurotransmitter receptors
 rendered accessible yet another
 local characteristic of neuronal populations
 \cite{zilles2009receptor}.
@@ -315,14 +315,52 @@ than domain-na\"ive estimators.
 
 
 \section{Methods}
+Our main contribution is the domain-specific adaptation of sparse structured
+penalties making it possible to jointly incorporate functional 
+specialization and functional integration priors into statistical 
+estimators.
 We make use of the hierarchical group lasso as introduced by Jennaton and 
 others in \cite{jenatton2011structured} to create a set of convex penalties
-with which we can probe the interplay between regional specificity and 
+with which we can probe this interplay between regional specificity and 
 inter-regional functional integration during different cognitive tasks.
 %
 \paragraph{Rationale}
-Th
+Three-dimensional voxel brain images as obtained by various neuroimaging
+techniques are very high-dimensional, but also very highly structured.
+While its explicit dimensionality, the number of voxels, which varies with
+the resolution of the image is generally of the order of 100000, the number
+of samples available for analyses never exceeds hundreds or thousands.
+This \(n << p\) situation immediately implies an underdeterminedness for any
+linear model basing its decisions on dot products with the voxel values.
 
+Luckily, there is and abundance structure to be exploited, which can be
+injected into the estimation as a domain knowledge prior. Here we are 
+interested in incorporating knowledge about both the well-established 
+modules of functional specialization and the interactions of these modules
+amongst each other across the brain.
+%
+Developmentally, such large-scale networks emerge during late
+fetal growth (Doria et al., 2010), before cognitive capacities mature
+in childhood. 
+%
+In adults, nodes of a same cohesive network have more
+similar functional profiles than nodes from different networks
+(Anderson et al., 2013).
+%
+On the signal level, functional modules are localized structures implicating
+neighboring voxels in an image. A variety of known functional modules has
+been compiled into atlases of the brain. Different types of atlases rely on
+different ways of segregating modules from another. For instance, anatomical
+atlases rely on the variation of tissue properties across the brain, which
+can be at the cellular level or based on higher-order structure.
+%
+Global functional networks can be discovered by statistical analysis of
+functional brain imaging data, for example the BOLD contrast in fMRI. A
+well-established method of estimating these networks is independent 
+component analysis \cite{Hamalainen}. It robustly identifies the default
+mode, saliency and attention networks.
+%
+Since these network maps are for the most part disjoint spatially
 
 %% we need to inject domain knowledge into
 %% statistical estimations to harness the curse of dimensionality.
@@ -754,7 +792,7 @@ for a neurobiological bias of the statistical estimation.
 Vanilla logistic regression with $\ell_1$-penalization
 does not assume any previously known special structure.
 This classification estimator embraces a vision of neural activity structure
-that expectes a minimum of
+that expects a minimum of
 topographically and functionally independent brain voxel to be relevant.
 %
 Logistic regression with sparse group sparsity
@@ -784,7 +822,7 @@ Importantly, the thus selected sparse logistic regression classifier was
 evaluated on an identical test set in all settings.
 %
 Hierarchial tree sparsity demonstrated the best generalization
-in distinguihsing unseen neural activity maps from 18 tasks
+in distinguishing unseen neural activity maps from 18 tasks
 (89.67\%, mean recall XX.YY, mean precision XX.YY).
 It was closely followed by logistic regression with trace-norm
 regularization that is structured but not neurobiologically informed

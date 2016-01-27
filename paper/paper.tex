@@ -360,7 +360,45 @@ well-established method of estimating these networks is independent
 component analysis \cite{Hamalainen}. It robustly identifies the default
 mode, saliency and attention networks.
 %
-Since these network maps are for the most part disjoint spatially
+Global functional networks as estimated by ICA are contiuous brain maps
+attributing weights to each voxel. Since the regions involved in these
+networks are nevertheless largely disjoint spatially and roughly in
+correspondence with module boundaries {\color{red} Michael: verify this!!!}, 
+it is possible to uniquely associate each module from a region atlas to one
+of the extracted global functional networks.
+
+This correspondence makes it possible to encode our knowledge about the 
+networks and regions into a hierarchy: A brain contains a certain number of
+networks, which in turn consist of the atlas modules as subregions.
+We can use this hierarchy to create a structural prior of expected weight
+maps for classifiers.
+
+The hierarchical group lasso as introduced by \cite{jenatton2011} lends
+itself perfectly to represent this structure. It is based on the group lasso
+\cite{group_lasso} but permits groups to contain each other in a tree
+structure. The first level of the tree are the network groups containing all
+the voxels of the modules associated to them. Then each network contains as
+as subgroups the modules associated with it, grouping the voxels of each of
+these regions together.
+As with the group lasso, it is possible to associate an individual penalty
+to each group. In trading off the penalties on the network level against the
+penalties of the region level, we can create different regimes of 
+estimation: 
+%
+Setting a low penalty on the network groups makes it probable
+that all of them are active in the estimated weight map. If we then select
+higher penalties on region groups, selection of relevant region groups is
+forced without the bias of the network maps.
+%
+Conversely, setting low penalties on the region maps makes it possible for
+all voxels to be active. Selecting higher penalties on the networks then
+leads to a selection of networks with all regions associated to it.
+%
+Taken together and varied smoothly, we can evaluate a tradeoff between the
+relevance of modular regions and functionally integrated networks in 
+statistical estimation of brain activity.
+
+
 
 %% we need to inject domain knowledge into
 %% statistical estimations to harness the curse of dimensionality.

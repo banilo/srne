@@ -315,55 +315,61 @@ than domain-na\"ive estimators.
 
 
 \section{Methods}
+We make use of the hierarchical group lasso as introduced by Jennaton and 
+others in \cite{jenatton2011structured} to create a set of convex penalties
+with which we can probe the interplay between regional specificity and 
+inter-regional functional integration during different cognitive tasks.
 %
 \paragraph{Rationale}
-
-we need to inject domain knowledge into
-statistical estimations to harness the curse of dimensionality.
-two neurobiological design principles 
-
-imposing parsimony
-integrative processes
-
- This L1/L2 norm for group lasso has been extended to a more general setting to
-
-designed groups
- the child nodes enter the set of relevant inputs only if its parent node does. 
- 
-should be able to estimate voxel level
-while taking into account known supravoxel structure.
-is instrumental in
-Developmentally, such large-scale networks emerge during late
-fetal growth (Doria et al., 2010), before cognitive capacities mature
-in childhood. 
-
-In adults, nodes of a same cohesive network have more
-similar functional profiles than nodes from different networks
-(Anderson et al., 2013).
-
-data exhibit natural correlations between neighboring voxels forming clusters
-
-representing some phenomenon with as few variables as possible
-
-neurobiologically motivated restrictions to complexity circumvented
-the curse of dimensionality
-three-dimensional spatial arrangement that respects
-the functional anatomy of the brain
-not ignore the spatial configuration
-
-incorporate rich prior knowledge
-
-If meaningful structures exist,
-we show that one can take advantage of such structures
-
-Statistically,
-l1 and l2 are local sparsity priors
--> resulting sparsity does yield structure
-we want to priviledge representations with structure
+Th
 
 
-=> 
- a biologically and statistically desirable bias 
+%% we need to inject domain knowledge into
+%% statistical estimations to harness the curse of dimensionality.
+%% two neurobiological design principles 
+%% 
+%% imposing parsimony
+%% integrative processes
+%% 
+%%  This L1/L2 norm for group lasso has been extended to a more general setting to
+%% 
+%% designed groups
+%%  the child nodes enter the set of relevant inputs only if its parent node does. 
+%%  
+%% should be able to estimate voxel level
+%% while taking into account known supravoxel structure.
+%% is instrumental in
+%% Developmentally, such large-scale networks emerge during late
+%% fetal growth (Doria et al., 2010), before cognitive capacities mature
+%% in childhood. 
+%% 
+%% In adults, nodes of a same cohesive network have more
+%% similar functional profiles than nodes from different networks
+%% (Anderson et al., 2013).
+%% 
+%% data exhibit natural correlations between neighboring voxels forming clusters
+%% 
+%% representing some phenomenon with as few variables as possible
+%% 
+%% neurobiologically motivated restrictions to complexity circumvented
+%% the curse of dimensionality
+%% three-dimensional spatial arrangement that respects
+%% the functional anatomy of the brain
+%% not ignore the spatial configuration
+%% 
+%% incorporate rich prior knowledge
+%% 
+%% If meaningful structures exist,
+%% we show that one can take advantage of such structures
+%% 
+%% Statistically,
+%% l1 and l2 are local sparsity priors
+%% -> resulting sparsity does yield structure
+%% we want to priviledge representations with structure
+%% 
+%% 
+%% => 
+%%  a biologically and statistically desirable bias 
 
 
 \paragraph{Problem formulation}

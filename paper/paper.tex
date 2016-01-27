@@ -676,9 +676,6 @@ sparse statistical models have only few nonzero parameters
 
 
 \section{Experimental Results}
-\paragraph{Serial versus parallel structure discovery and classification.}
-\paragraph{Serial versus parallel structure discovery and classification.}
-\paragraph{Serial versus parallel structure discovery and classification.}
 
 
 \begin{figure}
@@ -709,6 +706,99 @@ the cerebellum that realizes motor behavior.
 }
 \label{fig_priors}
 \end{figure}
+
+
+\begin{figure}
+\begin{centering}
+\includegraphics[width=1.00\textwidth]{figures/sparsities.pdf}
+\end{centering}
+\vspace{-0.6cm}
+\caption{\textbf{Model performance across sparsity priors.}
+Compares the performance of 4 logistic regression estimators
+with different structured and unstructered sparsity terms
+in classifying neural activity from 18 psychological tasks.
+The class-wise precision and recall metrics
+were obtained on the test set.
+%
+Unstructured $\ell_1$-penalized logistic regression (\textit{upper left})
+imposed a minimum of relevant brain voxels without
+assuming special structure.
+Structured $\ell_1/\ell_2$ block norm with additional $\ell_1$ term
+(\textit{lower left})
+imposed region compartments, but na\"ive to network structure.
+Structured trace-norm penalization (\textit{lower tight})
+imposed low-rank structure
+with sparsity of network patterns, but na\"ive to region structure.
+Structured $\ell_1/\ell_2$ block norm with a hierarchy of
+both region and network priors (\textit{upper tight})
+exhibited the best out-of-sample performance.
+%
+Consequently, a priori knowledge of both region and network neighborhoods
+was the most beneficial structured sparsity penalty.
+}
+\label{fig_sparsities}
+\end{figure}
+
+
+\paragraph{Benchmarking hierarchical tree sparsity against
+common sparsity penalties.}
+Hierarchical region-network priors have been systematically
+evaluated against other popular choices of sparse classification algorithms
+in an 18-class scenario
+(Figure \ref{fig_sparsities}).
+%
+Logistic regression with $\ell_1/\ell_2$ block norm penalization
+incorporated a hierarchy of previously known region and network neighborhoods
+for a neurobiological bias of the statistical estimation.
+%
+Vanilla logistic regression with $\ell_1$-penalization
+does not assume any previously known special structure.
+This classification estimator embraces a vision of neural activity structure
+that expectes a minimum of
+topographically and functionally independent brain voxel to be relevant.
+%
+Logistic regression with sparse group sparsity
+imposes a structured $\ell_1/\ell_2$ block norm with additional $\ell_1$ term
+with a known atlas of region voxel groups onto the statistical estimation process.
+This supervised estimator shrinks and selects the coefficients
+of topographically compact voxel groups expected to be relevant together.
+%
+Logistic regression with trace-norm penalization
+imposed low-rank structure.
+This supervised classification algorithm
+expected a minimum of unknown network patterns
+to be relevant.
+%
+The stratified and shuffled training data were submitted to
+to a nested cross-validation scheme
+for model selection and model assessment.
+In the inner CV layer, the logistic regression estimators
+have been trained in a one-versus-rest design that
+distinguishes each class from
+the respective 17 other classes
+(number of maximal iterations=$100$, tolerance=$0.001$).
+In the outer CV layer, grid search
+selected among candidates for the respective $\lambda$ parameter
+by searching between $10^{-2}$ and $10^{1}$ in 9 steps on a logarithmic scale.
+Importantly, the thus selected sparse logistic regression classifier was
+evaluated on an identical test set in all settings.
+%
+Hierarchial tree sparsity demonstrated the best generalization
+in distinguihsing unseen neural activity maps from 18 tasks
+(89.67\%, mean recall XX.YY, mean precision XX.YY).
+It was closely followed by logistic regression with trace-norm
+regularization that is structured but not neurobiologically informed
+(89.43\%, mean recall XX.YY, mean precision XX.YY).
+Lasso featured an average performance comparing to the other sparse estimators
+(88.60\%, mean recall XX.YY, mean precision XX.YY)
+Introduced a priori knowledge of brain region compartments
+by sparse group sparsity performed worst
+(87.89\%, mean recall XX.YY, mean precision XX.YY).
+%
+In sum,
+biasing sparse model selection by domain knowledge of region-network hierarchies
+outperformed other types of frequently used sparse penalization techniques.
+
 
 
 \begin{figure}
@@ -749,46 +839,6 @@ neurobiologically naive logistic regression.
 \end{figure}
 
 
-\begin{figure}
-\begin{centering}
-\includegraphics[width=1.00\textwidth]{figures/reg_net_ratio.pdf}
-\end{centering}
-\vspace{-0.6cm}
-\caption{\textbf{Support recovery as a function of
-region and network emphasis.}
-The relative impact of the region and network priors
-on model selection
-is systematically varied against each other {\color{red} HOW??}.
-This region-network ratio (\textit{upper row}) weighted voxel groups
-to privilege sparse models in function space
-that acknowledge known brain region neighborhoods
-(\textit{left columns}) or
-known brain networks compartments
-(\textit{right columns}).
-Among the 18 classes, the model weights are shown for the
-tasks (\textit{from top to bottom}): tongue movement, listening stories,
-taking somebody else's perspective (ToM, "theory of mind"),
-as well as
-viewing locations and tools.
-The 18-class out-of-sample accuracy is indicated
-on the \textit{bottom} and
-the class-wise mean neural activity
-in the \textit{rightmost column}.
-%
-Different emphasis on regions versus networks
-in hierarchical structured sparsity can
-yield essentially similar model performance.
-%
-Privileging region versus network structure during model selection
-recovers complementary aspects of the brain activity pattern.
-%
-Equal region and network emphasis yields more dispersed,
-less interpretable predictive model choices.
-}
-\label{fig_ratio}
-\end{figure}
-
-
 
 \paragraph{Sample complexity of na\"ive versus informed sparse model selection.}
 Subsequently, the sample complexity of
@@ -811,6 +861,7 @@ training set at different subsampling fractions:
 60\% (4550 maps),
 80\% (6067 maps), and
 100\% (7584 maps).
+%
 The stratified and shuffled training data were submitted to
 to a nested cross-validation scheme
 for model selection and model assessment.
@@ -859,89 +910,165 @@ the unstructured estimator reached this generalization performance
 only with bigger input data quantities.
 
 
+\begin{figure}
+\begin{centering}
+\includegraphics[width=1.00\textwidth]{figures/reg_net_ratio.pdf}
+\end{centering}
+\vspace{-0.6cm}
+\caption{\textbf{Support recovery as a function of
+region and network emphasis.}
+The relative impact of the region and network priors
+on model selection
+is systematically varied against each other.
+This region-network ratio (\textit{upper row}) weighted voxel groups
+to priviledge sparse models in function space
+that acknowledge known brain region neighborhoods
+(\textit{left columns}) or
+known brain networks compartments
+(\textit{right columns}).
+Among the 18 classes, the model weights are shown for the
+tasks (\textit{from top to bottom}): tongue movement, listening stories,
+taking somebody else's perspective (ToM, "theory of mind"),
+as well as
+viewing locations and tools.
+The 18-class out-of-sample accuracy is indicated
+on the \textit{bottom} and
+the class-wise mean neural activty
+in the \textit{rightmost column}.
+%
+Different emphasis on regions versus networks
+in hierarchical structured sparsity can
+yield essentially similar model performance.
+%
+Priviledging region versus network structure during model selection
+recovers complementary aspects of the brain activity pattern.
+%
+Equal region and network emphasis yields more dispersed,
+less interpretable predictive model choices.
+}
+\label{fig_regnetratio}
+\end{figure}
+
+
 \paragraph{Support recovery as a function of region and network emphasis.}
-
-
-
-
-
+Finally, the relative importance of the
+region and network priors within the hierarchical tree prior
+was quantified (Figure \ref{fig_regnetratio}).
+The $\eta_g$ group of region priors was multiplied with a
+region-network ratio, while the
+$\eta_g$ group of network priors was biased by the corresponding
+network-region ratio. A region-network ratio of 3, for instance,
+increased the relative importance of known region structure
+by multiplying $\frac{3}{1}$ to the
+$\eta_g$ factor of all region groups
+and multiplying
+$\frac{1}{3}$ to all network groups.
+The data splitting cross-validation scheme was identical to the
+above modelling experiments.
+%
+As the most important observation,
+a range between region-dominant and network-dominant structured penalties
+yields quantitatively almost identical generalization to new data
+but qualitatively different decision functions manifested in the weight maps
+(Figure \ref{fig_regnetratio}, second and forth column).
+Classification models with many zero coefficients but high absolute
+coefficients in either region compartments or network compartments
+can similarly extrapolation to unseen neural activity maps.
+Second,
+these perform similar to equilibrated region-network priors
+that set less voxel coefficients to zero and spread the
+probability mass with lower absolute coefficients across the whole brain
+(Figure \ref{fig_regnetratio}, third column in the middle).
+Third,
+overly strong emphasis on either level of the hierarchical prior
+can yield the neurobiologically informative maps
+of the most necessary region or network structure for
+statistically significant out-of-sample performance
+(Figure \ref{fig_regnetratio}, leftmost and rightmost columns).
+%
+In sum,
+stratifying the hierarchical tree penalty between region and network emphasis
+suggests that \textit{class-specific region-network weights}
+might offer more performant and more interpretable classification models
+in the future.
 
 
 
 \section{Discussion}
-Relevant structure in brain imaging data has long been
-separately investigated
-along two distinct organizational principles:
+Relevant structure in brain imaging data has long been investigated
+separately
+according to two distinct organizational principles:
 functional segregation into discrete brain regions
-and functional integration by inter-regional brain networks.
+and functional integration by interregional brain networks.
 %
 This paper demonstrates the simultaneous exploitation of
 both these neurobiological compartments
-for sparse variable selection and high-dimensional prediction.
+for sparse variable selection and high-dimensional prediction
+in a reference dataset.
 %
 Introducing existing domain knowledge into model selection
-naturally priviledges model hypotheses in the function space
+allowed privileging members of the function space
 that are most neurobiologically plausible.
 %
-The neurobiologically informed
-hierarchical structured sparsity penalty is shown to enhance
-model interpretability and generalization performance,
-although these statistical goals are typically in conflict.
+Domain-informed hierarchical structured sparsity is shown to enhance
+both model interpretability and generalization performance,
+although these statistical-learning goals are typically in conflict.
 
 
 
-
-1) each voxel
-We assume regions and networks but can estimate 
-importance of each voxel.
-neurobiologically motivated restrictions to
-complexity circumvented the curse of dimensionality and allowed
-for useful, simplified views on brain function.
-previously laborious feature engineering / selection procedures
-
-
-2) restrictions to complexity according to neurobiological facts
--> bias-variance tradeoff: negigible increase in bias but large decrease in variance
--> VC: decrease complexitiy capactiy -> better chance for generalization out of sample
-
-guide model selection
-
-3)
-multiple comparisons problem has the curse of dimensionality
-as its close correspondence in statistical learning
-sparsity -> solves the curse at the estimation level
-
-4) region-constrained or network-constrained model estimation
-can lead to similar predictive performance
+The present approach has important advantages over previous
+neuroimaging studies that capitalized on dimensionality reduction to harness
+the curse of dimensionality.
+They often used preliminary region-wise pooling functions
+or regression against network templates
+for subsequent supervised learning on the aggregated feature space.
+Such two-step approaches of feature engineering and inference
+\textit{i)} can only account for either functional specialization or
+functional integration of brain organization,
+\textit{ii)} depend on the ground truth being a region or network effect,
+and
+\textit{iii)} cannot issue individual coefficients for every brain voxels.
+%
+Hierarchical region-network sparsity overcomes these shortcomings
+by estimating individual voxel contributions
+while benefitting from their functional segregation and integration
+to restrict statistical complexity.
+%
+Viewed from the bias-variance tradeoff,
+our modification to logistic regression estimators
+entailed a large decrease in model variance but only a modest
+increase in model bias.
+Viewed from the Vapnik-Chervonenkis dimensions,
+this entailed a healthy decrease in the complexity capactity of the prediction model
+with a higher chance of generalizing to unobserved data.
 
 
 
 In the future,
-the proposed regularization scheme can be used for various
-learning tasks in systems neuroscience.
-This includes supervised classification and regression
-with one or several target variables.
+region-network sparsity priors could be incorporated into various
+pattern-learning methods in systems neuroscience.
 %
-Region-network sparsity priors could even be used to inform
-unsupervised statistical estimators,
-including principal component analysis
+This includes supervised methods for whole-brain classification and regression
+with one or several target variables.
+The principled regularization scheme could even inform
+unsupervised structure discovery methods,
+such as principal component analysis
 \cite{jenatton2009structured}
 and
-k-means clustering \cite{???}.
+k-means clustering \cite{witten2010framework}.
 %
 Additionally,
-the structured sparsity penalty could be extended
+model regularization by hierarchical structured sparsity could be extended
 from the spatial domain of neural activity to
-spatiotemporally coherent neural activity patterns
+priors of coherent spatiotemporal activity structure
 \cite{gramfort2011tracking}.
 %
 Ultimately,
 successful high-dimensional inference is
 an important prerequisite
-for prediction of diagnosis,
+for predicting diagnosis,
 disease trajectories, and treatment responses
-for personalized medicine in psychiatry and neurology
-\cite{gabrieli2015prediction}.
+in personalized psychiatry and neurology.
 
 
 

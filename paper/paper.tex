@@ -672,7 +672,7 @@ sparse statistical models have only few nonzero parameters
 \end{centering}
 \vspace{-0.6cm}
 \caption{\textbf{Building blocks of the region-network tree.}
-Depicts neurobiological priors introduced into the supervised classification
+Depicts neurobiological priors introduced into the classification problem 
 by hierarchical structured sparsity.
 \textit{Left:} Continuous, partially overlapping brain network priors
 (\textit{hot-colored}, taken from \cite{smith2009})
@@ -690,7 +690,7 @@ the early cortex that processes
 visual and sound information from the environment,
 a well-known attentional circuit in the left brain hemisphere,
 and
-the cerebellum that realizes motor behavior.
+the cerebellum that is involved in motor behavior.
 }
 \label{fig_priors}
 \end{figure}
@@ -702,11 +702,11 @@ the cerebellum that realizes motor behavior.
 \end{centering}
 \vspace{-0.6cm}
 \caption{\textbf{Model performance across sparsity priors.}
-Compares the performance of 4 logistic regression estimators
-with different structured and unstructered sparsity terms
+Compares the performance of logistic regression estimators
+with 4 different structured and unstructered sparsity terms
 in classifying neural activity from 18 psychological tasks.
 The class-wise precision and recall metrics
-were obtained on the test set.
+were obtained on the same test set.
 %
 Unstructured $\ell_1$-penalized logistic regression (\textit{upper left})
 imposed a minimum of relevant brain voxels without
@@ -714,15 +714,16 @@ assuming special structure.
 Structured $\ell_1/\ell_2$ block norm with additional $\ell_1$ term
 (\textit{lower left})
 imposed region compartments, but na\"ive to network structure.
-Structured trace-norm penalization (\textit{lower tight})
+Structured trace-norm penalization (\textit{lower right})
 imposed low-rank structure
 with sparsity of network patterns, but na\"ive to region structure.
 Structured $\ell_1/\ell_2$ block norm with a hierarchy of
-both region and network priors (\textit{upper tight})
+both region and network priors (\textit{upper right})
 exhibited the best out-of-sample performance.
 %
-Consequently, a priori knowledge of both region and network neighborhoods
-was the most beneficial structured sparsity penalty.
+A priori knowledge of both region and network neighborhoods
+was hence most beneficial for predicting psychological tasks from
+brain maps.
 }
 \label{fig_sparsities}
 \end{figure}
@@ -802,25 +803,24 @@ is compared
 to hierarchical-tree-penalized logistic regression
 (\textit{lower row})
 with increasing fraction
-of the available training data (\textit{columns}).
-For one example from 18 classes,
+of the available training data (\textit{left to right columns}).
+For one example (i.e., ``View tools'') from 18 psychological tasks,
 unthresholded axial maps of model weights
 are shown for comparison against
-the class sample average {\color{red} thresholded at p $<$ 0.01 ???}
-in the \textit{rightmost column}.
-The corresponding 18-class (``View tools'')
-out-of-sample accuracy
+the sample average of that class
+(\textit{rightmost column}, thresholded at the $75^{th}$ percentile).
+The out-of-sample accuracies for predicting all 18 classes
 is given in percent.
 %
 In the data-scarce scenario,
 typical for brain imaging,
-hierarchical tree sparsity achieves
+hierarchical tree sparsity achieves much
 better support recovery with the biggest difference
 in model performance.
 %
 In the data-rich scenario,
 neurobiologically informed logistic regression
-profits more from the increased information quantities than
+profits more from the available information quantities than
 neurobiologically naive logistic regression.
 }
 \label{fig_dataratio}
@@ -908,13 +908,13 @@ region and network emphasis.}
 The relative impact of the region and network priors
 on model selection
 is systematically varied against each other.
-This region-network ratio (\textit{upper row}) weighted voxel groups
+This region-network ratio (\textit{upper fractions}) weighted voxel groups
 to priviledge sparse models in function space
 that acknowledge known brain region neighborhoods
 (\textit{left columns}) or
-known brain networks compartments
+known brain networks neighborhoods
 (\textit{right columns}).
-Among the 18 classes, the model weights are shown for the
+Among the 18 classes, the model weights are shown for the psychological
 tasks (\textit{from top to bottom}): tongue movement, listening stories,
 taking somebody else's perspective (ToM, "theory of mind"),
 as well as
@@ -922,14 +922,14 @@ viewing locations and tools.
 The 18-class out-of-sample accuracy is indicated
 on the \textit{bottom} and
 the class-wise mean neural activty
-in the \textit{rightmost column}.
+(\textit{rightmost column}, thresholded at the $75^{th}$ percentile).
 %
 Different emphasis on regions versus networks
 in hierarchical structured sparsity can
-yield essentially similar model performance.
+yield comparable model performance.
 %
-Priviledging region versus network structure during model selection
-recovers complementary aspects of the brain activity pattern.
+Favoring region versus network structure during model selection
+recovers complementary aspects of the neural activity pattern.
 %
 Equal region and network emphasis yields more dispersed,
 less interpretable predictive model choices.

@@ -137,7 +137,7 @@ Concepts on human brain organization have long been torn
 between the two extremes
 \textit{functional specialization} and \textit{functional integration}.
 Functional specialization emphasizes that microscopically distinguishable
-brain regions solve distinct classes of computational processes
+brain regions are responsible distinct classes of computational processes
 \cite{kanwisher2010functional}.
 Functional integration, in turn, emphasizes that brain function
 is enabled by complex connections between these
@@ -184,7 +184,7 @@ explored and interpreted based on many different research methods.
 %
 Single-cell recordings and microscopic examination
 revealed, for instance, the
-specialization in the visual cortex into V1, V2, V3, V3A, and V4
+specialization in the occipital visual cortex into V1, V2, V3, V3A/B, and V4
 \cite{hubel1962receptive, zeki1978functional}.
 Tissue lesion of the mid-fusiform gyrus of the visual system,
 in turn,
@@ -200,7 +200,7 @@ functional magnetic resonance imaging (fMRI) and
 positron emission tomography (PET)
 \cite{fristen1997imaging}.
 Further,
-radioactive mapping of neurotransmitter receptors
+radioactive mapping {\color{red} Michael: is this the correct term?} of neurotransmitter receptors
 rendered accessible yet another
 local characteristic of neuronal populations
 \cite{zilles2009receptor}.
@@ -309,255 +309,388 @@ than domain-na\"ive estimators.
 
 
 \section{Methods}
+Our main contribution is the domain-specific adaptation of sparse structured
+penalties making it possible to jointly incorporate functional 
+specialization and functional integration priors into statistical 
+estimators.
+We make use of the hierarchical group lasso as introduced by Jennaton and 
+others in \cite{jenatton2011structured} to create a set of convex penalties
+with which we can probe this interplay between regional specificity and 
+inter-regional functional integration during different cognitive tasks.
 %
 \paragraph{Rationale}
+Three-dimensional voxel brain images as obtained by various neuroimaging
+techniques are very high-dimensional, but also very highly structured.
+While its explicit dimensionality, the number of voxels, which varies with
+the resolution of the image is generally of the order of 100000, the number
+of samples available for analyses never exceeds hundreds or thousands.
+This \(n << p\) situation immediately implies an underdeterminedness for any
+linear model basing its decisions on dot products with the voxel values.
 
-we need to inject domain knowledge into
-statistical estimations to harness the curse of dimensionality.
-two neurobiological design principles 
-
-imposing parsimony
-integrative processes
-
- This L1/L2 norm for group lasso has been extended to a more general setting to
-
-designed groups
- the child nodes enter the set of relevant inputs only if its parent node does. 
- 
-should be able to estimate voxel level
-while taking into account known supravoxel structure.
-is instrumental in
+Luckily, there is and abundance structure to be exploited, which can be
+injected into the estimation as a domain knowledge prior. Here we are 
+interested in incorporating knowledge about both the well-established 
+modules of functional specialization and the interactions of these modules
+amongst each other across the brain.
+%
 Developmentally, such large-scale networks emerge during late
 fetal growth (Doria et al., 2010), before cognitive capacities mature
 in childhood. 
-
+%
 In adults, nodes of a same cohesive network have more
 similar functional profiles than nodes from different networks
 (Anderson et al., 2013).
+%
+On the signal level, functional modules are localized structures implicating
+neighboring voxels in an image. A variety of known functional modules has
+been compiled into atlases of the brain. Different types of atlases rely on
+different ways of segregating modules from another. For instance, anatomical
+atlases rely on the variation of tissue properties across the brain, which
+can be at the cellular level or based on higher-order structure.
+%
+Global functional networks can be discovered by statistical analysis of
+functional brain imaging data, for example the BOLD contrast in fMRI. A
+well-established method of estimating these networks is independent 
+component analysis \cite{Hamalainen}. It robustly identifies the default
+mode, saliency and attention networks.
+%
+Global functional networks as estimated by ICA are contiuous brain maps
+attributing weights to each voxel. Since the regions involved in these
+networks are nevertheless largely disjoint spatially and roughly in
+correspondence with module boundaries {\color{red} Michael: verify this!!!}, 
+it is possible to uniquely associate each module from a region atlas to one
+of the extracted global functional networks.
 
-data exhibit natural correlations between neighboring voxels forming clusters
+This correspondence makes it possible to encode our knowledge about the 
+networks and regions into a hierarchy: A brain contains a certain number of
+networks, which in turn consist of the atlas modules as subregions.
+We can use this hierarchy to create a structural prior of expected weight
+maps for classifiers.
 
-representing some phenomenon with as few variables as possible
+The hierarchical group lasso as introduced by \cite{jenatton2011} lends
+itself perfectly to represent this structure. It is based on the group lasso
+\cite{group_lasso} but permits groups to contain each other in a tree
+structure. The first level of the tree are the network groups containing all
+the voxels of the modules associated to them. Then each network contains as
+as subgroups the modules associated with it, grouping the voxels of each of
+these regions together.
+As with the group lasso, it is possible to associate an individual penalty
+to each group. In trading off the penalties on the network level against the
+penalties of the region level, we can create different regimes of 
+estimation: 
+%
+Setting a low penalty on the network groups makes it probable
+that all of them are active in the estimated weight map. If we then select
+higher penalties on region groups, selection of relevant region groups is
+forced without the bias of the network maps.
+%
+Conversely, setting low penalties on the region maps makes it possible for
+all voxels to be active. Selecting higher penalties on the networks then
+leads to a selection of networks with all regions associated to it.
+%
+Taken together and varied smoothly, we can evaluate a tradeoff between the
+relevance of modular regions and functionally integrated networks in 
+statistical estimation of brain activity.
 
-neurobiologically motivated restrictions to complexity circumvented
-the curse of dimensionality
-three-dimensional spatial arrangement that respects
-the functional anatomy of the brain
-not ignore the spatial configuration
-
-incorporate rich prior knowledge
-
-If meaningful structures exist,
-we show that one can take advantage of such structures
-
-Statistically,
-l1 and l2 are local sparsity priors
--> resulting sparsity does yield structure
-we want to priviledge representations with structure
 
 
-=> 
- a biologically and statistically desirable bias 
+%% we need to inject domain knowledge into
+%% statistical estimations to harness the curse of dimensionality.
+%% two neurobiological design principles 
+%% 
+%% imposing parsimony
+%% integrative processes
+%% 
+%%  This L1/L2 norm for group lasso has been extended to a more general setting to
+%% 
+%% designed groups
+%%  the child nodes enter the set of relevant inputs only if its parent node does. 
+%%  
+%% should be able to estimate voxel level
+%% while taking into account known supravoxel structure.
+%% is instrumental in
+%% Developmentally, such large-scale networks emerge during late
+%% fetal growth (Doria et al., 2010), before cognitive capacities mature
+%% in childhood. 
+%% 
+%% In adults, nodes of a same cohesive network have more
+%% similar functional profiles than nodes from different networks
+%% (Anderson et al., 2013).
+%% 
+%% data exhibit natural correlations between neighboring voxels forming clusters
+%% 
+%% representing some phenomenon with as few variables as possible
+%% 
+%% neurobiologically motivated restrictions to complexity circumvented
+%% the curse of dimensionality
+%% three-dimensional spatial arrangement that respects
+%% the functional anatomy of the brain
+%% not ignore the spatial configuration
+%% 
+%% incorporate rich prior knowledge
+%% 
+%% If meaningful structures exist,
+%% we show that one can take advantage of such structures
+%% 
+%% Statistically,
+%% l1 and l2 are local sparsity priors
+%% -> resulting sparsity does yield structure
+%% we want to priviledge representations with structure
+%% 
+%% 
+%% => 
+%%  a biologically and statistically desirable bias 
 
 
 \paragraph{Problem formulation}
-
-Sparse linear models
-encode geometric prior information
-topology
-local sets of voxels
-
-Group-sparsity is a first step towards the more general idea that
-a regularization function can encourage sparse solutions with a particular structure. 
-
-it is not realistic to assume that all of the tasks share the same set of rele- vant inputs as in the L1/L2-regularized regression. A subset of highly related outputs may share a common set of relevant inputs, whereas weakly related outputs are less likely to be affected by the same inputs.
-
-structured regularization
-We might therefore gain in the quality of the factors
-induced by enforcing directly this a priori 
-
-groups at multiple granularity
-
-tree-guided group lasso
-
-encourage structured shrinkage effect 
-
-l1 = unstructured sparsity-inducing penalty
-
-Our method extends the L1/L2 penalty to the tree-lasso penalty
-by letting the hierarchically-defined groups overlap. 
-the tree lasso is a special case of overlapping group lasso
-
-for every column u of U, it compute a column v of V solving
-
-we aim at learning a weight vector w ∈ Rp and an intercept b ∈ R
-such that the prediction of y can be based on the value of w⊤x + b.
-
-We omit a bias term, since the data were mean-centered
-and unit-variance scaled.
-The scalar b is not particularly informative
-
-however the vector w corresponds to a volume that
-can be represented in brain space as a volume
-
-hierarchial tree = more generally into a directed acyclic graph
-
-more precisely, we denote by X ∈ Rn×p the design matrix
-assembled from n fMRI volumes and by y ∈ Rn the corresponding n targets.
-In other words, each row of X is a p-dimensional sample,
-i.e., an activation map of p voxels related to one stimulus presentation.
-for visualization of the predictive pattern of voxels. 
-
-Learning the parameters (w, b) remains challenging
-since the number of features (104 to 105 voxels) exceeds
-by far the number of samples (a few hundreds of volumes). 
-
-The scalar b is not particularly informative,
-however the vector w corresponds to a volume that
-can be represented in brain space as a volume
-for visualization of the predictive pattern of voxels.
-
-each row of X is a p-dimensional sample,
-i.e., an activation map of p voxels related to one stimulus presentation.
-
-To address this issue, dimensionality reduction attempts to
-find a low dimensional subspace that concentrates
-as much of the predictive power of
-the original set as possible for the problem at hand.
--> we do not want to do preliminary feature selection or
-dimensionality reduction
-or feature agglomeration because we want to fit one model parameter
-to each brain voxel for maximal interpretability
-This corresponds to discarding some columns of X.
-
-The essential shortcoming of the Elastic net is that
-it does not take into account the spatial structure of the data,
-which is crucial in this context
-
-Craddock clusters are often used for feature agglomeration
-into parcels
--> exploits only a part of the data
-
-dual-level spatial structure
-sparse hierarchical regularization
-structured sparsity-inducing regularization
-the root of the tree T is the unique cluster that gathers all the voxels,
-
-It is a generalization of the traditional $\ell_1$-norm
-$\Omega(\mathbf{w}) = \sum_{j=1}^p|\mathbf{w}_j|$
-ignores structure
-
-
-\cite{jenatton2011multi}
-
-\textit{structured sparsity}
-
-\cite{huang2011learning, morales2010family, jenatton2011structured}
-
-
-a node $j$ of $\mathcal{T}$,
-we denote by $g_j \subseteq \{1,..,q\}$ the set of indices that record
-all the descendants of $j$ in $\mathcal{T}$
-
-the family of sparsity-inducing norms has recently been extended
-by hierarchical sparsity penalty terms
-\cite{zhao2009composite}.
-
-
-\begin{equation}
-  \Omega(\mathbf{w}) = \sum_{g \in G}||\mathbf{w}_g||_2 = \sum_{g \in G}\sqrt{\sum_{j \in g}\mathbf{w}_j^2}
-\end{equation}
-
-For example, when G is the set of all singletons, Ω is the
-usual l1 norm (assuming that all the weights are equal to 1).
-
-l1/l2 mixed norm is convex
-
-
-Discarding coefficients belonging to a network group will naturally enforce
-discarding the coefficients belonging to each of its descendent region groups.
-Conversely,
-variable selection of a network group will also enforce
-selection of all voxel of its descendent group regions.
-Single region groups can however be set to zero (unselected)
-or non-zero (selected)
-without analogous effect on the parent network group.
-
-
-
-
-At the between-group level,...
-$\Omega$ exerts $\ell_1$-like variable selection on
-the $(||\mathbf{w}_g||_2)_{g\in G}$ groups,
-yielding a maximum of $g \in G$ to be zeroed out
-\cite{jenatton2011structured}.
-The important consequence is that also all descentes of such a zeroed
-group $g \in G$ will be descarded.
-Conversely,
-if one group $g$ is selected,
-then all the ancestral groups will also be selected.
-Thus, statistical estimation will be improved by enticing
-entire voxel sets to be selected or discarded as predictive, 
-although one individual coefficient is computed for each voxel.
-
--> it is a $(\ell_1, \ell_2)$-mixed norm
--> between-group sparsity effect by l1
--> within-group shrinkage effect by l2
-
-
-\begin{equation}
-  \Omega(\mathbf{w}) = \sum_{g \in G} \eta_g ||\mathbf{w}_g||_2
-\end{equation}
-
-$(\eta_g)_{g \in G}$ are positive weights for the groups
-
-
-fit to the data is measured through
-a convex loss function (w, b) 􏰀→ L(y, X, w, b) ∈ R+. 
-
-
-\paragraph{Classification}
-
-logistic loss function
-
-\begin{equation}
-  P(y=k|x, W, b) = \frac{exp\{x^Tw^k + b_k\}}{\sum_{m=1}^cexp\{x^Tw^m + b_m\}}
-  \argmin \frac{1}{2}||u-v||_2^2 + \lambda\Omega(\mathbf{w})
-\end{equation}
-
-$\lambda > 0$
-
-bias is omitted because $\mathbf{X} and \mathbf{y}$
-are mean-centered and unit-variance scaled.
-
-In this setting, and given a new fMRI volume x,
-we make predictions by choosing the label that maximizes
-the class-conditional probabil- ities (3.1), that is, argmaxk∈{1,...,c}Prob(y = k|x; W∗, b∗)
-
-One-versus-rest scheme
-
-
-\paragraph{Regression}
-
-squared error as loss
-
-\begin{equation}
-  \argmin \frac{1}{2}||\mathbf{y - Xw}||_2^2 + \lambda\Omega(\mathbf{w})
-\end{equation}
-
-$\lambda > 0$
-
-Prediction for a new fMRI volume x is then simply performed by computing
-the dot product x⊤w∗
-
-\paragraph{Numerical optimization}
-
-Difficult because high-dimensional setting
-
-empirical risk minimization was performed by
-
-
-The intercept $b$ is left unregularized
+We formulate our estimation problem in the framework of regularized risk
+estimation applied to linear models: 
+We would like to estimate a good predictor of cognitive task
+given a brain image. Let the set \(\mathcal X\subset\R^p\) represent brain
+images of \(p > 0\) voxels.
+
+Then we would like to minimize the risk \(\mathcal L(\hat y, y)\), where
+\(\hat y = X\hat w + \hat b\), while regularizing to incorporate a useful
+prior. Taken together, this can be framed as an optimization problem
+\[\argmin_{w, b} \mathcal L(Xw + b, y) + \lambda\Omega(w),\]
+where \(\lambda > 0\) and \(\Omega\) is the regularizer.
+
+Brain regions are defined as disjoint groups of voxels. Let \(\mathcal G\)
+be a partition of \(\{1, \dots, p\}\), i.e.
+\[  \bigcup_{i} g_i = \{1, \dots, p\} \textrm{ and } g_i\cap g_j=\emptyset
+\quad\forall i\not=j\]
+
+Brain networks consist of regions and are thus super-regions or groups of 
+regions. The set of brain networks \(\mathcal{H}\) is also a partition of 
+\(\{1, \dots, p\}\) and in addition it is consistent with \(\mathcal G\) in
+the sense that
+\[\textrm{for all }g\in\mathcal G, h\in\mathcal H,\quad
+\textrm{ either } g\subset h\textrm{ or }g\cap h = \emptyset.\]
+This allows a clear association of each region \(g\in\mathcal G\) to a 
+network \(h\in\mathcal H\) and thus establishes a tree structure (up to 
+adding a root node containing all voxels).
+
+For a brain image \(w\in\R^p\) and a group \(g\), the vector 
+\(w_g\in\R^{|g|}\) is defined as the restriction of \(w\) to the coordinates
+ in \(g\). The structured penalty incorporating network
+and region information can then be written as
+\[\Omega(w) = \alpha\sum_{h\in\mathcal H}\eta_h\|w_h\|_2 + \beta\sum_{g\in\mathcal G}\eta_g\|w_g\|_2.\]
+According to \cite{Zhou_or_who_was_that} we set \(\eta_g = 1/\sqrt{|g|}\) to
+account for varying group size. The hierarchy-level-specific factors 
+\(\alpha > 0\) and \(\beta > 0\) are used to trade-off region-weighted and
+network-weighted models against each other.
+
+The prediction problem at hand is a multiclass classification. We choose to
+attack this using one-vs-rest scheme on a binary logistic regression, whose
+loss can be written as
+\[\sum_{i=1}^n\log(1 + \exp(-y_i\langle x_i, w\rangle)) + \lambda\Omega(w),\]
+if \(y\in{-1, 1}\) and with \(x_i\in\R^p\) the training sample brain images.
+
+{\color{red}
+MISSING
+\begin{itemize}
+\item cross-validation scheme
+\item analysis of penalty tradeoff (CV scheme for that?)
+\item mentioning of control methods in methods. Trace norm, sparse group sparsity. Anything else? ENET?
+\end{itemize}
+}
+
+%% Sparse linear models
+%% encode geometric prior information
+%% topology
+%% local sets of voxels
+%% 
+%% Group-sparsity is a first step towards the more general idea that
+%% a regularization function can encourage sparse solutions with a particular structure. 
+%% 
+%% it is not realistic to assume that all of the tasks share the same set of rele- vant inputs as in the L1/L2-regularized regression. A subset of highly related outputs may share a common set of relevant inputs, whereas weakly related outputs are less likely to be affected by the same inputs.
+%% 
+%% structured regularization
+%% We might therefore gain in the quality of the factors
+%% induced by enforcing directly this a priori 
+%% 
+%% groups at multiple granularity
+%% 
+%% tree-guided group lasso
+%% 
+%% encourage structured shrinkage effect 
+%% 
+%% l1 = unstructured sparsity-inducing penalty
+%% 
+%% Our method extends the L1/L2 penalty to the tree-lasso penalty
+%% by letting the hierarchically-defined groups overlap. 
+%% the tree lasso is a special case of overlapping group lasso
+%% 
+%% for every column u of U, it compute a column v of V solving
+%% 
+%% we aim at learning a weight vector w ∈ Rp and an intercept b ∈ R
+%% such that the prediction of y can be based on the value of w⊤x + b.
+%% 
+%% We omit a bias term, since the data were mean-centered
+%% and unit-variance scaled.
+%% The scalar b is not particularly informative
+%% 
+%% however the vector w corresponds to a volume that
+%% can be represented in brain space as a volume
+%% 
+%% hierarchial tree = more generally into a directed acyclic graph
+%% 
+%% more precisely, we denote by X ∈ Rn×p the design matrix
+%% assembled from n fMRI volumes and by y ∈ Rn the corresponding n targets.
+%% In other words, each row of X is a p-dimensional sample,
+%% i.e., an activation map of p voxels related to one stimulus presentation.
+%% for visualization of the predictive pattern of voxels. 
+%% 
+%% Learning the parameters (w, b) remains challenging
+%% since the number of features (104 to 105 voxels) exceeds
+%% by far the number of samples (a few hundreds of volumes). 
+%% 
+%% The scalar b is not particularly informative,
+%% however the vector w corresponds to a volume that
+%% can be represented in brain space as a volume
+%% for visualization of the predictive pattern of voxels.
+%% 
+%% each row of X is a p-dimensional sample,
+%% i.e., an activation map of p voxels related to one stimulus presentation.
+%% 
+%% To address this issue, dimensionality reduction attempts to
+%% find a low dimensional subspace that concentrates
+%% as much of the predictive power of
+%% the original set as possible for the problem at hand.
+%% -> we do not want to do preliminary feature selection or
+%% dimensionality reduction
+%% or feature agglomeration because we want to fit one model parameter
+%% to each brain voxel for maximal interpretability
+%% This corresponds to discarding some columns of X.
+%% 
+%% The essential shortcoming of the Elastic net is that
+%% it does not take into account the spatial structure of the data,
+%% which is crucial in this context
+%% 
+%% Craddock clusters are often used for feature agglomeration
+%% into parcels
+%% -> exploits only a part of the data
+%% 
+%% dual-level spatial structure
+%% sparse hierarchical regularization
+%% structured sparsity-inducing regularization
+%% the root of the tree T is the unique cluster that gathers all the voxels,
+%% 
+%% It is a generalization of the traditional $\ell_1$-norm
+%% $\Omega(\mathbf{w}) = \sum_{j=1}^p|\mathbf{w}_j|$
+%% ignores structure
+%% 
+%% 
+%% \cite{jenatton2011multi}
+%% 
+%% \textit{structured sparsity}
+%% 
+%% \cite{huang2011learning, morales2010family, jenatton2011structured}
+%% 
+%% 
+%% a node $j$ of $\mathcal{T}$,
+%% we denote by $g_j \subseteq \{1,..,q\}$ the set of indices that record
+%% all the descendants of $j$ in $\mathcal{T}$
+%% 
+%% the family of sparsity-inducing norms has recently been extended
+%% by hierarchical sparsity penalty terms
+%% \cite{zhao2009composite}.
+%% 
+%% 
+%% \begin{equation}
+%%   \Omega(\mathbf{w}) = \sum_{g \in G}||\mathbf{w}_g||_2 = \sum_{g \in G}\sqrt{\sum_{j \in g}\mathbf{w}_j^2}
+%% \end{equation}
+%% 
+%% For example, when G is the set of all singletons, Ω is the
+%% usual l1 norm (assuming that all the weights are equal to 1).
+%% 
+%% l1/l2 mixed norm is convex
+%% 
+%% 
+%% Discarding coefficients belonging to a network group will naturally enforce
+%% discarding the coefficients belonging to each of its descendent region groups.
+%% Conversely,
+%% variable selection of a network group will also enforce
+%% selection of all voxel of its descendent group regions.
+%% Single region groups can however be set to zero (unselected)
+%% or non-zero (selected)
+%% without analogous effect on the parent network group.
+%% 
+%% 
+%% 
+%% 
+%% At the between-group level,...
+%% $\Omega$ exerts $\ell_1$-like variable selection on
+%% the $(||\mathbf{w}_g||_2)_{g\in G}$ groups,
+%% yielding a maximum of $g \in G$ to be zeroed out
+%% \cite{jenatton2011structured}.
+%% The important consequence is that also all descentes of such a zeroed
+%% group $g \in G$ will be descarded.
+%% Conversely,
+%% if one group $g$ is selected,
+%% then all the ancestral groups will also be selected.
+%% Thus, statistical estimation will be improved by enticing
+%% entire voxel sets to be selected or discarded as predictive, 
+%% although one individual coefficient is computed for each voxel.
+%% 
+%% -> it is a $(\ell_1, \ell_2)$-mixed norm
+%% -> between-group sparsity effect by l1
+%% -> within-group shrinkage effect by l2
+%% 
+%% 
+%% \begin{equation}
+%%   \Omega(\mathbf{w}) = \sum_{g \in G} \eta_g ||\mathbf{w}_g||_2
+%% \end{equation}
+%% 
+%% $(\eta_g)_{g \in G}$ are positive weights for the groups
+%% 
+%% 
+%% fit to the data is measured through
+%% a convex loss function (w, b) 􏰀→ L(y, X, w, b) ∈ R+. 
+%% 
+%% 
+%% \paragraph{Classification}
+%% 
+%% logistic loss function
+%% 
+%% \begin{equation}
+%%   P(y=k|x, W, b) = \frac{exp\{x^Tw^k + b_k\}}{\sum_{m=1}^cexp\{x^Tw^m + b_m\}}
+%%   \argmin \frac{1}{2}||u-v||_2^2 + \lambda\Omega(\mathbf{w})
+%% \end{equation}
+%% 
+%% $\lambda > 0$
+%% 
+%% bias is omitted because $\mathbf{X} and \mathbf{y}$
+%% are mean-centered and unit-variance scaled.
+%% 
+%% In this setting, and given a new fMRI volume x,
+%% we make predictions by choosing the label that maximizes
+%% the class-conditional probabil- ities (3.1), that is, argmaxk∈{1,...,c}Prob(y = k|x; W∗, b∗)
+%% 
+%% One-versus-rest scheme
+%% 
+%% 
+%% \paragraph{Regression}
+%% 
+%% squared error as loss
+%% 
+%% \begin{equation}
+%%   \argmin \frac{1}{2}||\mathbf{y - Xw}||_2^2 + \lambda\Omega(\mathbf{w})
+%% \end{equation}
+%% 
+%% $\lambda > 0$
+%% 
+%% Prediction for a new fMRI volume x is then simply performed by computing
+%% the dot product x⊤w∗
+%% 
+%% \paragraph{Numerical optimization}
+%% 
+%% Difficult because high-dimensional setting
+%% 
+%% empirical risk minimization was performed by
+%% 
+%% 
+%% The intercept $b$ is left unregularized
 
 
 
@@ -743,7 +876,7 @@ for a neurobiological bias of the statistical estimation.
 Vanilla logistic regression with $\ell_1$-penalization
 does not assume any previously known special structure.
 This classification estimator embraces a vision of neural activity structure
-that expectes a minimum of
+that expects a minimum of
 topographically and functionally independent brain voxel to be relevant.
 %
 Logistic regression with sparse group sparsity
@@ -773,7 +906,7 @@ Importantly, the thus selected sparse logistic regression classifier was
 evaluated on an identical test set in all settings.
 %
 Hierarchial tree sparsity demonstrated the best generalization
-in distinguihsing unseen neural activity maps from 18 tasks
+in distinguishing unseen neural activity maps from 18 tasks
 (89.67\%, mean recall XX.YY, mean precision XX.YY).
 It was closely followed by logistic regression with trace-norm
 regularization that is structured but not neurobiologically informed

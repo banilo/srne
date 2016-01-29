@@ -223,7 +223,7 @@ functional magnetic resonance imaging (fMRI) and
 positron emission tomography (PET)
 \cite{fristen1997imaging}.
 Further,
-radioactive mapping {\color{red} Michael: is this the correct term?} of neurotransmitter receptors
+radioactive mapping of neurotransmitter receptors
 rendered accessible yet another
 local characteristic of neuronal populations
 \cite{zilles2009receptor}.
@@ -336,31 +336,31 @@ Our main contribution is the domain-specific adaptation of sparse structured
 penalties making it possible to jointly incorporate functional 
 specialization and functional integration priors into statistical 
 estimators.
-We make use of the hierarchical group lasso as introduced by Jennaton and 
-others in \cite{jenatton2011structured} to create a set of convex penalties
-with which we can probe this interplay between regional specificity and 
-inter-regional functional integration during different cognitive tasks.
+We capitalize on hierarchical group lasso as introduced by Jennaton and 
+others in \cite{jenatton2011structured} to create a set of convex penalty terms.
+These can probe the interplay between regional specialization and 
+inter-regional functional integration during defined psychological tasks.
 %
-\paragraph{Rationale}
+\paragraph{Rationale.}
 Three-dimensional voxel brain images as obtained by various neuroimaging
 techniques are very high-dimensional, but also very highly structured.
-While its explicit dimensionality, the number of voxels, which varies with
-the resolution of the image is generally of the order of 100000, the number
-of samples available for analyses never exceeds hundreds or thousands.
-This \(n << p\) situation immediately implies an underdeterminedness for any
-linear model basing its decisions on dot products with the voxel values.
+While its explicit dimensionality, the number of brain voxels, which varies with
+the resolution of the image is generally of the order of 100,000, the number
+of samples available for analyses rarely exceeds hundreds or thousands.
+This \(n << p\) scenario immediately implies underdetermination of any
+linear model based on dot products with the voxel values.
 
-Luckily, there is and abundance structure to be exploited, which can be
+Yet, there is abundant structure to be exploited, which can be
 injected into the estimation as a domain knowledge prior. Here we are 
 interested in incorporating knowledge about both the well-established 
-modules of functional specialization and the interactions of these modules
-amongst each other across the brain.
+modules of functional specialization and the spatiotemporal interactions
+between these.
 %
 Developmentally, such large-scale networks emerge during late
-fetal growth (Doria et al., 2010), before cognitive capacities mature
+fetal growth (Doria et al., 2010), before mental capacities mature
 in childhood. 
 %
-In adults, nodes of a same cohesive network have more
+In adults, nodes of a such a spatiotemporally cohesive network have more
 similar functional profiles than nodes from different networks
 (Anderson et al., 2013).
 %
@@ -377,14 +377,14 @@ well-established method of estimating these networks is independent
 component analysis \cite{Hamalainen}. It robustly identifies the default
 mode, saliency and attention networks.
 %
-Global functional networks as estimated by ICA are contiuous brain maps
+Global functional networks as estimated by ICA are continuous brain maps
 attributing weights to each voxel. Since the regions involved in these
 networks are nevertheless largely disjoint spatially and roughly in
-correspondence with module boundaries {\color{red} Michael: verify this!!!}, 
+correspondence with module boundaries {\color{red} Danilo: Ok!}, 
 it is possible to uniquely associate each module from a region atlas to one
 of the extracted global functional networks.
 
-This correspondence makes it possible to encode our knowledge about the 
+This correspondence makes it possible to inject established knowledge about the 
 networks and regions into a hierarchy: A brain contains a certain number of
 networks, which in turn consist of the atlas modules as subregions.
 We can use this hierarchy to create a structural prior of expected weight
@@ -465,7 +465,7 @@ statistical estimation of brain activity.
 %%  a biologically and statistically desirable bias 
 
 
-\paragraph{Problem formulation}
+\paragraph{Problem formulation.}
 We formulate our estimation problem in the framework of regularized risk
 estimation applied to linear models: 
 We would like to estimate a good predictor of cognitive task

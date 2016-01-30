@@ -940,6 +940,18 @@ Introduced a priori knowledge of brain region compartments
 by sparse group sparsity performed worst
 (87.89\%, mean recall XX.YY, mean precision XX.YY).
 %
+In an important subanalysis,
+the gain of the combined region-network prior was confirmed by
+selectively zeroing the $eta_g$ coefficients of either all region groups
+or all network groups in the hierarchical prior.
+Removing region structure from the prior achieved
+88,84\% accuracy (mean recall XX.YY, mean precision XX.YY),
+while removing network structure from the prior achieved
+87,05\% accuracy (mean recall XX.YY, mean precision XX.YY).
+These results from partial priors are indeed outperformed
+the full region-network tree prior at 89,67\% accuracy
+(mean recall XX.YY, mean precision XX.YY).
+%
 In sum,
 biasing sparse model selection by domain knowledge of region-network hierarchies
 outperformed other types of frequently used sparse penalization techniques.

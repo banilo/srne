@@ -93,7 +93,7 @@ trace-norm penalization, as well as neurobiologically
 informed $\ell_1/\ell_2$-block-norm group sparsity.
 Varying the relative importance of
 region and network structure within the hierarchical tree prior
-recovered complementary aspects of the neural activity pattern
+recovered complementary aspects of the neural activity patterns
 with similar predictive accuracies.
 %
 In sum,
@@ -175,7 +175,7 @@ Regarding functional segregation into specialized regions,
 early histological investigations into the microscopic heterogeneity of
 the human cerebral cortex have resulted
 in several detailed anatomical maps
-\cite{brodmann1909vergleichende, vogt1919allgemeine}.
+\cite{brodmann1909vergleichende}.
 Regarding axonal connections,
 each such cortical area has been observed
 to possess a unique set of incoming and outgoing connections
@@ -293,7 +293,7 @@ in stark constrast to methods examining regional specialization.
 
 
 % study
-Building on these two major interpretational streams in systems neuroscience,
+Building on these two major interpretational traditions in systems neuroscience,
 the present study proposes to incorporate
 established neurobiological structure underlying
 functional segregation and integration
@@ -309,7 +309,7 @@ by hierarchical structured sparsity.
 Learning techniques
 exploiting structured sparsity 
 have recently made much progress in various application domains
-from processing of auditory signals \cite{daudet2004sparse},
+from processing auditory signals \cite{daudet2004sparse},
 natural images \cite{harzallah2009combining} and
 videos \cite{kang2015structured, kim2010sparse}
 to
@@ -867,13 +867,13 @@ were obtained on the same test set.
 Unstructured $\ell_1$-penalized logistic regression (\textit{upper left})
 imposed a minimum of relevant brain voxels without
 assuming special structure.
-Structured $\ell_1/\ell_2$ block norm with additional $\ell_1$ term
+Structured $\ell_1/\ell_2$-block norm with additional $\ell_1$ term
 (\textit{lower left})
 imposed region compartments, but na\"ive to network structure.
 Structured trace-norm penalization (\textit{lower right})
 imposed low-rank structure
 with sparsity of network patterns, but na\"ive to region structure.
-Structured $\ell_1/\ell_2$ block norm with a hierarchy of
+Structured $\ell_1/\ell_2$-block-norm with a hierarchy of
 both region and network priors (\textit{upper right})
 exhibited the best out-of-sample performance.
 %
@@ -914,7 +914,7 @@ This supervised classification algorithm
 expected a minimum of unknown network patterns
 to be relevant.
 %
-The stratified and shuffled training data were submitted to
+The stratified and shuffled training data were submitted
 to a nested cross-validation scheme
 for model selection and model assessment.
 In the inner CV layer, the logistic regression estimators
@@ -927,22 +927,24 @@ selected among candidates for the respective $\lambda$ parameter
 by searching between $10^{-2}$ and $10^{1}$ in 9 steps on a logarithmic scale.
 Importantly, the thus selected sparse logistic regression classifier was
 evaluated on an identical test set in all settings.
-%
-Hierarchial tree sparsity demonstrated the best generalization
-in distinguishing unseen neural activity maps from 18 tasks
+
+
+Across analyses,
+hierarchial tree sparsity was most successful
+in distinguishing unseen neural activity maps from 18 psychological tasks
 (89.67\%, mean recall XX.YY, mean precision XX.YY).
-It was closely followed by logistic regression with trace-norm
-regularization that is structured but not neurobiologically informed
+It was closely followed by logistic regression
+structured by trace-norm regularization
 (89.43\%, mean recall XX.YY, mean precision XX.YY).
 Lasso featured an average performance comparing to the other sparse estimators
-(88.60\%, mean recall XX.YY, mean precision XX.YY)
-Introduced a priori knowledge of brain region compartments
+(88.60\%, mean recall XX.YY, mean precision XX.YY).
+Introducing a priori knowledge of brain region compartments
 by sparse group sparsity performed worst
 (87.89\%, mean recall XX.YY, mean precision XX.YY).
 %
 In an important subanalysis,
-the gain of the combined region-network prior was confirmed by
-selectively zeroing the $eta_g$ coefficients of either all region groups
+the gain of the combined region-network prior was also confirmed by
+selectively zeroing the $\eta_g$ coefficients of all region groups
 or all network groups in the hierarchical prior.
 Removing region structure from the prior achieved
 88,84\% accuracy (mean recall XX.YY, mean precision XX.YY),
@@ -954,7 +956,7 @@ the full region-network tree prior at 89,67\% accuracy
 %
 In sum,
 biasing sparse model selection by domain knowledge of region-network hierarchies
-outperformed other types of frequently used sparse penalization techniques.
+outcompeted other types of frequently used sparse penalization techniques.
 
 
 
@@ -977,7 +979,7 @@ unthresholded axial maps of model weights
 are shown for comparison against
 the sample average of that class
 (\textit{rightmost column}, thresholded at the $75^{th}$ percentile).
-The out-of-sample accuracies for predicting all 18 classes
+The out-of-sample accuracies for predicting all 18 psychological tasks
 is given in percent.
 %
 In the data-scarce scenario,
@@ -1004,12 +1006,13 @@ Region-network priors should bias model selection towards more
 neurobiologically plausible classification estimators.
 This should yield better out-of-sample generalization and
 support recovery than
-$\ell_1$-constrained logistic regression na\"ive to neurobiology
+neurobiology-na\"ive $\ell_1$-constrained logistic regression
 in the data-scarce and data-rich scenarios.
 %
-The HCP task data with examples from 18 classes were first divided into
+The HCP task data with examples from 18
+psychological tasks were first divided into
 90\% of training set (i.e., 7584 neural activity maps) and
-10\% of test set (i.e., 842 maps).
+10\% of test set (i.e., 842 neural activity maps).
 Both learning algorithms were fitted based on the
 training set at different subsampling fractions:
 20\% (1516 maps),
@@ -1018,7 +1021,7 @@ training set at different subsampling fractions:
 80\% (6067 maps), and
 100\% (7584 maps).
 %
-The stratified and shuffled training data were submitted to
+The stratified and shuffled training data were submitted
 to a nested cross-validation scheme
 for model selection and model assessment.
 In the inner CV layer, the logistic regression estimators
@@ -1031,21 +1034,22 @@ selected among candidates for the respective $\lambda$ parameter
 by searching between $10^{-2}$ and $10^{1}$ in 9 steps on a logarithmic scale.
 Importantly, the thus selected sparse logistic regression classifier was
 evaluated on an identical test set in all settings.
-%
-Three observation have been made.
-In the data-scarce scenario (i.e., 1/5 of actual training data),
+
+
+Three observations have been made.
+In the data-scarce scenario (i.e., 1/5 of available training data),
 hierarchical tree sparsity achieved the biggest advantage
 in out-of-sample performance by 5,11\% as well as
 better support recovery with weight maps already much closer
-to the training data average.
+to the class averages.
 In the case of scarce training data, which is typical for the brain imaging domain,
-regularization by region-network priors indeed allowed for
+regularization by region-network priors thus allowed for
 more effective extraction of classification-relevant structure
-from the neural activity scans.
+from the neural activity maps.
 %
-Across scenarios,
-the weight maps from ordinary logistic regression exhibit
-higher variance and many more zero coefficients
+Across training data fractions,
+the weight maps from ordinary logistic regression exhibited
+higher variance and more zero coefficients
 than hierarchical tree logistic regression.
 Given the usually high multicollinearity in neuroimaging data,
 this observation is likely to reflect instable selection of
@@ -1054,8 +1058,8 @@ due to the $\ell_1$-norm penalization.
 %
 In the data-rich scenario (i.e., entire training data used for model fitting),
 neurobiologically informed logistic regression
-profits more from the increased information quantities than
-neurobiologically naive logistic regression.
+profited more from the increased information quantities than
+neurobiologically na\"ive logistic regression.
 That is, the region-network priors actually further enhance the similarity
 to the weight maps even in abundant input data.
 This was the case although
@@ -1110,34 +1114,36 @@ less interpretable predictive model choices.
 Finally, the relative importance of the
 region and network priors within the hierarchical tree prior
 was quantified (Figure \ref{fig_regnetratio}).
-The $\eta_g$ group of region priors was multiplied with a
+The group weight $\eta_g$ of region priors was multiplied with a
 region-network ratio, while the
-$\eta_g$ group of network priors was biased by the corresponding
-network-region ratio. A region-network ratio of 3, for instance,
+group weight $\eta_g$ of network priors was divided by that
+region-network ratio. For instance, a region-network ratio of 3
 increased the relative importance of known region structure
-by multiplying $\frac{3}{1}$ to the
-$\eta_g$ factor of all region groups
+by multiplying $\frac{3}{1}$ to
+$\eta_g$ of all region group penalties
 and multiplying
-$\frac{1}{3}$ to all network groups.
+$\frac{1}{3}$ to $\eta_g$ of all network group penalties.
 The data splitting cross-validation scheme was identical to the
 above modelling experiments.
-%
+
+
 As the most important observation,
 a range between region-dominant and network-dominant structured penalties
-yields quantitatively almost identical generalization to new data
+yielded quantitatively almost identical generalization to new data
 but qualitatively different decision functions manifested in the weight maps
 (Figure \ref{fig_regnetratio}, second and forth column).
 Classification models with many zero coefficients but high absolute
 coefficients in either region compartments or network compartments
-can similarly extrapolation to unseen neural activity maps.
+can similarly extrapolate to unseen neural activity maps.
 Second,
-these perform similar to equilibrated region-network priors
+these achieve classification performance
+comparable to equilibrated region-network priors
 that set less voxel coefficients to zero and spread the
 probability mass with lower absolute coefficients across the whole brain
 (Figure \ref{fig_regnetratio}, third column in the middle).
 Third,
 overly strong emphasis on either level of the hierarchical prior
-can yield the neurobiologically informative maps
+can yield the neurobiologically informative results with maps
 of the most necessary region or network structure for
 statistically significant out-of-sample performance
 (Figure \ref{fig_regnetratio}, leftmost and rightmost columns).
@@ -1154,9 +1160,11 @@ in the future.
 Relevant structure in neuroimaging data has long been investigated
 according to two separate organizational principles:
 functional segregation into discrete brain regions
-and functional integration by interregional brain networks.
+\cite{passingham2002}
+and functional integration by interregional brain networks
+\cite{sporns14nn}.
 %
-This paper demonstrates the simultaneous exploitation of
+This proof-of-concept study demonstrates the simultaneous exploitation of
 both these neurobiological compartments
 for sparse variable selection and high-dimensional prediction
 in a reference dataset.
@@ -1172,19 +1180,19 @@ although these statistical-learning goals are typically in conflict.
 
 
 The present approach has important advantages over previous
-neuroimaging studies that capitalized on dimensionality reduction to harness
-the curse of dimensionality.
-They often used preliminary region-wise pooling functions
+analysis strategies that rely on dimensionality reduction of
+the neuroimaging data to harness the curse of dimensionality.
+They often use preliminary pooling functions within regions
 or regression against network templates
 for subsequent supervised learning on the aggregated feature space.
-Such lossy two-step approaches of feature engineering and inference
-\textit{i)} can only account for either functional specialization or
-functional integration of brain organization,
+Such lossy approaches divided into feature engineering and inference steps
+\textit{i)} can only satisfy the specialization or
+integration account of brain organization,
 \textit{ii)} depend on the ground truth being a region or network effect,
 and
 \textit{iii)} cannot issue individual coefficients for every brain voxels.
 %
-Hierarchical region-network sparsity overcomes these shortcomings
+Hierarchical region-network sparsity addresses these shortcomings
 by estimating individual voxel contributions
 while benefitting from their functional segregation and integration
 to restrict statistical complexity.
@@ -1206,7 +1214,7 @@ pattern-learning methods in systems neuroscience.
 This includes supervised methods for whole-brain classification and regression
 with one or several target variables.
 The principled regularization scheme could even inform
-unsupervised structure discovery methods,
+unsupervised structure-discovery methods,
 such as principal component analysis
 \cite{jenatton2009structured}
 and
@@ -1222,7 +1230,7 @@ Ultimately,
 successful high-dimensional inference is
 an important prerequisite
 for predicting diagnosis,
-disease trajectories, and treatment responses
+disease trajectories, and treatment response
 in personalized psychiatry and neurology.
 
 

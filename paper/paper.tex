@@ -503,11 +503,41 @@ account for varying group size. The hierarchy-level-specific factors
 \(\alpha > 0\) and \(\beta > 0\) are used to trade-off region-weighted and
 network-weighted models against each other.
 
+One can read off the formula that decreasing \(\alpha\) leads to less 
+penalization of brain networks and thus to tendentially fully active groups
+and dense brain maps. If at the same time \(\beta\) is increased to a point
+of inducing group sparsity, then only the structure of brain regions encoded
+by \(\mathcal G\) is present. Conversely, if \(\beta\) is decreased to 
+become non-selective, and \(\alpha\) is increased to group selectivity,
+then the structure imposed will come from \(\mathcal H\), leading to the
+selection of brain networks rather than regions.
+
+It is important to note that the above trade-off shows that predominance
+can be either attributed to regions or networks, but that nevertheless the
+penalty structure is hierarchical: If the network penalty layer sets a
+network group to zero, then all the contained region groups are forced to
+have activity zero. Conversely, if a brain region has non-zero coefficients,
+then necessarily the network containing it must be active.
+This relation is asymmetric, since when swapping the roles of \(\mathcal G\)
+ and \(\mathcal H\), these statements do not hold true anymore. A brain 
+region can set all its coefficients to zero without forcing the 
+corresponding network to zero. A brain network can be active without its
+subregions necessarily being active.
+When evaluating the trade-off in \((\alpha, \beta)\), this needs to be taken
+into account.
+
 The prediction problem at hand is a multiclass classification. We choose to
 attack this using one-vs-rest scheme on a binary logistic regression, whose
 loss can be written as
 \[\sum_{i=1}^n\log(1 + \exp(-y_i\langle x_i, w\rangle)) + \lambda\Omega(w),\]
 if \(y\in{-1, 1}\) and with \(x_i\in\R^p\) the training sample brain images.
+
+\paragraph{Optimization.}
+We optimize the data loss function using an iterative forward-backward
+scheme analogous to (F)ISTA for the lasso \cite{beck2009}. We divide the
+loss \(\mathcal L(w)\) into a smooth, convex data fit term \(F(w)\) (here: 
+logistic regression loss) and a potentially non-smooth, convex 
+regularization term
 
 {\color{red}
 MISSING

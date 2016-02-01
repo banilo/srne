@@ -563,15 +563,22 @@ According to \cite{jenatton2011}, the proximal operator of
 the hierarchical penalty \(\varepsilon\lambda\Omega\) is
 \[\prox_{\varepsilon\lambda\Omega}(v) = \prox_{\varepsilon\lambda\Omega_{\mathcal H}}\circ\prox_{\varepsilon\lambda\Omega_{\mathcal G}}(v).\]
 
+\paragraph{Hyperparameter optimization.}
+{\color{red} NEEDS EMBELLISHING}
+We perform nested cross-validation to obtain optimal hyperparameters. 
+In order to analyse their effect in detail, we split our analysis into two 
+parts.
+\begin{enumerate}
+\item In the first part, we optimize the trade-off between the different hierarchy levels as well as the global penalty level for maximal prediction.
+\item in the second part, we select the optimal global penalty level for 
+given trade-off ratios.
+\end{enumerate}
 
-{\color{red}
-MISSING
-\begin{itemize}
-\item cross-validation scheme
-\item analysis of penalty tradeoff (CV scheme for that?)
-\item mentioning of control methods in methods. Trace norm, sparse group sparsity. Anything else? ENET?
-\end{itemize}
-}
+\paragraph{Control methods}
+{\color{red} needs embellishing}
+We evaluate our tree structure against other commonly used structured sparse
+penalties.
+
 
 %% Sparse linear models
 %% encode geometric prior information

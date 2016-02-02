@@ -79,8 +79,9 @@ high-dimensional inference in brain imaging}
 Structured sparsity penalization has recently improved
 statistical models applied to high-dimensional data in various domains.
 As an extension to imaging neuroscience,
-priors on network hierarchies of brain regions have been incorporated into
-logistic-regression estimators for neural activity maps.
+the present work incorporates
+priors on network hierarchies of brain regions into
+logistic-regression estimators to distinguish neural activity.
 This remarries the perspectives of
 functional segregation and functional integration
 that are routinely divorced in neuroscientific research.
@@ -88,17 +89,17 @@ that are routinely divorced in neuroscientific research.
 Region-network hierarchical priors for supervised classification
 of 18 psychological tasks
 from a reference dataset are
-shown to outperform na\"ive $\ell_1$-norm and
+shown to outperform naive $\ell_1$-norm and
 trace-norm penalization, as well as neurobiologically
 informed $\ell_1/\ell_2$-block-norm group sparsity.
-Varying the relative importance of
-region and network structure within the hierarchical tree prior
-recovered complementary aspects of the neural activity patterns
-with similar predictive accuracies.
+Weighing the relative importance of
+region and network structure within the hierarchical tree penalty
+recovered complementary aspects of the neural activity patterns.
 %
-In sum,
-we demonstrate that priors of local and global neurobiological knowledge can enhance
-out-of-sample performance and domain interpretability
+It is thus demonstrated
+that priors of local and global neurobiological knowledge
+can enhance
+generalization performance, sample complexity, and domain interpretability
 by hierarchical tree sparsity.
 
 
@@ -117,8 +118,8 @@ functional specialization, functional integration
 % sparsity
 Many quantitative scientific domains underwent a
 recent passage from the classical regime (i.e., ``long data")  to
-the high-dimensional regime (i.e., ``wide data")
-\cite{jordan2015massive}.
+the high-dimensional regime (i.e., ``wide data").
+% the high-dimensional regime (i.e., ``wide data") \cite{jordan2015massive}.
 Also in the brain imaging domain,
 many contemporary methods for acquiring brain signals yield
 more variables per observation than
@@ -132,7 +133,7 @@ yields an underdetermined system of equations.
 Many such ill-posed estimation problems
 have benefited from
 \textit{sparsity} assumptions
-\cite{buhlmann2011statistics, hastie2015statistical}.
+\cite{hastie2015statistical}.
 They act as a 
 regularizer and can be used for model selection.
 Sparse supervised and unsupervised
@@ -147,8 +148,9 @@ statistical estimation,
 thus shrinking and selecting variables guided by
 expected data distributions
 \cite{bach2012optimization}.
-Such restrictions to complexity are an attractive plan of attack
-for the $\textgreater$100,000 variables of brain maps.
+Such restrictions to statistical complexity
+are an attractive plan of attack
+for the $\textgreater$100,000 variables per brain map.
 Yet, what generally accepted neurobiological structure lends itself
 to fruitful exploitation using structured sparsity priors?
 
@@ -162,51 +164,28 @@ Functional specialization emphasizes that microscopically distinguishable
 brain regions are responsible for distinct classes of computational 
 processes
 \cite{kanwisher2010functional}.
-Functional integration, in turn, emphasizes that brain function
+Conversely, functional integration emphasizes that brain function
 is enabled by complex connections between these
 distinct brain regions \cite{sporns14nn}.
 %
-These notions were predominantly derived from
-invasive examination of anatomy (i.e., histological preparation),
-connectivity (i.e., axonal tracing),
-and functional properties
-(i.e., single-cell recordings) in animals.
-Regarding functional segregation into specialized regions,
-early histological investigations into the microscopic heterogeneity of
-the human cerebral cortex have resulted
-in several detailed anatomical maps
-\cite{brodmann1909vergleichende}.
-Regarding axonal connections,
-each such cortical area has been observed
-to possess a unique set of incoming and outgoing connections
-\cite{passingham2002, young93monkey, scannell95cat}.
-%
-Both
-local
-%cyto- and chemoarchitectonic
+Local
 infrastructure
-and its unique global connectivity profile
-together are thought to realize brain function.
+and its unique global connectivity profile are thought to go hand-in-hand
+to realize brain function.
 %
-In sum,
-cortical brain modules versus connections between them
-reflect 
-functional specialization versus functional integration
-\cite{friston2002beyond, mesulam_sensation}.
-Importantly,
+However,
 probably no existing brain analysis method acknowledges that
 both functional organizations are inextricably involved
-in the realization of mental operations
-\cite{tononi1998complexity, saygin2012}.
+in the realization of mental operations.
 
 
 
-% SPECIAL
 Functional specialization has been
 explored and interpreted based on many different research methods.
 %
-Single-cell recordings and microscopic examination
-revealed, for instance, the
+For instance,
+single-cell recordings and microscopic examination
+revealed the
 specialization in the occipital visual cortex into V1, V2, V3, V3A/B, and V4
 \cite{hubel1962receptive, zeki1978functional}.
 Tissue lesion of the mid-fusiform gyrus of the visual system,
@@ -214,30 +193,6 @@ in turn,
 was frequently reported to impair
 recognition of others' identity from faces
 \cite{iaria2008contrib}.
-The whole-brain localization of
-sensory, motor, and emotional functions to cortical areas
-% in the living brain
-was later enabled by
-non-invasive brain imaging with
-functional magnetic resonance imaging (fMRI) and
-positron emission tomography (PET)
-\cite{fristen1997imaging}.
-Further,
-radioactive mapping of neurotransmitter receptors
-rendered accessible yet another
-local characteristic of neuronal populations
-\cite{zilles2009receptor}.
-% allude to our many-regions layer in our methods
-In the computational era,
-automatic clustering methods are increasingly employed to
-regionally differentiate the cerebral cortex,
-which can partly be more fine-grained than
-classical microscopical borders
-\cite{behrens03, cbp2015review}.
-High-thoughput approaches today enable
-ultrahigh-resolution 3D models of brain anatomy
-at near-cellular scale
-\cite{amunts2013bigbrain}.
 %
 As a crucial common point,
 all these methodological approaches
@@ -245,43 +200,23 @@ yield neuroscientific findings
 that are naturally interpreted according to
 non-overlapping, discrete region compartments
 as the basic architecture of brain organization.
-
-
-
 % INTEGRAL
 It is more recent
 that the main interpretational focus has shifted
 from circumscribed regions to network stratifications
-in systems neuroscience \cite{yuste2015, stephan_dys}.
+in systems neuroscience \cite{yuste2015}.
 %
-Invasive axonal tracing studies in monkeys were complemented
-by diffusion MRI tractography in humans
-as a now frequently employed method to
-outline fiber bundles between brain regions
-\cite{jbabdi2013long}.
 Besides analyses of
 electrophysiological oscillations
-\cite{buzsaki2004neuronal}
+% \cite{buzsaki2004neuronal}
 and
-graph-theoretical properties \cite{bullmore2009complex},
+graph-theoretical properties,
+% graph-theoretical properties \cite{bullmore2009complex},
 studies of
-functional connectivity \cite{buckner2013opportunities} and
+functional connectivity correlation \cite{buckner2013opportunities} and
 independent component analysis (ICA) \cite{beckmann2005}
 became the workhorses of network discovery
 in neuroimaging.
-These revealed the important implication of
-canonical brain networks across psychological tasks,
-including the so-called
-``default-mode network'' \cite{raichle2001pnas},
-``salience network'' \cite{seeley2007dissociable},
-and ``dorsal attention network'' \cite{corbettashul2008}. 
-Characteristic changes in the configuration of
-these macroscopical networks
-were repeatedly observed to be induced
-by the onset of given psychological tasks \cite{fransson2006}.
-% Such task-induced mechanisms orchestrating supraordinate networks
-% might be subserved by the right anterior insula \cite{sridh2008}
-% and temporo-parietal junction \cite{bzdok2013tpj}.
 %
 As a common point of all these methods,
 interpretation of findings naturally embraces
@@ -289,6 +224,143 @@ cross-regional integration by
 overlapping network compartments
 as the basic architecture of brain organization,
 in stark constrast to methods examining regional specialization.
+
+
+% % specialization & integration
+% Concepts on human brain organization have long been torn
+% between the two extremes
+% \textit{functional specialization} and \textit{functional integration}.
+% Functional specialization emphasizes that microscopically distinguishable
+% brain regions are responsible for distinct classes of computational 
+% processes
+% \cite{kanwisher2010functional}.
+% Functional integration, in turn, emphasizes that brain function
+% is enabled by complex connections between these
+% distinct brain regions \cite{sporns14nn}.
+% %
+% These notions were predominantly derived from
+% invasive examination of anatomy (i.e., histological preparation),
+% connectivity (i.e., axonal tracing),
+% and functional properties
+% (i.e., single-cell recordings) in animals.
+% Regarding functional segregation into specialized regions,
+% early histological investigations into the microscopic heterogeneity of
+% the human cerebral cortex have resulted
+% in several detailed anatomical maps
+% \cite{brodmann1909vergleichende}.
+% Regarding axonal connections,
+% each such cortical area has been observed
+% to possess a unique set of incoming and outgoing connections
+% \cite{passingham2002, young93monkey, scannell95cat}.
+% %
+% Both
+% local
+% %cyto- and chemoarchitectonic
+% infrastructure
+% and its unique global connectivity profile
+% together are thought to realize brain function.
+% %
+% In sum,
+% cortical brain modules versus connections between them
+% reflect 
+% functional specialization versus functional integration
+% \cite{friston2002beyond, mesulam_sensation}.
+% Importantly,
+% probably no existing brain analysis method acknowledges that
+% both functional organizations are inextricably involved
+% in the realization of mental operations
+% \cite{tononi1998complexity, saygin2012}.
+% 
+% 
+% 
+% % SPECIAL
+% Functional specialization has been
+% explored and interpreted based on many different research methods.
+% %
+% Single-cell recordings and microscopic examination
+% revealed, for instance, the
+% specialization in the occipital visual cortex into V1, V2, V3, V3A/B, and V4
+% \cite{hubel1962receptive, zeki1978functional}.
+% Tissue lesion of the mid-fusiform gyrus of the visual system,
+% in turn,
+% was frequently reported to impair
+% recognition of others' identity from faces
+% \cite{iaria2008contrib}.
+% The whole-brain localization of
+% sensory, motor, and emotional functions to cortical areas
+% % in the living brain
+% was later enabled by
+% non-invasive brain imaging with
+% functional magnetic resonance imaging (fMRI) and
+% positron emission tomography (PET)
+% \cite{fristen1997imaging}.
+% Further,
+% radioactive mapping of neurotransmitter receptors
+% rendered accessible yet another
+% local characteristic of neuronal populations
+% \cite{zilles2009receptor}.
+% % allude to our many-regions layer in our methods
+% In the computational era,
+% automatic clustering methods are increasingly employed to
+% regionally differentiate the cerebral cortex,
+% which can partly be more fine-grained than
+% classical microscopical borders
+% \cite{behrens03, cbp2015review}.
+% High-thoughput approaches today enable
+% ultrahigh-resolution 3D models of brain anatomy
+% at near-cellular scale
+% \cite{amunts2013bigbrain}.
+% %
+% As a crucial common point,
+% all these methodological approaches
+% yield neuroscientific findings
+% that are naturally interpreted according to
+% non-overlapping, discrete region compartments
+% as the basic architecture of brain organization.
+% 
+% 
+% 
+% % INTEGRAL
+% It is more recent
+% that the main interpretational focus has shifted
+% from circumscribed regions to network stratifications
+% in systems neuroscience \cite{yuste2015, stephan_dys}.
+% %
+% Invasive axonal tracing studies in monkeys were complemented
+% by diffusion MRI tractography in humans
+% as a now frequently employed method to
+% outline fiber bundles between brain regions
+% \cite{jbabdi2013long}.
+% Besides analyses of
+% electrophysiological oscillations
+% \cite{buzsaki2004neuronal}
+% and
+% graph-theoretical properties \cite{bullmore2009complex},
+% studies of
+% functional connectivity \cite{buckner2013opportunities} and
+% independent component analysis (ICA) \cite{beckmann2005}
+% became the workhorses of network discovery
+% in neuroimaging.
+% These revealed the important implication of
+% canonical brain networks across psychological tasks,
+% including the so-called
+% ``default-mode network'' \cite{raichle2001pnas},
+% ``salience network'' \cite{seeley2007dissociable},
+% and ``dorsal attention network'' \cite{corbettashul2008}. 
+% Characteristic changes in the configuration of
+% these macroscopical networks
+% were repeatedly observed to be induced
+% by the onset of given psychological tasks \cite{fransson2006}.
+% % Such task-induced mechanisms orchestrating supraordinate networks
+% % might be subserved by the right anterior insula \cite{sridh2008}
+% % and temporo-parietal junction \cite{bzdok2013tpj}.
+% %
+% As a common point of all these methods,
+% interpretation of findings naturally embraces
+% cross-regional integration by
+% overlapping network compartments
+% as the basic architecture of brain organization,
+% in stark constrast to methods examining regional specialization.
 
 
 
@@ -311,157 +383,124 @@ exploiting structured sparsity
 have recently made much progress in various application domains
 from processing auditory signals \cite{daudet2004sparse},
 natural images \cite{harzallah2009combining} and
-videos \cite{kang2015structured, kim2010sparse}
+videos \cite{kang2015structured}
+% videos \cite{kang2015structured, kim2010sparse}
 to
 astrophysics \cite{vinci2014estimating},
-genetics \cite{rapaport2008classification, kim2012tree},
+genetics \cite{kim2012tree},
+% genetics \cite{rapaport2008classification, kim2012tree},
 and
 conformational dynamics of protein complexes \cite{jenatton2009structured}.
 %
-This is extended by the present work that
-introduced neuroscience-specific estimators capitalizing on
-neurobiologically plausible region and network priors.
+The recently suggested hierarchical tree penalties for imaging neuroscience
+\cite{jenatton2011multi} will be extended
+by introducing neurobiologically plausible region and network priors
+to design neuroscience-specific estimators.
 %
 Based on the largest neuroimaging repository,
 we demonstrated that domain-informed supervised models
 gracefully tackle the curse of dimensionality,
 yield more human-interpretable results,
 and generalize better to new samples
-than domain-na\"ive estimators.
-
-
+than domain-naive estimators.
 
 \section{Methods}
-Our main contribution is the domain-specific adaptation of sparse structured
-penalties making it possible to jointly incorporate functional 
-specialization and functional integration priors into statistical 
+The main contribution is the domain adaptation of hierarchical structured
+tree penalties to jointly incorporate region 
+specialization and network integration priors into supervised 
 estimators.
-We capitalize on hierarchical group lasso as introduced by Jennaton and 
-others in \cite{jenatton2011structured} to create a set of convex penalty terms.
-These can probe the interplay between regional specialization and 
-inter-regional functional integration during defined psychological tasks.
+We capitalize on hierarchical group lasso as recently introduced
+\cite{jenatton2011structured} to create a set of convex penalty terms.
+These allow acknowledging the interplay between local specialization and 
+global connectivity during defined psychological tasks.
 %
 \paragraph{Rationale.}
-Three-dimensional voxel brain images as obtained by various neuroimaging
-techniques are very high-dimensional, but also very highly structured.
-While its explicit dimensionality, the number of brain voxels, which varies with
-the resolution of the image is generally of the order of 100,000, the number
-of samples available for analyses rarely exceeds hundreds or thousands.
-This \(n << p\) scenario immediately implies underdetermination of any
+3D brain maps obtained by neuroimaging
+techniques are high-dimensional but also highly structured.
+While its explicit dimensionality, the number of brain voxels,
+typically exceeds 100,000 variables, the number
+of samples rarely exceeds few hundreds.
+This \(n << p\) scenario directly implies underdetermination of any
 linear model based on dot products with the voxel values.
 
-Yet, there is abundant structure to be exploited, which can be
-injected into the estimation as a domain knowledge prior. Here we are 
-interested in incorporating knowledge about both the well-established 
-modules of functional specialization and the spatiotemporal interactions
+
+
+Yet, the abundant structure can be exploited by
+injecting domain-knowledge priors into the statistical estimation process.
+Here we are 
+interested in well-established neurobiological knowledge about
+brain regions of functional specialization and spatiotemporal interactions
 between these.
 %
-Developmentally, such large-scale networks emerge during late
-fetal growth (Doria et al., 2010), before mental capacities mature
-in childhood. 
-%
-In adults, nodes of a such a spatiotemporally cohesive network have more
+These large-scale brain networks emerge in human individuals around birth
+\cite{doria2010}, before mental capacities mature in childhood. 
+In adults,
+the sets of regions that compose the spatiotemporally cohesive network have more
 similar functional profiles than nodes from different networks
-(Anderson et al., 2013).
+\cite{anderson2013}.
+As a well-established method for network estimation
+\cite{beckmann2005},
+ICA yields continuous brain maps with
+weights for each voxel. The region nodes of ICA
+networks are spatially disjoint and in
+correspondence with boundaries of brain atlases.
+Consequently,
+each region from a brain atlas can be uniquely associate to one
+the extracted ICA networks.
 %
-On the signal level, functional modules are localized structures implicating
-neighboring voxels in an image. A variety of known functional modules has
-been compiled into atlases of the brain. Different types of atlases rely on
-different ways of segregating modules from another. For instance, anatomical
-atlases rely on the variation of tissue properties across the brain, which
-can be at the cellular level or based on higher-order structure.
+The network regions are spatially compact structures of
+neighboring voxels in a neural activity map.
+The brain's grey matter can be segregated into functional regions to
+compile brain atlases
+using microscopical or algorithmic investigations
+\cite{cbp2015review}.
 %
-Global functional networks can be discovered by statistical analysis of
-functional brain imaging data, for example the BOLD contrast in fMRI. A
-well-established method of estimating these networks is independent 
-component analysis \cite{Hamalainen}. It robustly identifies the default
-mode, saliency and attention networks.
-%
-Global functional networks as estimated by ICA are continuous brain maps
-attributing weights to each voxel. Since the regions involved in these
-networks are nevertheless largely disjoint spatially and roughly in
-correspondence with module boundaries {\color{red} Danilo: Ok!}, 
-it is possible to uniquely associate each module from a region atlas to one
-of the extracted global functional networks.
+This brain-network correspondence
+allows constructing a hierarchy of global ICA networks with their
+assigned local regions.
+This network-region tree is used as a structural prior
+of expected weight distributions
+for supervised learning algorithms.
 
-This correspondence makes it possible to inject established knowledge about the 
-networks and regions into a hierarchy: A brain contains a certain number of
-networks, which in turn consist of the atlas modules as subregions.
-We can use this hierarchy to create a structural prior of expected weight
-maps for classifiers.
 
-The hierarchical group lasso as introduced by \cite{jenatton2011} lends
-itself perfectly to represent this structure. It is based on the group lasso
-\cite{group_lasso} but permits groups to contain each other in a tree
-structure. The first level of the tree are the network groups containing all
-the voxels of the modules associated to them. Then each network contains as
-as subgroups the modules associated with it, grouping the voxels of each of
-these regions together.
-As with the group lasso, it is possible to associate an individual penalty
-to each group. In trading off the penalties on the network level against the
-penalties of the region level, we can create different regimes of 
-estimation: 
+
+The hierarchical group lasso introduced by \cite{jenatton2011multi} lends
+itself perfectly to represent this tree structure.
+It extends the group lasso
+\cite{yuan2006model} to permit variable groups to contain each other
+in a nested tree structure.
+The first hierarchical level of that tree are
+the network groups that contain all
+the voxels of the modules associated to them.
+Each network node, in turn, descends into a set of
+brain regions associated with spatially neighboring voxel groups.
+%
+As an important consequence,
+a child node enters the set of relevant voxel variables only
+if its parent node has been selected.
+Conversely,
+if a parent node is deselected,
+also the voxel variables of all child nodes are deselected.
+%
+Moreover,
+the coefficient of the region and network groups can
+be weighed individually.
+Trading off the voxel penalties of the network level against the
+voxel penalties of the region level,
+we can design different estimation regimes.
 %
 Setting a low penalty on the network groups makes it probable
 that all of them are active in the estimated weight map. If we then select
 higher penalties on region groups, selection of relevant region groups is
 forced without the bias of the network maps.
-%
 Conversely, setting low penalties on the region maps makes it possible for
 all voxels to be active. Selecting higher penalties on the networks then
 leads to a selection of networks with all regions associated to it.
 %
-Taken together and varied smoothly, we can evaluate a tradeoff between the
-relevance of modular regions and functionally integrated networks in 
-statistical estimation of brain activity.
+This region-network tradeoff allows inspecting the relative contributions
+of the region and network levels
+of the hierarchical prior.
 
-
-
-%% we need to inject domain knowledge into
-%% statistical estimations to harness the curse of dimensionality.
-%% two neurobiological design principles 
-%% 
-%% imposing parsimony
-%% integrative processes
-%% 
-%%  This L1/L2 norm for group lasso has been extended to a more general setting to
-%% 
-%% designed groups
-%%  the child nodes enter the set of relevant inputs only if its parent node does. 
-%%  
-%% should be able to estimate voxel level
-%% while taking into account known supravoxel structure.
-%% is instrumental in
-%% Developmentally, such large-scale networks emerge during late
-%% fetal growth (Doria et al., 2010), before cognitive capacities mature
-%% in childhood. 
-%% 
-%% In adults, nodes of a same cohesive network have more
-%% similar functional profiles than nodes from different networks
-%% (Anderson et al., 2013).
-%% 
-%% data exhibit natural correlations between neighboring voxels forming clusters
-%% 
-%% representing some phenomenon with as few variables as possible
-%% 
-%% neurobiologically motivated restrictions to complexity circumvented
-%% the curse of dimensionality
-%% three-dimensional spatial arrangement that respects
-%% the functional anatomy of the brain
-%% not ignore the spatial configuration
-%% 
-%% incorporate rich prior knowledge
-%% 
-%% If meaningful structures exist,
-%% we show that one can take advantage of such structures
-%% 
-%% Statistically,
-%% l1 and l2 are local sparsity priors
-%% -> resulting sparsity does yield structure
-%% we want to priviledge representations with structure
-%% 
-%% 
-%% => 
 %%  a biologically and statistically desirable bias 
 
 
@@ -498,7 +537,7 @@ For a brain image \(w\in\R^p\) and a group \(g\), the vector
  in \(g\). The structured penalty incorporating network
 and region information can then be written as
 \[\Omega(w) = \alpha\sum_{h\in\mathcal H}\eta_h\|w_h\|_2 + \beta\sum_{g\in\mathcal G}\eta_g\|w_g\|_2.\]
-According to \cite{Zhou_or_who_was_that} we set \(\eta_g = 1/\sqrt{|g|}\) to
+According to \cite{yuan2006model} we set \(\eta_g = 1/\sqrt{|g|}\) to
 account for varying group size. The hierarchy-level-specific factors 
 \(\alpha > 0\) and \(\beta > 0\) are used to trade-off region-weighted and
 network-weighted models against each other.
@@ -931,10 +970,10 @@ imposed a minimum of relevant brain voxels without
 assuming special structure.
 Structured $\ell_1/\ell_2$-block norm with additional $\ell_1$ term
 (\textit{lower left})
-imposed region compartments, but na\"ive to network structure.
+imposed region compartments, but naive to network structure.
 Structured trace-norm penalization (\textit{lower right})
 imposed low-rank structure
-with sparsity of network patterns, but na\"ive to region structure.
+with sparsity of network patterns, but naive to region structure.
 Structured $\ell_1/\ell_2$-block-norm with a hierarchy of
 both region and network priors (\textit{upper right})
 exhibited the best out-of-sample performance.
@@ -1027,7 +1066,7 @@ outcompeted other types of frequently used sparse penalization techniques.
 \includegraphics[width=1.00\textwidth]{figures/dataratio_trans.pdf}
 \end{centering}
 \vspace{-0.6cm}
-\caption{\textbf{Na\"ive versus informed sparse model selection
+\caption{\textbf{Naive versus informed sparse model selection
 across training set sizes.}
 Ordinary $\ell_1$-penalized logistic regression
 (\textit{upper row})
@@ -1060,7 +1099,7 @@ neurobiologically naive logistic regression.
 
 
 
-\paragraph{Sample complexity of na\"ive versus informed sparse model selection.}
+\paragraph{Sample complexity of naive versus informed sparse model selection.}
 Subsequently, the sample complexity of
 $\ell_1$-penalized and hierarchical-tree-penalized logistic regression
 were quantitatively compared (Figure \ref{fig_dataratio}).
@@ -1068,7 +1107,7 @@ Region-network priors should bias model selection towards more
 neurobiologically plausible classification estimators.
 This should yield better out-of-sample generalization and
 support recovery than
-neurobiology-na\"ive $\ell_1$-constrained logistic regression
+neurobiology-naive $\ell_1$-constrained logistic regression
 in the data-scarce and data-rich scenarios.
 %
 The HCP task data with examples from 18
@@ -1121,7 +1160,7 @@ due to the $\ell_1$-norm penalization.
 In the data-rich scenario (i.e., entire training data used for model fitting),
 neurobiologically informed logistic regression
 profited more from the increased information quantities than
-neurobiologically na\"ive logistic regression.
+neurobiologically naive logistic regression.
 That is, the region-network priors actually further enhance the similarity
 to the weight maps even in abundant input data.
 This was the case although

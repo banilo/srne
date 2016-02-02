@@ -861,7 +861,7 @@ probability).
 The supervised analyses were thus based on labeled HCP task maps with
 79,941 voxels of interest representing z-values in gray matter.
 
-\begin{table}[h]
+\begin{table*}[h]
   \resizebox{0.98\textwidth}{!}{%
   \begin{tabular}{l|l|l}
     \hline
@@ -889,7 +889,7 @@ The supervised analyses were thus based on labeled HCP task maps with
 \vspace{-0.2cm}
 \caption{\textbf{Description of psychological tasks to predict.}}
 \label{table_tasks}
-\end{table}
+\end{table*}
 
 These labeled data were complemented by unlabeled activity maps
 from HCP acquisitions of unconstrained resting-state activity
@@ -927,7 +927,7 @@ sparse statistical models have only few nonzero parameters
 \section{Experimental Results}
 
 
-\begin{figure}
+\begin{figure*}
 \begin{centering}
 \includegraphics[width=1.00\textwidth]{../figures/reg_net_prior_colin.pdf}
 \end{centering}
@@ -954,10 +954,10 @@ and
 the cerebellum that is involved in motor behavior.
 }
 \label{fig_priors}
-\end{figure}
+\end{figure*}
 
 
-\begin{figure}
+\begin{figure*}
 \begin{centering}
 \includegraphics[width=1.00\textwidth]{../figures/sparsities.pdf}
 \end{centering}
@@ -987,7 +987,7 @@ was hence most beneficial for predicting psychological tasks from
 brain maps.
 }
 \label{fig_sparsities}
-\end{figure}
+\end{figure*}
 
 
 \paragraph{Benchmarking hierarchical tree sparsity against
@@ -1065,11 +1065,10 @@ outcompeted other types of frequently used sparse penalization techniques.
 
 
 
-\begin{figure}
+\begin{figure*}
 \begin{centering}
-\includegraphics[width=1.00\textwidth]{../figures/dataratio_trans.pdf}
-\end{centering}
-\vspace{-0.6cm}
+\includegraphics[width=0.80\textwidth]{../figures/dataratio_trans.pdf}
+%\vspace{-0.6cm}
 \caption{\textbf{Naive versus informed sparse model selection
 across training set sizes.}
 Ordinary $\ell_1$-penalized logistic regression
@@ -1099,7 +1098,8 @@ profits more from the available information quantities than
 neurobiologically naive logistic regression.
 }
 \label{fig_dataratio}
-\end{figure}
+\end{centering}
+\end{figure*}
 
 
 
@@ -1175,11 +1175,10 @@ the unstructured estimator reached this generalization performance
 only with bigger input data quantities.
 
 
-\begin{figure}
+\begin{figure*}
 \begin{centering}
-\includegraphics[width=1.00\textwidth]{../figures/reg_net_ratio_colin.pdf}
-\end{centering}
-\vspace{-0.6cm}
+\includegraphics[width=0.80\textwidth]{../figures/reg_net_ratio_colin.pdf}
+%\vspace{-0.6cm}
 \caption{\textbf{Support recovery as a function of
 region and network emphasis.}
 The relative impact of the region and network priors
@@ -1212,7 +1211,8 @@ Equal region and network emphasis yields more dispersed,
 less interpretable predictive model choices.
 }
 \label{fig_regnetratio}
-\end{figure}
+\end{centering}
+\end{figure*}
 
 
 \paragraph{Support recovery as a function of region and network emphasis.}

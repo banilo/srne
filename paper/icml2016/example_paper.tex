@@ -34,12 +34,12 @@
 % Employ the following version of the ``usepackage'' statement for
 % submitting the draft version of the paper for review.  This will set
 % the note in the first column to ``Under review.  Do not distribute.''
-\usepackage{icml2016} 
+% \usepackage{icml2016} 
 
 % Employ this version of the ``usepackage'' statement after the paper has
 % been accepted, when creating the final version.  This will set the
 % note in the first column to ``Proceedings of the...''
-%\usepackage[accepted]{icml2016}
+\usepackage[accepted]{icml2016}
 
 \usepackage{multirow}
 \usepackage{amsmath,amsfonts,amsthm}
@@ -54,29 +54,34 @@
 
 % The \icmltitle you define below is probably too long as a header.
 % Therefore, a short form for the running title is supplied here:
-\icmltitlerunning{Submission and Formatting Instructions for ICML 2016}
+\icmltitlerunning{Informing High-Dimensional Inference in Neuroimaging}
 
 \begin{document} 
 
 \twocolumn[
-\icmltitle{Submission and Formatting Instructions for \\ 
-           International Conference on Machine Learning (ICML 2016)}
+\icmltitle{Region-Network Hierarchical Sparsity Priors for\\
+High-Dimensional Inference in Brain Imaging}
 
 % It is OKAY to include author information, even for blind
 % submissions: the style file will automatically remove it for you
 % unless you've provided the [accepted] option to the icml2016
 % package.
-\icmlauthor{Your Name}{email@yourdomain.edu}
-\icmladdress{Your Fantastic Institute,
-            314159 Pi St., Palo Alto, CA 94306 USA}
-\icmlauthor{Your CoAuthor's Name}{email@coauthordomain.edu}
-\icmladdress{Their Fantastic Institute,
-            27182 Exp St., Toronto, ON M6H 2T1 CANADA}
+\icmlauthor{Danilo Bzdok}{danilo.bzdok@inria.fr}
+\icmladdress{Department of Psychiatry, Psychotherapy and Psychosomatics, RWTH Aachen, Germany\\
+  Parietal, INRIA, NeuroSpin, bat 145, CEA, 91191 Gif-sur-Yvette France}
+\icmlauthor{Michael Eickenberg}{Michael.Eickenberg@inria.fr}
+\icmladdress{Department d'Informatique, Ecole Normale Superieure, Paris}
+\icmlauthor{Ga\"el Varoquaux}{gael.varoquaux@inria.fr}
+\icmlauthor{Bertrand Thirion}{bertrand.thirion@inria.fr}
+\icmladdress{Parietal, INRIA, NeuroSpin, bat 145, CEA, 91191 Gif-sur-Yvette France}
 
 % You may provide any keywords that you 
 % find helpful for describing your paper; these are used to populate 
 % the "keywords" metadata in the PDF but will not be shown in the document
-\icmlkeywords{boring formatting information, machine learning, ICML}
+\icmlkeywords{Sparsity-inducing norms, hierarchical tree sparsity,
+numerical optimization,
+systems neuroscience,
+functional specialization, functional integration}
 
 \vskip 0.3in
 ]
@@ -109,12 +114,6 @@ generalization performance, sample complexity, and domain interpretability
 by hierarchical tree sparsity.
 
 
-
-\textbf{\\keywords}:
-Sparsity-inducing norms, hierarchical tree sparsity,
-numerical optimization,
-systems neuroscience,
-functional specialization, functional integration
 
 \end{abstract} 
 
@@ -1354,8 +1353,9 @@ and the MetaMRI associated team (B.T., G.V.).
   
 \small
 % \bibliographystyle{plainnat}
-\bibliographystyle{splncs03}
+\bibliographystyle{icml2016}
 \bibliography{paper_refs}
+% \bibliography{paper_refs}
 
 
 

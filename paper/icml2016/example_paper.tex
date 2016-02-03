@@ -61,6 +61,8 @@
 \twocolumn[
 \icmltitle{Region-Network Hierarchical Sparsity Priors for\\
 High-Dimensional Inference in Brain Imaging}
+% \icmltitle{Region-Network Hierarchical Sparsity Priors for\\
+% High-Dimensional Inference in Brain Imaging}
 
 % It is OKAY to include author information, even for blind
 % submissions: the style file will automatically remove it for you
@@ -820,25 +822,23 @@ penalties.
 %% The intercept $b$ is left unregularized
 
 
-
-
-
 \paragraph{Implementation.}
-The analyses were performed in Python.
-We used \textit{nilearn} to handle
-the large quantities of neuroimaging data 
-\cite{abrah14}
+All analyses were performed in Python.
+We used \textit{nilearn} to process and resphape
+the extensive neuroimaging data 
+\cite{abrah14},
+\textit{scikit learn} to design machine-learning
+data processing pipelines
+\cite{pedr11},
 and
-\textit{Theano} for automatic, numerically stable
-differentiation of symbolic computation graphs
-\cite{bastien2012theano, bergstra2010theano}.
+\textit{SPAMs} for numerically optimized
+implementations of the sparse estimators
+(\url{http://spams-devel.gforge.inria.fr/}).
 All Python scripts that generated the results are
 accessible online for reproducibility and reuse
-% (\url{http://github.com/anonymous/anonymous}).
-(\url{http://github.com/banilo/nips2015}).
+(\url{http://github.com/anonymous/anonymous}).
+% (\url{http://github.com/banilo/nips2015}).
   
-
-all algorithm from a same software library -> SPAMs
 
 %
 \paragraph{Data.}
@@ -850,7 +850,8 @@ were drawn from 500
 healthy HCP participants (cf. Appendix for details on datasets).
 18 HCP tasks 
 were selected that are known to elicit reliable neural activity
-across participants (Table \ref{table_tasks}).
+across participants.
+% across participants (Table \ref{table_tasks}).
 In sum, the HCP task data incorporated 8650 first-level activity maps
 from 18 diverse paradigms administered to 498 participants (2 removed
 due to incomplete data).
@@ -860,63 +861,35 @@ probability).
 The supervised analyses were thus based on labeled HCP task maps with
 79,941 voxels of interest representing z-values in gray matter.
 
-\begin{table*}[h]
-  \resizebox{0.98\textwidth}{!}{%
-  \begin{tabular}{l|l|l}
-    \hline
-  {\bf Cognitive Task} & {\bf Stimuli}                         & {\bf Instruction for participants}                                                \\ \hline
-  1 Reward             & \multirow{2}{*}{Card game}            & \multirow{2}{*}{Guess the number of a mystery card for gain/loss of money}        \\ \cline{1-1}
-  2 Punish             &                                       &                                                                                   \\ \hline
-  3 Shapes             & Shape pictures                        & Decide which of two shapes matches another shape geometrically                    \\ \hline
-  4 Faces              & Face pictures                         & Decide which of two faces matches another face emotionally                        \\ \hline
-  5 Random             & \multirow{2}{*}{Videos with objects}  & \multirow{2}{*}{Decide whether the objects act randomly or intentionally} \\ \cline{1-1}
-  6 Theory of mind     &                                       &                                                                                   \\ \hline
-  7 Mathematics        & Spoken numbers                        & Complete addition and subtraction problems                                        \\ \hline
-  8 Language           & Auditory stories                      & Choose answer about the topic of the story                                        \\ \hline
-  9 Tongue movement    & \multirow{3}{*}{Visual cues}          & Move tongue                                                                       \\ \cline{1-1} \cline{3-3} 
-  10 Food movement     &                                       & Squeezing of the left or right toe                                                \\ \cline{1-1} \cline{3-3} 
-  11 Hand movement     &                                       & Tapping of the left or right finger                                               \\ \hline
-  12 Matching          & \multirow{2}{*}{Shapes with textures} & Decide whether two objects match in shape or texture                             \\ \cline{1-1} \cline{3-3} 
-  13 Relations         &                                       & Decide whether object pairs differ both along either shape or texture             \\ \hline
-  14 View Bodies       & Pictures                              & Passive watching                                                                   \\ \hline
-  15 View Faces        & Pictures                              & Passive watching                                                                   \\ \hline
-  16 View Places       & Pictures                              & Passive watching                                                                   \\ \hline
-  17 View Tools        & Pictures                              & Passive watching                                                                   \\ \hline
-  18 Two-Back          & Various pictures                      & Indicate whether current stimulus is the same as two items earlier                \\ \hline
-  \end{tabular}
-}
-\vspace{-0.2cm}
-\caption{\textbf{Description of psychological tasks to predict.}}
-\label{table_tasks}
-\end{table*}
-
-These labeled data were complemented by unlabeled activity maps
-from HCP acquisitions of unconstrained resting-state activity
-\cite{smith2013resting}.
-These reflect brain activity in the absence of controlled thought.
-In sum, the HCP rest data concatenated
-8000 unlabeled, noise-cleaned rest maps with
-40 brain maps from each of 200 randomly selected participants.
-
-We were further interested in the utility of the
-optimized low-rank projection
-in one task dataset for dimensionality reduction in another task dataset.
-To this end, the HCP-derived network decompositions were used as preliminary
-step in the classification problem of another large sample.
-The ARCHI dataset \cite{pinel07} provides activity maps from
-diverse experimental tasks, including auditory and visual perception, motor action,
-reading, language comprehension and mental calculation.
-Analogous to HCP data, the second task dataset thus incorporated 1404
-labeled, grey-matter masked, and z-scored activity maps
-from 18 diverse tasks acquired in 78 participants.
-
-
-
-
-
-sparse statistical models have only few nonzero parameters
-
-
+% \begin{table*}[h]
+%   \resizebox{0.98\textwidth}{!}{%
+%   \begin{tabular}{l|l|l}
+%     \hline
+%   {\bf Cognitive Task} & {\bf Stimuli}                         & {\bf Instruction for participants}                                                \\ \hline
+%   1 Reward             & \multirow{2}{*}{Card game}            & \multirow{2}{*}{Guess the number of a mystery card for gain/loss of money}        \\ \cline{1-1}
+%   2 Punish             &                                       &                                                                                   \\ \hline
+%   3 Shapes             & Shape pictures                        & Decide which of two shapes matches another shape geometrically                    \\ \hline
+%   4 Faces              & Face pictures                         & Decide which of two faces matches another face emotionally                        \\ \hline
+%   5 Random             & \multirow{2}{*}{Videos with objects}  & \multirow{2}{*}{Decide whether the objects act randomly or intentionally} \\ \cline{1-1}
+%   6 Theory of mind     &                                       &                                                                                   \\ \hline
+%   7 Mathematics        & Spoken numbers                        & Complete addition and subtraction problems                                        \\ \hline
+%   8 Language           & Auditory stories                      & Choose answer about the topic of the story                                        \\ \hline
+%   9 Tongue movement    & \multirow{3}{*}{Visual cues}          & Move tongue                                                                       \\ \cline{1-1} \cline{3-3} 
+%   10 Food movement     &                                       & Squeezing of the left or right toe                                                \\ \cline{1-1} \cline{3-3} 
+%   11 Hand movement     &                                       & Tapping of the left or right finger                                               \\ \hline
+%   12 Matching          & \multirow{2}{*}{Shapes with textures} & Decide whether two objects match in shape or texture                             \\ \cline{1-1} \cline{3-3} 
+%   13 Relations         &                                       & Decide whether object pairs differ both along either shape or texture             \\ \hline
+%   14 View Bodies       & Pictures                              & Passive watching                                                                   \\ \hline
+%   15 View Faces        & Pictures                              & Passive watching                                                                   \\ \hline
+%   16 View Places       & Pictures                              & Passive watching                                                                   \\ \hline
+%   17 View Tools        & Pictures                              & Passive watching                                                                   \\ \hline
+%   18 Two-Back          & Various pictures                      & Indicate whether current stimulus is the same as two items earlier                \\ \hline
+%   \end{tabular}
+% }
+% \vspace{-0.2cm}
+% \caption{\textbf{Description of psychological tasks to predict.}}
+% \label{table_tasks}
+% \end{table*}
 
 
 
@@ -928,9 +901,9 @@ sparse statistical models have only few nonzero parameters
 
 \begin{figure*}
 \begin{centering}
-\includegraphics[width=1.00\textwidth]{../figures/reg_net_prior_colin.pdf}
+\includegraphics[width=0.8\textwidth]{../figures/reg_net_prior_colin.pdf}
 \end{centering}
-\vspace{-0.6cm}
+\vspace{-0.2cm}
 \caption{\textbf{Building blocks of the region-network tree.}
 Depicts neurobiological priors introduced into the classification problem 
 by hierarchical structured sparsity.
@@ -958,28 +931,33 @@ the cerebellum that is involved in motor behavior.
 
 \begin{figure*}
 \begin{centering}
-\includegraphics[width=1.00\textwidth]{../figures/sparsities.pdf}
+% \includegraphics[width=1.00\textwidth]{../figures/sparsities.pdf}
+\includegraphics[width=0.55\textwidth]{../figures/ROC_ALL_perclass.png}
 \end{centering}
-\vspace{-0.6cm}
+\vspace{-0.4cm}
 \caption{\textbf{Model performance across sparsity priors.}
 Compares the performance of logistic regression estimators
 with 4 different structured and unstructered sparsity terms
 in classifying neural activity from 18 psychological tasks.
-The class-wise precision and recall metrics
-were obtained on the same test set.
+The class-wise area under the curve (AUC)
+is obtained on the same test set.
 %
-Unstructured $\ell_1$-penalized logistic regression (\textit{upper left})
+\textit{Hierarchical Tree Sparsity}: Structured
+$\ell_1/\ell_2$-block-norm with a hierarchy of
+both region and network priors
+exhibited the best out-of-sample performance.
+\textit{Lasso}: Unstructured $\ell_1$-penalized logistic regression
 imposed a minimum of relevant brain voxels without
 assuming special structure.
-Structured $\ell_1/\ell_2$-block norm with additional $\ell_1$ term
-(\textit{lower left})
-imposed region compartments, but naive to network structure.
-Structured trace-norm penalization (\textit{lower right})
+\textit{Elastic-Net}: Unstructured logistic regression
+with interpolation between $\ell_1$- and $\ell_2$-norm 
+imposed an equilibrium between sparsity and model fit.
+\textit{Trace-norm}: Structured trace-norm penalization
 imposed low-rank structure
 with sparsity of network patterns, but naive to region structure.
-Structured $\ell_1/\ell_2$-block-norm with a hierarchy of
-both region and network priors (\textit{upper right})
-exhibited the best out-of-sample performance.
+\textit{(Sparse) Group Sparsity}: Structured $\ell_1/\ell_2$-block
+norm with additional $\ell_1$ term
+imposed region compartments, but naive to network structure.
 %
 A priori knowledge of both region and network neighborhoods
 was hence most beneficial for predicting psychological tasks from
@@ -1176,7 +1154,7 @@ only with bigger input data quantities.
 
 \begin{figure*}
 \begin{centering}
-\includegraphics[width=0.80\textwidth]{../figures/reg_net_ratio_colin.pdf}
+\includegraphics[width=0.90\textwidth]{../figures/reg_net_ratio_colin.pdf}
 %\vspace{-0.6cm}
 \caption{\textbf{Support recovery as a function of
 region and network emphasis.}
@@ -1214,7 +1192,7 @@ less interpretable predictive model choices.
 \end{figure*}
 
 
-\paragraph{Support recovery as a function of region and network emphasis.}
+\paragraph{Support recovery as a function of region-network emphasis.}
 Finally, the relative importance of the
 region and network priors within the hierarchical tree prior
 was quantified (Figure \ref{fig_regnetratio}).
@@ -1226,10 +1204,19 @@ increased the relative importance of known region structure
 by multiplying $\frac{3}{1}$ to
 $\eta_g$ of all region group penalties
 and multiplying
-$\frac{1}{3}$ to $\eta_g$ of all network group penalties.
-The data splitting cross-validation scheme was identical to the
-above modelling experiments.
+$\frac{1}{3}$ to $\eta_g$ of all network group penalties
+(Table \ref{table_reg_net_ratio}).
 
+
+\begin{table*}[]
+\centering
+\caption{18-class out-of-sample performance by region-network emphasis}
+\begin{tabular}{l|l|l|l|l|l|l|l|l|l|l|l|l|l|l|l}
+\textbf{Reg-Net Ratio} & 500 & 100  & 50   & 10   & 5    & 2    & 1    & $\frac{1}{2}$  & $\frac{1}{5}$  & $\frac{1}{10}$ & $\frac{1}{50}$ & $\frac{1}{100}$ & $\frac{1}{250}$ & $\frac{1}{500}$ & $\frac{1}{1000}$ \\ \hline
+\textbf{Accuracy {[}\%{]}}      & 3.8          & 41.7 & 63.7 & 89.9 & 89.9 & 88.5 & 87.9 & 87.9 & 87.9 & 87.8 & 88.6 & 87.8  & 85.6  & 67.2  & 39,3  
+\end{tabular}
+\label{table_reg_net_ratio}
+\end{table*}
 
 As the most important observation,
 a range between region-dominant and network-dominant structured penalties
@@ -1260,7 +1247,7 @@ in the future.
 
 
 
-\section{Discussion}
+\section{Conclusion}
 Relevant structure in neuroimaging data has long been investigated
 according to two separate organizational principles:
 functional segregation into discrete brain regions
@@ -1354,7 +1341,7 @@ and the MetaMRI associated team (B.T., G.V.).
 \small
 % \bibliographystyle{plainnat}
 \bibliographystyle{icml2016}
-\bibliography{paper_refs}
+\bibliography{../paper_refs}
 % \bibliography{paper_refs}
 
 

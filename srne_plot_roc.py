@@ -15,8 +15,12 @@ n_classes = 18
 
 READ_DIR = 'srne_benchmark_dataratioFIXED100_zerobrainlevel_weighted'
 
-REGS = ['tree-l2', 'l1', 'trace-norm',
+REGS = ['tree-l2', 'l1',
+        'elastic-net', 'trace-norm', 
         'sparse-group-lasso-l2', 'group-lasso-l2']
+REGS_STR = ['Hierarchical Tree Sparsity', 'Lasso',
+            'Elastic-Net', 'Trace-Norm', 
+            'Sparse Group Lasso', 'Group Lasso']
 
 auc_mat = np.zeros((len(REGS), n_classes))
 
@@ -67,7 +71,7 @@ for i_r, r in enumerate(REGS):
     plt.show()
     plt.savefig(dump_path + '_ROC.png')
 
-# summary plot across classifiers and classes
+# summary AUC plot: per classifier
 plt.figure()
 for i_c in range(n_classes):
     plt.plot(np.arange(len(REGS)), auc_mat[:, i_c] * 100, linewidth=2)
@@ -77,4 +81,21 @@ plt.ylabel('AUC [%]')
 plt.title('Comparing classifications of 18 tasks')
 plt.tight_layout()
 plt.show()
-plt.savefig(op.join(READ_DIR, 'ROC_ALL.png'))
+plt.savefig(op.join(READ_DIR, 'ROC_ALL_perclf.png'))
+
+# summary AUC plot: per task
+plt.figure()
+for i_r in range(len(REGS)):
+    plt.plot(np.arange(n_classes),
+             auc_mat[i_r, :] * 100,
+             label=REGS_STR[i_r],
+             linewidth=2)
+plt.ylim([35., 102.])
+plt.xticks(np.arange(n_classes), np.arange(n_classes) + 1)
+plt.ylabel('AUC [%]')
+plt.title('Comparing classifications of 18 classes')
+plt.xlabel('psychological task')
+plt.tight_layout()
+plt.legend(loc="middle right")
+plt.show()
+plt.savefig(op.join(READ_DIR, 'ROC_ALL_perclass.png'))

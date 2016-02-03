@@ -99,10 +99,10 @@ This remarries the perspectives of
 functional segregation and functional integration
 that are routinely divorced in neuroscientific research.
 %
-Region-network hierarchical priors for supervised classification
-of 18 psychological tasks
+Region-network hierarchical priors for classifying
+18 psychological tasks
 from a reference dataset are
-shown to outperform naive $\ell_1$-norm and
+shown to outperform naive $\ell_1$-norm, elastic-net, and
 trace-norm penalization, as well as neurobiologically
 informed $\ell_1/\ell_2$-block-norm group sparsity.
 Weighing the relative importance of
@@ -129,7 +129,7 @@ Also in the brain imaging domain,
 many contemporary methods for acquiring brain signals yield
 more variables per observation than
 total observations per data sample.
-This high-dimensional scenario challenges various statistical methods from
+This \(n << p\) scenario challenges various statistical methods from
 classical statistics.
 For instance,
 estimating generalized linear models without additional assumptions
@@ -170,28 +170,29 @@ brain regions are responsible for distinct classes of computational
 processes
 \cite{kanwisher2010functional}.
 Conversely, functional integration emphasizes that brain function
-is enabled by complex connections between these
+is enabled by a complex interplay between these
 distinct brain regions \cite{sporns14nn}.
 %
 Local
 infrastructure
-and its unique global connectivity profile are thought to go hand-in-hand
+and unique global connectivity profiles are thought to go hand-in-hand
 to realize brain function.
 %
 However,
 probably no existing brain analysis method acknowledges that
-both functional organizations are inextricably involved
+both functional design principles are inextricably involved
 in the realization of mental operations.
 
 
 
-Functional specialization has been
-explored and interpreted based on many different research methods.
+Functional specialization has long been
+explored and interpreted based on different research methods.
 %
 For instance,
 single-cell recordings and microscopic examination
 revealed the
-specialization in the occipital visual cortex into V1, V2, V3, V3A/B, and V4
+segregation of the occipital visual cortex into V1, V2, V3, V3A/B, and V4
+regions
 \cite{hubel1962receptive, zeki1978functional}.
 Tissue lesion of the mid-fusiform gyrus of the visual system,
 in turn,
@@ -223,7 +224,7 @@ independent component analysis (ICA) \cite{beckmann2005}
 became the workhorses of network discovery
 in neuroimaging.
 %
-As a common point of all these methods,
+As a common point of this second set of methods,
 interpretation of findings naturally embraces
 cross-regional integration by
 overlapping network compartments
@@ -370,7 +371,7 @@ in stark constrast to methods examining regional specialization.
 
 
 % study
-Building on these two major interpretational traditions in systems neuroscience,
+Building on these two major interpretational traditions in neuroscience,
 the present study proposes to incorporate
 established neurobiological structure underlying
 functional segregation and integration
@@ -383,9 +384,9 @@ by hierarchical structured sparsity.
 % probably varying in degree
 % across diverse neuroscientific questions.
 %
-Learning techniques
+Learning algorithms
 exploiting structured sparsity 
-have recently made much progress in various application domains
+have recently made much progress in various domains
 from processing auditory signals \cite{daudet2004sparse},
 natural images \cite{harzallah2009combining} and
 videos \cite{kang2015structured}
@@ -397,12 +398,12 @@ genetics \cite{kim2012tree},
 and
 conformational dynamics of protein complexes \cite{jenatton2009structured}.
 %
-The recently suggested hierarchical tree penalties for imaging neuroscience
+The hierarchical tree penalties recently suggested for imaging neuroscience
 \cite{jenatton2011multi} will be extended
 by introducing neurobiologically plausible region and network priors
 to design neuroscience-specific estimators.
 %
-Based on the largest neuroimaging repository,
+Based on the largest neuroimaging repository (Human Connectome Project [HCP]),
 we demonstrated that domain-informed supervised models
 gracefully tackle the curse of dimensionality,
 yield more human-interpretable results,
@@ -417,7 +418,7 @@ estimators.
 We capitalize on hierarchical group lasso as recently introduced
 \cite{jenatton2011structured} to create a set of convex penalty terms.
 These allow acknowledging the interplay between local specialization and 
-global connectivity during defined psychological tasks.
+global connectivity when discriminating defined psychological tasks.
 %
 \paragraph{Rationale.}
 3D brain maps obtained by neuroimaging
@@ -427,15 +428,11 @@ typically exceeds 100,000 variables, the number
 of samples rarely exceeds few hundreds.
 This \(n << p\) scenario directly implies underdetermination of any
 linear model based on dot products with the voxel values.
-
-
-
-Yet, the abundant structure can be exploited by
-injecting domain-knowledge priors into the statistical estimation process.
-Here we are 
-interested in well-established neurobiological knowledge about
-brain regions of functional specialization and spatiotemporal interactions
-between these.
+However, the effective dimensionality of neuroimaging data is
+known to be low \cite{bzdok2015semi}.
+This will be exploited by
+injecting brain regions of functional specialization
+and spatiotemporal interactions into the statistical estimation process.
 %
 These large-scale brain networks emerge in human individuals around birth
 \cite{doria2010}, before mental capacities mature in childhood. 

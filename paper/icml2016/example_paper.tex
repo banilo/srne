@@ -416,76 +416,96 @@ tree penalties to jointly incorporate region
 specialization and network integration priors into supervised 
 estimators.
 We capitalize on hierarchical group lasso as recently introduced
-\cite{jenatton2011structured} to create a set of convex penalty terms.
+\cite{jenatton2011multi} to create a set of convex penalty terms.
 These allow acknowledging the interplay between local specialization and 
-global connectivity when discriminating defined psychological tasks.
+global connectivity when discriminating defined psychological tasks
+from brain activity.
+% Bertrand: univariate-multivariate is orthogonal to the
+% current study -> make clear why we opted for multivariate
+% rather than univariate which might even have been simpler
+Rather than inferring brain activity from psychological tasks
+in a univariate setting,
+this study infers psychological tasks from brain activity
+in a multivariate setting to allow for
+prediction in unseen neuroimaging data.
 %
 \paragraph{Rationale.}
 3D brain maps obtained by neuroimaging
-techniques are high-dimensional but also highly structured.
-While its explicit dimensionality, the number of brain voxels,
-typically exceeds 100,000 variables, the number
+techniques are high-dimensional but, luckily,
+their signal is highly structured.
+Its explicit dimensionality, the number of brain voxels,
+typically exceeds 100,000 variables, while the number
 of samples rarely exceeds few hundreds.
 This \(n << p\) scenario directly implies underdetermination of any
 linear model based on dot products with the voxel values.
-However, the effective dimensionality of neuroimaging data is
-known to be low \cite{bzdok2015semi}.
-This will be exploited by
-injecting brain regions of functional specialization
-and spatiotemporal interactions into the statistical estimation process.
-%
-These large-scale brain networks emerge in human individuals around birth
+However, the effective dimensionality of functional neuroimaging data has been
+shown to be much lower \cite{bzdok2015semi}.
+Two types of low-dimensional neighborhoods will be exploited by
+injecting established knowledge of regional specialization
+(i.e., region priors)
+and spatiotemporal interactions
+(i.e., network priors)
+into the statistical estimation process.
+
+
+
+Large-scale brain networks emerge in human individuals around birth
 \cite{doria2010}, before mental capacities mature in childhood. 
 In adults,
-the sets of regions that compose the spatiotemporally cohesive network have more
+the sets of regions that compose
+a given spatiotemporally cohesive network are known to have more
 similar functional profiles than nodes from different networks
 \cite{anderson2013}.
 As a well-established method for network estimation
 \cite{beckmann2005},
 ICA yields continuous brain maps with
 weights for each voxel. The region nodes of ICA
-networks are spatially disjoint and in
-correspondence with boundaries of brain atlases.
+networks are spatially disjoint sets of voxel groups that
+agree with boundaries of brain atlases.
+Such brain atlases can be obtained by segregating
+the brain's grey matter into spatially compact voxel groups
+using clustering algorithmisms
+\cite{cbp2015review}.
 Consequently,
 each region from a brain atlas can be uniquely associate to one
 the extracted ICA networks.
 %
-The network regions are spatially compact structures of
-neighboring voxels in a neural activity map.
-The brain's grey matter can be segregated into functional regions to
-compile brain atlases
-using microscopical or algorithmic investigations
-\cite{cbp2015review}.
-%
-This brain-network correspondence
-allows constructing a hierarchy of global ICA networks with their
-assigned local regions.
-This network-region tree is used as a structural prior
+In the present work previously published network definitions
+obtained using ICA \cite{smith2009}
+and
+previously published region definitions obtained from
+spatially constrained ward clustering \cite{crad12}
+allow constructing a hierarchy of global ICA networks with their
+assigned local cluster regions.
+The ensuing network-region tree is used as a structural prior
 of expected weight distributions
-for supervised learning algorithms.
+during supervised model fitting.
 
 
 
-The hierarchical group lasso introduced by \cite{jenatton2011multi} lends
-itself perfectly to represent this tree structure.
+This tree structure can be seamlessly plugged into
+a recently introduced hierarchical sparsity estimator
+\cite{jenatton2011multi}.
 It extends the group lasso
-\cite{yuan2006model} to permit variable groups to contain each other
+\cite{yuan2006model}
+by permitting variable groups that contain each other
 in a nested tree structure.
 The first hierarchical level of that tree are
 the network groups that contain all
-the voxels of the modules associated to them.
-Each network node, in turn, descends into a set of
-brain regions associated with spatially neighboring voxel groups.
+the voxels of the brain regions associated to them.
+Each network node, in turn, descends into a second hierarchical level of
+brain regions of spatially neighboring voxel groups.
 %
-As an important consequence,
+As a consequence of such a region-network sparsity tree,
 a child node enters the set of relevant voxel variables only
-if its parent node has been selected.
+if its parent node has been selected
+\cite{bach2012optimization}.
 Conversely,
 if a parent node is deselected,
 also the voxel variables of all child nodes are deselected.
 %
 Moreover,
-the coefficient of the region and network groups can
+the coefficient of all region groups and all network groups can
 be weighed individually.
 Trading off the voxel penalties of the network level against the
 voxel penalties of the region level,
@@ -494,16 +514,15 @@ we can design different estimation regimes.
 Setting a low penalty on the network groups makes it probable
 that all of them are active in the estimated weight map. If we then select
 higher penalties on region groups, selection of relevant region groups is
-forced without the bias of the network maps.
-Conversely, setting low penalties on the region maps makes it possible for
+forced without negligable bias of the network definitions.
+Conversely, setting low penalties on the region definitions
+makes it possible for
 all voxels to be active. Selecting higher penalties on the networks then
 leads to a selection of networks with all regions associated to it.
 %
 This region-network tradeoff allows inspecting the relative contributions
 of the region and network levels
-of the hierarchical prior.
-
-%%  a biologically and statistically desirable bias 
+of the hierarchical tree prior.
 
 
 \paragraph{Problem formulation.}
@@ -1120,7 +1139,8 @@ In the data-scarce scenario (i.e., 1/5 of available training data),
 hierarchical tree sparsity achieved the biggest advantage
 in out-of-sample performance by 5,11\% as well as
 better support recovery with weight maps already much closer
-to the class averages.
+to the class averages
+\cite{varoquaux2012small}.
 In the case of scarce training data, which is typical for the brain imaging domain,
 regularization by region-network priors thus allowed for
 more effective extraction of classification-relevant structure
@@ -1251,6 +1271,12 @@ functional segregation into discrete brain regions
 \cite{passingham2002}
 and functional integration by interregional brain networks
 \cite{sporns14nn}.
+Both organizational principles are however inextricable because
+a specialized brain region communicates input and output with other regions
+and a brain network subserves complex function by
+orchestrating its region nodes.
+This suggests hierarchical statistical models
+as an underexploited opportunity for imaging imaging analysis.
 %
 This proof-of-concept study demonstrates the simultaneous exploitation of
 both these neurobiological compartments
@@ -1261,7 +1287,8 @@ Introducing existing domain knowledge into model selection
 allowed privileging members of the function space
 that are most neurobiologically plausible.
 %
-Domain-informed hierarchical structured sparsity is shown to enhance
+This statistically and neurobiologically desirable bias
+is shown to enhance
 both model interpretability and generalization performance,
 although these statistical-learning goals are typically in conflict.
 

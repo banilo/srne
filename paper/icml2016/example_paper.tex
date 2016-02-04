@@ -591,37 +591,38 @@ attack this using one-vs-rest scheme on a binary logistic regression, whose
 loss can be written as
 \[\sum_{i=1}^n\log(1 + \exp(-y_i\langle x_i, w\rangle)) + \lambda\Omega(w),\]
 if \(y\in\{-1, 1\}\) and with \(x_i\in\R^p\) the training sample brain images.
-
-\paragraph{Optimization.}
 We optimize the data loss function using an iterative forward-backward
-scheme analogous to (F)ISTA for the lasso \cite{beck2009}. 
-{\color{red} Michael: Algorithm specification to be removed for ICML - supposed known, except possibly for hierarchical prox.}
-We divide the
-loss \(\mathcal L(w)\) into a smooth, convex data fit term \(F(w)\) (here: 
-logistic regression loss) and a potentially non-smooth, convex 
-regularization term \(G(w)\). 
-Define \(\prox_{\gamma G}(v) = (\Id + \gamma\partial G)^{-1}(v)\), where \(\partial G\) is the subdifferential of \(G\) and 
-let \(\nabla F(v)\) be the gradient of \(F\) in \(v\). Further let \(L > 0\)
-be a Lipschitz constant of the gradient of \(F\) and choose a step size
-\(\varepsilon\in (0, \frac{2}{L})\). Starting with an arbitrary 
-initialization of \(w_0\), putting \(z_1 = w_0\) and \(t_1 = 1\), then for
-\(k\geq 1\) until convergence do:
-\begin{eqnarray*}
-  x_k & = & \prox_{\varepsilon G}(y_k - \varepsilon\nabla F(y_k))\\
-  t_{k + 1} & = & \frac{1 + \sqrt{1 + 4 t_k^2}}{2}\\
-  y_{k + 1} & = & x_k + \left(\frac{t_k - 1}{t_{k + 1}}\right)(x_k - x_{k - 1})
-\end{eqnarray*}
-In our case \(G(v) = \lambda\Omega(v)\). Splitting \(\Omega(v) = \Omega_{\mathcal H}(v) + \Omega_{\mathcal G}(v)\) with 
-\(\Omega_{\mathcal H}(v) = \alpha\sum_{h\in\mathcal H}\eta_h\|v_h\|_2\) and
-\(\Omega_{\mathcal G}(v) = \beta\sum_{g\in\mathcal G}\eta_g\|v_g\|_2\), we observe
-that \[\prox_{\varepsilon\lambda\Omega_{\mathcal H}}(v) = \sum_{h\in\mathcal H}\iota_h\left([\|v_h\|_2 > \eta_h\varepsilon\lambda\alpha]\left(v_h - \eta_h\varepsilon\lambda\alpha\frac{v_h}{\|v_h\|_2}\right)\right),\]
-where \(\iota_h\) is the canonical injection of the group \(h\) into 
-\(\R^p\) (if \(\pi_g: v\mapsto v_g\), then \(\iota_g = \pi_g^\ast\) the 
-adjoint/transposed operator). This holds analogously for 
-\(\Omega_{\mathcal G}\).
-According to \cite{jenatton2011}, the proximal operator of 
-the hierarchical penalty \(\varepsilon\lambda\Omega\) is
-\[\prox_{\varepsilon\lambda\Omega}(v) = \prox_{\varepsilon\lambda\Omega_{\mathcal H}}\circ\prox_{\varepsilon\lambda\Omega_{\mathcal G}}(v).\]
+scheme analogous to FISTA for the lasso \cite{beck2009}.
+
+% \paragraph{Optimization.}
+% We optimize the data loss function using an iterative forward-backward
+% scheme analogous to FISTA for the lasso \cite{beck2009}. 
+% We divide the
+% loss \(\mathcal L(w)\) into a smooth, convex data fit term \(F(w)\) (here: 
+% logistic regression loss) and a potentially non-smooth, convex 
+% regularization term \(G(w)\). 
+% Define \(\prox_{\gamma G}(v) = (\Id + \gamma\partial G)^{-1}(v)\), where \(\partial G\) is the subdifferential of \(G\) and 
+% let \(\nabla F(v)\) be the gradient of \(F\) in \(v\). Further let \(L > 0\)
+% be a Lipschitz constant of the gradient of \(F\) and choose a step size
+% \(\varepsilon\in (0, \frac{2}{L})\). Starting with an arbitrary 
+% initialization of \(w_0\), putting \(z_1 = w_0\) and \(t_1 = 1\), then for
+% \(k\geq 1\) until convergence do:
+% \begin{eqnarray*}
+%   x_k & = & \prox_{\varepsilon G}(y_k - \varepsilon\nabla F(y_k))\\
+%   t_{k + 1} & = & \frac{1 + \sqrt{1 + 4 t_k^2}}{2}\\
+%   y_{k + 1} & = & x_k + \left(\frac{t_k - 1}{t_{k + 1}}\right)(x_k - x_{k - 1})
+% \end{eqnarray*}
+% In our case \(G(v) = \lambda\Omega(v)\). Splitting \(\Omega(v) = \Omega_{\mathcal H}(v) + \Omega_{\mathcal G}(v)\) with 
+% \(\Omega_{\mathcal H}(v) = \alpha\sum_{h\in\mathcal H}\eta_h\|v_h\|_2\) and
+% \(\Omega_{\mathcal G}(v) = \beta\sum_{g\in\mathcal G}\eta_g\|v_g\|_2\), we observe
+% that \[\prox_{\varepsilon\lambda\Omega_{\mathcal H}}(v) = \sum_{h\in\mathcal H}\iota_h\left([\|v_h\|_2 > \eta_h\varepsilon\lambda\alpha]\left(v_h - \eta_h\varepsilon\lambda\alpha\frac{v_h}{\|v_h\|_2}\right)\right),\]
+% where \(\iota_h\) is the canonical injection of the group \(h\) into 
+% \(\R^p\) (if \(\pi_g: v\mapsto v_g\), then \(\iota_g = \pi_g^\ast\) the 
+% adjoint/transposed operator). This holds analogously for 
+% \(\Omega_{\mathcal G}\).
+% According to \cite{jenatton2011}, the proximal operator of 
+% the hierarchical penalty \(\varepsilon\lambda\Omega\) is
+% \[\prox_{\varepsilon\lambda\Omega}(v) = \prox_{\varepsilon\lambda\Omega_{\mathcal H}}\circ\prox_{\varepsilon\lambda\Omega_{\mathcal G}}(v).\]
 
 
 
@@ -918,9 +919,8 @@ The supervised analyses were thus based on labeled HCP task maps with
 
 
 \begin{figure*}
-\begin{centering}
+\centering
 \includegraphics[width=0.8\textwidth]{../figures/reg_net_prior_colin.pdf}
-\end{centering}
 \vspace{-0.2cm}
 \caption{\textbf{Building blocks of the region-network tree.}
 Depicts neurobiological priors introduced into the classification problem 
@@ -951,7 +951,6 @@ the cerebellum that is involved in motor behavior.
 \begin{centering}
 % \includegraphics[width=1.00\textwidth]{../figures/sparsities.pdf}
 \includegraphics[width=0.55\textwidth]{../figures/ROC_ALL.png}
-\end{centering}
 \vspace{-0.4cm}
 \caption{\textbf{Prediction performance across sparsity priors.}
 Comparison of the performance of logistic regression estimators
@@ -981,6 +980,7 @@ A priori knowledge of both region and network neighborhoods
 was hence most beneficial for predicting psychological tasks from
 brain maps.
 }
+\end{centering}
 \label{fig_sparsities}
 \end{figure*}
 

@@ -95,9 +95,11 @@ As an extension to imaging neuroscience,
 the present work incorporates
 priors on network hierarchies of brain regions into
 logistic-regression estimators to distinguish neural activity.
-This remarries the perspectives of
-functional segregation and functional integration
-that are routinely divorced in neuroscientific research.
+This enables recombination of
+the neurobiological architectures underlying
+functional segregation into brain regions and
+functional integration by brain networks
+that are routinely studied separately in neuroscientific research.
 %
 Region-network hierarchical priors for classifying
 18 psychological tasks
@@ -129,7 +131,7 @@ Also in the brain imaging domain,
 many contemporary methods for acquiring brain signals yield
 more variables per observation than
 total observations per data sample.
-This \(n << p\) scenario challenges various statistical methods from
+This $n \ll p$ scenario challenges various statistical methods from
 classical statistics.
 For instance,
 estimating generalized linear models without additional assumptions
@@ -157,7 +159,7 @@ Such restrictions to statistical complexity
 are an attractive plan of attack
 for the $\textgreater$100,000 variables per brain map.
 Yet, what generally accepted neurobiological structure lends itself
-to fruitful exploitation using structured sparsity priors?
+to exploitation using structured sparsity priors?
 
 
 
@@ -403,7 +405,8 @@ The hierarchical tree penalties recently suggested for imaging neuroscience
 by introducing neurobiologically plausible region and network priors
 to design neuroscience-specific estimators.
 %
-Based on the largest neuroimaging repository (Human Connectome Project [HCP]),
+Based on the largest public neuroimaging repository
+(Human Connectome Project [HCP], \url{http://www.humanconnectomeproject.org/}),
 we demonstrated that domain-informed supervised models
 gracefully tackle the curse of dimensionality,
 yield more human-interpretable results,
@@ -413,7 +416,7 @@ than domain-naive estimators.
 \section{Methods}
 The main contribution is the domain adaptation of hierarchical structured
 tree penalties to jointly incorporate region 
-specialization and network integration priors into supervised 
+specialization and network integration priors into multivariate 
 estimators.
 We capitalize on hierarchical group lasso as recently introduced
 \cite{jenatton2011multi} to create a set of convex penalty terms.
@@ -437,7 +440,7 @@ their signal is highly structured.
 Its explicit dimensionality, the number of brain voxels,
 typically exceeds 100,000 variables, while the number
 of samples rarely exceeds few hundreds.
-This \(n << p\) scenario directly implies underdetermination of any
+This $n \ll p$ scenario directly implies underdetermination of any
 linear model based on dot products with the voxel values.
 However, the effective dimensionality of functional neuroimaging data has been
 shown to be much lower \cite{bzdok2015semi}.
@@ -468,7 +471,7 @@ the brain's grey matter into spatially compact voxel groups
 using clustering algorithmisms
 \cite{cbp2015review}.
 Consequently,
-each region from a brain atlas can be uniquely associate to one
+each region from a brain atlas can be uniquely associated with one
 the extracted ICA networks.
 %
 In the present work previously published network definitions
@@ -536,7 +539,7 @@ images of \(p > 0\) voxels.
 
 Then we would like to minimize the risk \(\mathcal L(\hat y, y)\), where
 \(\hat y = X\hat w + \hat b\), while regularizing to incorporate a useful
-prior. Taken together, this can be framed as an optimization problem
+prior:
 \[\argmin_{w, b} \mathcal L(Xw + b, y) + \lambda\Omega(w),\]
 where \(\lambda > 0\) and \(\Omega\) is the regularizer.
 
@@ -928,8 +931,8 @@ The supervised analyses were thus based on labeled HCP task maps with
 \includegraphics[width=0.8\textwidth]{../figures/reg_net_prior_colin.pdf}
 \vspace{-0.2cm}
 \caption{\textbf{Building blocks of the region-network tree.}
-Depicts neurobiological priors introduced into the classification problem 
-by hierarchical structured sparsity.
+Neurobiological priors introduced into the classification problem 
+by hierarchical structured sparsity are displayed.
 \textit{Left:} Continuous, partially overlapping brain network priors
 (\textit{hot-colored}, taken from \cite{smith2009})
 accommodate the functional integration
@@ -1038,7 +1041,7 @@ to be relevant.
 Across analyses,
 hierarchial tree sparsity was most successful
 in distinguishing unseen neural activity maps from 18 psychological tasks
-(89.7\% accuracy, mean precision 86.7, mean recall 91.5).
+(89.7\% multi-class accuracy, mean precision 86.7, mean recall 91.5).
 It was closely followed by logistic regression
 structured by trace-norm regularization
 (89.4\%, precision 86.4, recall 91.3).
@@ -1238,7 +1241,7 @@ Favoring region versus network structure during model selection
 recovers complementary aspects of the neural activity pattern.
 %
 Equal region and network emphasis yields more dispersed,
-less interpretable predictive model choices.
+less interpretable model choices.
 }
 \label{fig_regnetratio}
 \end{centering}

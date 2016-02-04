@@ -12,15 +12,16 @@ from scipy import interp
 import joblib
 
 n_classes = 18
+plt.close('all')
 
 READ_DIR = 'srne_benchmark_dataratioFIXED100_zerobrainlevel_weighted'
 
 REGS = ['tree-l2', 'l1',
-        'elastic-net', 'trace-norm', 
-        'sparse-group-lasso-l2', 'group-lasso-l2']
+        'elastic-net', 
+        'sparse-group-lasso-l2', 'group-lasso-l2', 'trace-norm']
 REGS_STR = ['Hierarchical Tree Sparsity', 'Lasso',
-            'Elastic-Net', 'Trace-Norm', 
-            'Sparse Group Lasso', 'Group Lasso']
+            'Elastic-Net', 
+            'Sparse Group Lasso', 'Group Lasso', 'Trace-Norm']
 
 auc_mat = np.zeros((len(REGS), n_classes))
 
@@ -75,10 +76,10 @@ for i_r, r in enumerate(REGS):
 plt.figure()
 for i_c in range(n_classes):
     plt.plot(np.arange(len(REGS)), auc_mat[:, i_c] * 100, linewidth=2)
-plt.ylim([35., 102.])
-plt.xticks(np.arange(len(REGS)), REGS, rotation=35)
-plt.ylabel('AUC [%]')
-plt.title('Comparing classifications of 18 tasks')
+plt.ylim([40., 102.])
+plt.xticks(np.arange(len(REGS)), REGS_STR, rotation=35)
+plt.ylabel('AUC')
+# plt.title('Comparing classifications of 18 tasks')
 plt.tight_layout()
 plt.show()
 plt.savefig(op.join(READ_DIR, 'ROC_ALL_perclf.png'))

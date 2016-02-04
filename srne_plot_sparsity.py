@@ -43,8 +43,13 @@ for i_c, c in enumerate(contrasts_names):
     # task_means_z[:, i_c] = zscore(cur_task_mean)
 
 
-REGS = ['tree-l2', 'l1']
-dataratios = np.linspace(20, 100, 5)
+# REGS = ['tree-l2', 'l1']
+REGS = ['tree-l2',
+    'group-lasso-l2', 'sparse-group-lasso-l2',
+    'l1', 'elastic-net',
+    'trace-norm']
+# dataratios = np.linspace(20, 100, 5)
+dataratios = [100]
 
 for ratio in dataratios:
     READ_DIR = 'srne_benchmark_dataratioFIXED%i_zerobrainlevel_weighted'

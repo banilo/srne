@@ -950,15 +950,15 @@ the cerebellum that is involved in motor behavior.
 \begin{figure*}
 \begin{centering}
 % \includegraphics[width=1.00\textwidth]{../figures/sparsities.pdf}
-\includegraphics[width=0.55\textwidth]{../figures/ROC_ALL_perclass.png}
+\includegraphics[width=0.55\textwidth]{../figures/ROC_ALL.png}
 \end{centering}
 \vspace{-0.4cm}
-\caption{\textbf{Model performance across sparsity priors.}
-Compares the performance of logistic regression estimators
-with 4 different structured and unstructered sparsity terms
+\caption{\textbf{Prediction performance across sparsity priors.}
+Comparison of the performance of logistic regression estimators
+with 6 different structured and unstructered sparsity penalties
 in classifying neural activity from 18 psychological tasks.
-The class-wise area under the curve (AUC)
-is obtained on the same test set.
+The class-wise area under the curve (AUC, \textit{colors})
+is obtained on an identical test set.
 %
 \textit{Hierarchical Tree Sparsity}: Structured
 $\ell_1/\ell_2$-block-norm with a hierarchy of
@@ -970,12 +970,12 @@ assuming special structure.
 \textit{Elastic-Net}: Unstructured logistic regression
 with interpolation between $\ell_1$- and $\ell_2$-norm 
 imposed an equilibrium between sparsity and model fit.
+\textit{(Sparse) Group Sparsity}: Structured $\ell_1/\ell_2$-block
+norm (with additional $\ell_1$ term)
+imposed region compartments, but naive to network structure.
 \textit{Trace-norm}: Structured trace-norm penalization
 imposed low-rank structure
 with sparsity of network patterns, but naive to region structure.
-\textit{(Sparse) Group Sparsity}: Structured $\ell_1/\ell_2$-block
-norm with additional $\ell_1$ term
-imposed region compartments, but naive to network structure.
 %
 A priori knowledge of both region and network neighborhoods
 was hence most beneficial for predicting psychological tasks from
@@ -1002,8 +1002,8 @@ This classification estimator embraces a vision of neural activity structure
 that expects a minimum of
 topographically and functionally independent brain voxel to be relevant.
 %
-Logistic regression with sparse group sparsity
-imposes a structured $\ell_1/\ell_2$ block norm with additional $\ell_1$ term
+Logistic regression with (sparse) group sparsity
+imposes a structured $\ell_1/\ell_2$ block norm (with additional $\ell_1$ term)
 with a known atlas of region voxel groups onto the statistical estimation process.
 This supervised estimator shrinks and selects the coefficients
 of topographically compact voxel groups expected to be relevant together.
@@ -1032,27 +1032,31 @@ to be relevant.
 Across analyses,
 hierarchial tree sparsity was most successful
 in distinguishing unseen neural activity maps from 18 psychological tasks
-(89.67\%, mean recall XX.YY, mean precision XX.YY).
+(89.7\% accuracy, mean precision 86.7, mean recall 91.5).
 It was closely followed by logistic regression
 structured by trace-norm regularization
-(89.43\%, mean recall XX.YY, mean precision XX.YY).
+(89.4\%, precision 86.4, recall 91.3).
 Lasso featured an average performance comparing to the other sparse estimators
-(88.60\%, mean recall XX.YY, mean precision XX.YY).
+(88.60\%, precision 85.7, recall 90.3).
+Elastic-Net, in turn, featured an
+average performance comparing to the other sparse estimators
+(88.1\%, precision 84.8, recall 84.1).
 Introducing a priori knowledge of brain region compartments
-by sparse group sparsity performed worst
-(87.89\%, mean recall XX.YY, mean precision XX.YY).
+by sparse group sparsity (87.9\%, precision 84.8, recall 89.5)
+and
+by group sparsity (87.9\%, precision 85.3, recall 90.3)
+performed worst.
 %
 In an important subanalysis,
 the gain of the combined region-network prior was also confirmed by
 selectively zeroing the $\eta_g$ coefficients of all region groups
 or all network groups in the hierarchical prior.
 Removing region structure from the prior achieved
-88,84\% accuracy (mean recall XX.YY, mean precision XX.YY),
+88,84\% accuracy,
 while removing network structure from the prior achieved
-87,05\% accuracy (mean recall XX.YY, mean precision XX.YY).
+87,05\% accuracy.
 These results from partial priors are indeed outperformed
-the full region-network tree prior at 89,67\% accuracy
-(mean recall XX.YY, mean precision XX.YY).
+the full region-network tree prior at 89,67\% accuracy.
 %
 In sum,
 biasing sparse model selection by domain knowledge of region-network hierarchies
@@ -1078,14 +1082,14 @@ unthresholded axial maps of model weights
 are shown for comparison against
 the sample average of that class
 (\textit{rightmost column}, thresholded at the $75^{th}$ percentile).
-The out-of-sample accuracies for predicting all 18 psychological tasks
-is given in percent.
+The support recovery of that exemplary task is given
+as Pearson correlation (cf. methods).
 %
 In the data-scarce scenario,
 typical for brain imaging,
 hierarchical tree sparsity achieves much
 better support recovery with the biggest difference
-in model performance.
+in model performance (83.7\% versus 89.0\%).
 %
 In the data-rich scenario,
 neurobiologically informed logistic regression
@@ -1122,7 +1126,7 @@ training set at different subsampling fractions:
 100\% (7584 maps).
 
 % results: accuracy
-Regarding classification performances on the always same test set,
+Regarding classification performance on the always same test set,
 $\ell_1$-penalized versus hierarchical-tree-penalized logistic regression
 achieved
 83.6\% versus 88.7\% (20\% of training data),
@@ -1131,15 +1135,16 @@ achieved
 88.9\% versus 90.3\% (80\%),
 88.6\% versus 89.7\% (100\%) accuracy.
 % results: sparsity
-Regarding the model sparsity,
-the model weights $w$ of both penalized estimators were
-was measured by $s = \frac{||w||_1}{||w||_F}$ for each of the 18 classes.
+Regarding model sparsity,
+the measure $s = \frac{||w||_1}{||w||_F}$ was computed from
+the model weights $w$ of both penalized estimators
+for each of the 18 classes.
 The $\ell_1$-penalized logistic regression
-yielded the mean (+/- standard deviation) sparsity $s$ 
+yielded the mean (+/- standard deviation) sparsities
 50.0 (+/- 2.6), 45.4 (+/- 2.3), 40.0 (+/- 2.4), 30.9 (+/- 2.0), and 24.0 (+/- 2.3)
 after model fitting with 20\% to 100\% training data.
 The hierarchical-tree-penalized logistic regression
-yield the sparsity $s$ 
+yield the sparsities
 163.2 (+/- 0.7), 160.2 (+/- 1.8), 132.1 (+/- 3.3), 116.2 (+/- 4.4), and 88.4 (+/- 8.4)
 after fitting 20\% to 100\% of the training data.
 % results: support recovery
@@ -1149,13 +1154,13 @@ the zscored model coefficients
 and
 the zscored sample maps for each class.
 $\ell_1$-penalized versus hierarchical-tree-penalized logistic regression
-achieved a mean $\rho$ (+/- standard deviation) of
+achieved a mean $\rho$ (+/- standard deviation) recovery of
 0.10 (+/- 0.03) versus 0.13 (+/- 0.04),
 0.11 (+/- 0.03) versus 0.13 (+/- 0.05),
 0.13 (+/- 0.04) versus 0.17 (+/- 0.05),
 0.16 (+/- 0.04) versus 0.22 (+/- 0.05), and
 0.19 (+/- 0.05) versus 0.29 (+/- 0.06)
-from 20\% to 100\% training data.
+based on 20\% to 100\% training data.
 
 
 

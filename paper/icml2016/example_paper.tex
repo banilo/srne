@@ -970,7 +970,8 @@ is obtained on an identical test set.
 \textit{Hierarchical Tree Sparsity}: Structured
 $\ell_1/\ell_2$-block-norm with a hierarchy of
 both region and network priors
-exhibited the best out-of-sample performance.
+exhibited the best out-of-sample performance
+($\alpha = 1, \beta = 1$).
 \textit{Lasso}: Unstructured $\ell_1$-penalized logistic regression
 imposed a minimum of relevant brain voxels without
 assuming special structure.
@@ -1003,7 +1004,8 @@ in an 18-class scenario
 %
 Logistic regression with $\ell_1/\ell_2$ block norm penalization
 incorporated a hierarchy of previously known region and network neighborhoods
-for a neurobiological bias of the statistical estimation.
+for a neurobiological bias of the statistical estimation
+($\alpha = 1, \beta = 1$).
 %
 Vanilla logistic regression with $\ell_1$-penalization
 does not assume any previously known special structure.
@@ -1083,7 +1085,7 @@ Ordinary $\ell_1$-penalized logistic regression
 (\textit{upper row})
 is compared
 to hierarchical-tree-penalized logistic regression
-(\textit{lower row})
+($\alpha = 1, \beta = 1$, \textit{lower row})
 with increasing fraction
 of the available training data (\textit{left to right columns}).
 For one example (i.e., ``View tools'') from 18 psychological tasks,
@@ -1115,6 +1117,7 @@ neurobiologically naive logistic regression.
 % \paragraph{Sample complexity of naive versus informed sparse model selection.}
 Subsequently, the sample complexity of
 $\ell_1$-penalized and hierarchical-tree-penalized logistic regression
+($\alpha = 1, \beta = 1$)
 were quantitatively compared (Figure \ref{fig_dataratio}).
 Region-network priors should bias model selection towards more
 neurobiologically plausible classification estimators.
@@ -1216,7 +1219,8 @@ only with bigger input data quantities.
 region and network emphasis.}
 The relative impact of the region and network priors
 on model selection
-is systematically varied against each other.
+is systematically varied against each other
+(i.e., $\alpha$ and $\beta$ are changed reciprocally).
 This region-network ratio (\textit{upper fractions}) weighted voxel groups
 to priviledge sparse models in function space
 that acknowledge known brain region neighborhoods
@@ -1257,10 +1261,10 @@ region-network ratio, while the
 group weight $\eta_g$ of network priors was divided by that
 region-network ratio. For instance, a region-network ratio of 3
 increased the relative importance of known region structure
-by multiplying $\frac{3}{1}$ to
+by multiplying $\beta = \frac{3}{1}$ to
 $\eta_g$ of all region group penalties
 and multiplying
-$\frac{1}{3}$ to $\eta_g$ of all network group penalties
+$\alpha = \frac{1}{3}$ to $\eta_g$ of all network group penalties
 (Table \ref{table_reg_net_ratio}).
 
 

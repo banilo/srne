@@ -34,12 +34,12 @@
 % Employ the following version of the ``usepackage'' statement for
 % submitting the draft version of the paper for review.  This will set
 % the note in the first column to ``Under review.  Do not distribute.''
-% \usepackage{icml2016} 
+\usepackage{icml2016}
 
 % Employ this version of the ``usepackage'' statement after the paper has
 % been accepted, when creating the final version.  This will set the
 % note in the first column to ``Proceedings of the...''
-\usepackage[accepted]{icml2016}
+% \usepackage[accepted]{icml2016}
 
 \usepackage{multirow}
 \usepackage{amsmath,amsfonts,amsthm}
@@ -429,7 +429,8 @@ this study infers psychological tasks from brain activity
 in a multivariate setting to allow for
 prediction in unseen neuroimaging data.
 %
-\paragraph{Rationale.}
+\subsection{Rationale}
+% \paragraph{Rationale.}
 3D brain maps obtained by neuroimaging
 techniques are high-dimensional but, luckily,
 their signal is highly structured.
@@ -525,10 +526,11 @@ of the region and network levels
 of the hierarchical tree prior.
 
 
-\paragraph{Problem formulation.}
+% \paragraph{Problem formulation.}
+\subsection{Problem formulation}
 We formulate our estimation problem in the framework of regularized risk
 estimation applied to linear models: 
-We would like to estimate a good predictor of cognitive task
+The goal is to estimate a good predictor of cognitive task
 given a brain image. Let the set \(\mathcal X\subset\R^p\) represent brain
 images of \(p > 0\) voxels.
 
@@ -591,7 +593,7 @@ attack this using one-vs-rest scheme on a binary logistic regression, whose
 loss can be written as
 \[\sum_{i=1}^n\log(1 + \exp(-y_i\langle x_i, w\rangle)) + \lambda\Omega(w),\]
 if \(y\in\{-1, 1\}\) and with \(x_i\in\R^p\) the training sample brain images.
-We optimize the data loss function using an iterative forward-backward
+The data loss function is approximated using an iterative forward-backward
 scheme analogous to FISTA for the lasso \cite{beck2009}.
 
 % \paragraph{Optimization.}
@@ -626,7 +628,8 @@ scheme analogous to FISTA for the lasso \cite{beck2009}.
 
 
 
-\paragraph{Hyperparameter optimization.}
+% \paragraph{Hyperparameter optimization.}
+\subsection{Hyperparameter optimization}
 The stratified and shuffled training data were submitted
 to a nested cross-validation scheme
 for model selection and model assessment.
@@ -841,7 +844,8 @@ evaluated on an identical test set in all settings.
 %% The intercept $b$ is left unregularized
 
 
-\paragraph{Implementation.}
+% \paragraph{Implementation.}
+\subsection{Implementation}
 All analyses were performed in Python.
 We used \textit{nilearn} to process and resphape
 the extensive neuroimaging data 
@@ -860,7 +864,8 @@ accessible online for reproducibility and reuse
   
 
 %
-\paragraph{Data.}
+\subsection{Data}
+% \paragraph{Data.}
 As the currently biggest openly-accessible reference dataset,
 we chose resources from the Human Connectome Project (HCP)
 \cite{barch2013}.
@@ -985,8 +990,9 @@ brain maps.
 \end{figure*}
 
 
-\paragraph{Benchmarking hierarchical tree sparsity against
-common sparsity penalties.}
+% \paragraph{Benchmarking hierarchical tree sparsity against
+\subsection{Benchmarking hierarchical tree sparsity against
+common sparsity penalties}
 Hierarchical region-network priors have been systematically
 evaluated against other popular choices of sparse classification algorithms
 in an 18-class scenario
@@ -1102,7 +1108,8 @@ neurobiologically naive logistic regression.
 
 
 
-\paragraph{Sample complexity of naive versus informed sparse model selection.}
+\subsection{Sample complexity of naive versus informed sparse model selection}
+% \paragraph{Sample complexity of naive versus informed sparse model selection.}
 Subsequently, the sample complexity of
 $\ell_1$-penalized and hierarchical-tree-penalized logistic regression
 were quantitatively compared (Figure \ref{fig_dataratio}).
@@ -1237,7 +1244,8 @@ less interpretable predictive model choices.
 \end{centering}
 \end{figure*}
 %
-\paragraph{Support recovery as a function of region-network emphasis.}
+\subsection{Support recovery as a function of region-network emphasis}
+% \paragraph{Support recovery as a function of region-network emphasis.}
 Finally, the relative importance of the
 region and network priors within the hierarchical tree prior
 was quantified (Figure \ref{fig_regnetratio}).
@@ -1378,10 +1386,7 @@ in personalized psychiatry and neurology.
 
 
 
-\paragraph{Acknowledgment.}
-{\small Data were provided by the Human Connectome Project.
-}
-
+% \paragraph{Acknowledgment.}
 % {\small The research leading to these results has received funding from the
 % European Union Seventh Framework Programme (FP7/2007-2013)
 % under grant agreement no. 604102 (Human Brain Project).

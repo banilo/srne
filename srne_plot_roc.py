@@ -72,6 +72,11 @@ for i_r, r in enumerate(REGS):
     plt.show()
     plt.savefig(dump_path + '_ROC.png')
 
+for i_r, r in enumerate(REGS):
+    print('%s: mean %.2f std: %.2f' % (
+        r, np.mean(auc_mat[i_r, :]), np.std(auc_mat[i_r, :])
+    ))
+
 # summary AUC plot: per classifier
 plt.figure()
 for i_c in range(n_classes):
@@ -93,7 +98,7 @@ for i_r in range(len(REGS)):
              linewidth=2)
 plt.ylim([35., 102.])
 plt.xticks(np.arange(n_classes), np.arange(n_classes) + 1)
-plt.ylabel('AUC [%]')
+plt.ylabel('AUC')
 plt.title('Comparing classifications of 18 classes')
 plt.xlabel('psychological task')
 plt.tight_layout()

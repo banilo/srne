@@ -1020,7 +1020,7 @@ This supervised estimator shrinks and selects the coefficients
 of topographically compact voxel groups expected to be relevant together.
 %
 Logistic regression with trace-norm penalization
-imposed low-rank structure.
+imposed low-rank structure \cite{harchaoui2012large}.
 This supervised classification algorithm
 expected a minimum of unknown network patterns
 to be relevant.
@@ -1043,19 +1043,25 @@ to be relevant.
 Across analyses,
 hierarchial tree sparsity was most successful
 in distinguishing unseen neural activity maps from 18 psychological tasks
-(89.7\% multi-class accuracy, mean precision 86.7, mean recall 91.5).
+(89.7\% multi-class accuracy, mean AUC 94.8 [+/- 9.1 standard deviation]
+mean precision 86.7, mean recall 91.5).
 It was closely followed by logistic regression
 structured by trace-norm regularization
-(89.4\%, precision 86.4, recall 91.3).
+(89.4\%, mean AUC 90.8 [+/- 14.8],
+precision 86.4, recall 91.3).
 Lasso featured an average performance comparing to the other sparse estimators
-(88.60\%, precision 85.7, recall 90.3).
+(88.60\%, mean AUC 94.3 [+/- 9.3],
+precision 85.7, recall 90.3).
 Elastic-Net, in turn, featured an
 average performance comparing to the other sparse estimators
-(88.1\%, precision 84.8, recall 84.1).
+(88.1\%, mean AUC 94.1 [+/- 10.2],
+precision 84.8, recall 84.1).
 Introducing a priori knowledge of brain region compartments
-by sparse group sparsity (87.9\%, precision 84.8, recall 89.5)
+by sparse group sparsity
+(87.9\%, mean AUC 93.9 [+/- 10.1], precision 84.8, recall 89.5)
 and
-by group sparsity (87.9\%, precision 85.3, recall 90.3)
+by group sparsity
+(87.9\%, mean AUC 84.7 [+/- 17.3], precision 85.3, recall 90.3)
 performed worst.
 %
 In an important subanalysis,
@@ -1386,7 +1392,7 @@ could further be avoided by
 sparse selection of overcomplete region-network dictionaries.
 Non-hierarchical penalty terms will probably allow for
 more complex structured sparsity that
-extend the recently enabled tree dependencies.
+extend the recently enabled parent-children dependencies.
 %
 Ultimately,
 successful high-dimensional inference is

@@ -1371,18 +1371,22 @@ pattern-learning methods in systems neuroscience.
 %
 This includes supervised methods for whole-brain classification and regression
 with one or several target variables.
-The principled regularization scheme could even inform
-unsupervised structure-discovery methods,
-such as principal component analysis
-\cite{jenatton2009structured}
-and
-k-means clustering \cite{witten2010framework}.
-%
+The principled regularization scheme could inform
+unsupervised structure-discovery by
+matrix factorization and clustering algorithms
+\cite{jenatton2009structured, witten2010framework}.
 Additionally,
 model regularization by hierarchical structured sparsity could be extended
 from the spatial domain of neural activity to
 priors of coherent spatiotemporal activity structure
 \cite{gramfort2011tracking}.
+%
+The deterministic choice of a region and network atlas
+could further be avoided by
+sparse selection of overcomplete region-network dictionaries.
+Non-hierarchical penalty terms will probably allow for
+more complex structured sparsity that
+extend the recently enabled tree dependencies.
 %
 Ultimately,
 successful high-dimensional inference is

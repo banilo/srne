@@ -73,7 +73,7 @@ for i_r, r in enumerate(REGS):
     plt.savefig(dump_path + '_ROC.png')
 
 for i_r, r in enumerate(REGS):
-    print('%s: mean %.2f std: %.2f' % (
+    print('%s: mean %.3f std: %.3f' % (
         r, np.mean(auc_mat[i_r, :]), np.std(auc_mat[i_r, :])
     ))
 
@@ -82,8 +82,9 @@ plt.figure()
 for i_c in range(n_classes):
     plt.plot(np.arange(len(REGS)), auc_mat[:, i_c] * 100, linewidth=2)
 plt.ylim([40., 102.])
-plt.xticks(np.arange(len(REGS)), REGS_STR, rotation=35)
-plt.ylabel('AUC')
+REGS_STR_auc = ['' + r + '\nmean AUC=%.1f' % np.mean(auc_mat[i_r, :] * 100) for i_r, r in enumerate(REGS_STR)]
+plt.xticks(np.arange(len(REGS)), REGS_STR_auc, rotation=35)
+plt.ylabel('class AUC')
 # plt.title('Comparing classifications of 18 tasks')
 plt.tight_layout()
 plt.show()

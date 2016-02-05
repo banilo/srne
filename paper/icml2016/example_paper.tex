@@ -396,8 +396,8 @@ and
 conformational dynamics of protein complexes \cite{jenatton2009structured}.
 %
 The hierarchical tree penalties recently suggested for imaging neuroscience
-\cite{jenatton2011multi} will be extended
-by introducing neurobiologically plausible region and network priors
+\cite{jenatton2011multi} will be revisited to
+introduce neurobiologically plausible region and network priors
 to design neuroscience-specific classifiers.
 %
 Based on the largest public neuroimaging repository
@@ -491,7 +491,7 @@ by permitting variable groups that contain each other
 in a nested tree structure.
 The first hierarchical level of that tree are
 the network groups that contain all
-the voxels of the brain regions associated to them.
+the voxels of the brain regions associated with them.
 Each network node in turn descends into a second hierarchical level of
 brain regions of spatially neighboring voxel groups.
 %
@@ -641,9 +641,9 @@ have been trained in a one-versus-rest design that
 distinguishes each class from
 the respective 17 other classes
 (number of maximal iterations=$100$, tolerance=$0.001$).
-{\color{red} In the outer CV layer, grid search
+In the outer CV layer, grid search
 selected among candidates for the respective $\lambda$ parameter
-by searching between $10^{-2}$ and $10^{1}$ in 9 steps on a logarithmic scale.}
+by searching between $10^{-2}$ and $10^{1}$ in 9 steps on a logarithmic scale.
 Importantly, the thus selected sparse logistic regression classifier was
 evaluated on an identical test set in all settings.
 
@@ -847,6 +847,72 @@ evaluated on an identical test set in all settings.
 %% The intercept $b$ is left unregularized
 
 
+\begin{figure*}
+\centering
+\includegraphics[width=0.8\textwidth]{../figures/reg_net_prior_colin.pdf}
+\vspace{-0.2cm}
+\caption{\textbf{Building blocks of the region-network tree.}
+Neurobiological priors introduced into the classification problem 
+by hierarchical structured sparsity are displayed.
+\textit{Left:} Continuous, partially overlapping brain network priors
+(\textit{hot-colored}, taken from \cite{smith2009})
+accommodate the functional integration
+perspective of brain organization.
+\textit{Right:} Discrete, non-overlapping brain region priors
+(\textit{single-colored}, taken from \cite{crad12})
+accommodate the functional segregation perspective.
+\textit{Middle:} These two types of predefined voxel groups are incorporated
+into a joint hierarchical prior of parent networks with their
+descending region child nodes.
+\textit{Top to bottom:} Four examplary region-network priors
+are shown, including
+the early cortices that process
+visual and sound information from the environment,
+a well-known attentional circuit in the left brain hemisphere,
+and
+the cerebellum that is involved in motor behavior.
+}
+\label{fig_priors}
+\end{figure*}
+
+\begin{figure*}
+\begin{centering}
+\includegraphics[width=0.80\textwidth]{../figures/dataratio_trans.pdf}
+%\vspace{-0.6cm}
+\caption{\textbf{Naive versus informed sparse model selection
+across training set sizes.}
+Ordinary $\ell_1$-penalized logistic regression
+(\textit{upper row})
+is compared
+to hierarchical-tree-penalized logistic regression
+($\alpha = 1, \beta = 1$, \textit{lower row})
+with increasing fraction
+of the available training data
+to be fitted (\textit{left to right columns}).
+For one example (i.e., ``View tools'') from 18 psychological tasks,
+unthresholded axial maps of model weights
+are shown for comparison against
+the sample average of that class
+(\textit{rightmost column}, thresholded at the $75^{th}$ percentile).
+The support recovery of that exemplary class is given
+as Pearson correlation $\rho$ (cf. results).
+%
+In the data-scarce scenario,
+ubiquitous in brain imaging studies,
+hierarchical tree sparsity achieves much
+better support recovery.
+% with the biggest difference
+% in model performance (83.7\% versus 89.0\%).
+%
+In the data-rich scenario,
+neurobiologically informed logistic regression
+profits more from the available information quantities than
+neurobiologically naive logistic regression.
+}
+\label{Tab:fig_dataratio}
+\end{centering}
+\end{figure*}
+
 % \paragraph{Implementation.}
 \subsection{Implementation}
 All experiments were performed in Python.
@@ -929,35 +995,6 @@ $p$ = 79,941 voxels of interest that represent zscored-values in gray matter.
 
 
 \begin{figure*}
-\centering
-\includegraphics[width=0.8\textwidth]{../figures/reg_net_prior_colin.pdf}
-\vspace{-0.2cm}
-\caption{\textbf{Building blocks of the region-network tree.}
-Neurobiological priors introduced into the classification problem 
-by hierarchical structured sparsity are displayed.
-\textit{Left:} Continuous, partially overlapping brain network priors
-(\textit{hot-colored}, taken from \cite{smith2009})
-accommodate the functional integration
-perspective of brain organization.
-\textit{Right:} Discrete, non-overlapping brain region priors
-(\textit{single-colored}, taken from \cite{crad12})
-accommodate the functional segregation perspective.
-\textit{Middle:} These two types of predefined voxel groups are incorporated
-into a joint hierarchical prior of parent networks with their
-descending region child nodes.
-\textit{Top to bottom:} Four examplary region-network priors
-are shown, including
-the early cortices that process
-visual and sound information from the environment,
-a well-known attentional circuit in the left brain hemisphere,
-and
-the cerebellum that is involved in motor behavior.
-}
-\label{fig_priors}
-\end{figure*}
-
-
-\begin{figure*}
 \begin{centering}
 % \includegraphics[width=1.00\textwidth]{../figures/sparsities.pdf}
 \includegraphics[width=0.55\textwidth]{../figures/ROC_ALL.png}
@@ -1018,7 +1055,7 @@ $\ell_1$-$\ell_2$-elastic-net penalization
 do not assume any previously known special structure.
 These classification estimators embrace a vision of neural activity structure
 that expects a minimum of
-topographically and functionally independent brain voxel to be relevant.
+topographically and functionally independent brain voxels to be relevant.
 %
 Logistic regression with (sparse) group sparsity
 imposes a structured $\ell_1/\ell_2$-block norm (with additional $\ell_1$ term)
@@ -1082,55 +1119,15 @@ the $\eta_g$ coefficients of all region groups
 or
 the $\eta_h$ coefficients of all network groups in the hierarchical prior.
 Removing region structure from the prior achieved
-88,84\% accuracy,
+88,8\% accuracy,
 while removing network structure from the prior achieved
-87,05\% accuracy.
+87,1\% accuracy.
 These results from partial priors were indeed outperformed by
-the full region-network tree prior at 89,67\% accuracy.
+the full region-network tree prior at 89,7\% accuracy.
 %
 In sum,
 driving sparse model selection by domain knowledge of region-network hierarchies
 outcompeted other types of frequently used sparse penalization techniques.
-
-
-
-\begin{figure*}
-\begin{centering}
-\includegraphics[width=0.80\textwidth]{../figures/dataratio_trans.pdf}
-%\vspace{-0.6cm}
-\caption{\textbf{Naive versus informed sparse model selection
-across training set sizes.}
-Ordinary $\ell_1$-penalized logistic regression
-(\textit{upper row})
-is compared
-to hierarchical-tree-penalized logistic regression
-($\alpha = 1, \beta = 1$, \textit{lower row})
-with increasing fraction
-of the available training data
-to be fitted (\textit{left to right columns}).
-For one example (i.e., ``View tools'') from 18 psychological tasks,
-unthresholded axial maps of model weights
-are shown for comparison against
-the sample average of that class
-(\textit{rightmost column}, thresholded at the $75^{th}$ percentile).
-The support recovery of that exemplary class is given
-as Pearson correlation $\rho$ (cf. results).
-%
-In the data-scarce scenario,
-ubiquitous in brain imaging studies,
-hierarchical tree sparsity achieves much
-better support recovery with the biggest difference
-in model performance (83.7\% versus 89.0\%).
-%
-In the data-rich scenario,
-neurobiologically informed logistic regression
-profits more from the available information quantities than
-neurobiologically naive logistic regression.
-}
-\label{Tab:fig_dataratio}
-\end{centering}
-\end{figure*}
-
 
 
 \subsection{Sample complexity of naive versus informed sparse model selection}
@@ -1291,6 +1288,16 @@ less interpretable model choices.
 \end{centering}
 \end{figure*}
 %
+\begin{table*}[]
+\centering
+\caption{Out-of-sample performance by region-network emphasis}
+\begin{tabular}{l|l|l|l|l|l|l|l|l|l|l|l|l|l|l|l}
+\textbf{Reg-Net Ratio} & 500 & 100  & 50   & 10   & 5    & 2    & 1    & $\frac{1}{2}$  & $\frac{1}{5}$  & $\frac{1}{10}$ & $\frac{1}{50}$ & $\frac{1}{100}$ & $\frac{1}{250}$ & $\frac{1}{500}$ & $\frac{1}{1000}$ \\ \hline
+\textbf{Accuracy {[}\%{]}}      & 3.8          & 41.7 & 63.7 & 89.9 & 89.9 & 88.5 & 87.9 & 87.9 & 87.9 & 87.8 & 88.6 & 87.8  & 85.6  & 67.2  & 39,3  
+\end{tabular}
+\label{table_reg_net_ratio}
+\end{table*}
+%
 \subsection{Support recovery as a function of region-network emphasis}
 % \paragraph{Support recovery as a function of region-network emphasis.}
 Finally, the relative importance of the
@@ -1308,15 +1315,6 @@ $\alpha = \frac{1}{3}$ to $\eta_h$ of all network group penalties
 (Table \ref{table_reg_net_ratio}).
 
 
-\begin{table*}[]
-\centering
-\caption{Out-of-sample performance by region-network emphasis}
-\begin{tabular}{l|l|l|l|l|l|l|l|l|l|l|l|l|l|l|l}
-\textbf{Reg-Net Ratio} & 500 & 100  & 50   & 10   & 5    & 2    & 1    & $\frac{1}{2}$  & $\frac{1}{5}$  & $\frac{1}{10}$ & $\frac{1}{50}$ & $\frac{1}{100}$ & $\frac{1}{250}$ & $\frac{1}{500}$ & $\frac{1}{1000}$ \\ \hline
-\textbf{Accuracy {[}\%{]}}      & 3.8          & 41.7 & 63.7 & 89.9 & 89.9 & 88.5 & 87.9 & 87.9 & 87.9 & 87.8 & 88.6 & 87.8  & 85.6  & 67.2  & 39,3  
-\end{tabular}
-\label{table_reg_net_ratio}
-\end{table*}
 
 As the most important observation,
 a range between region-dominant and network-dominant structured penalties

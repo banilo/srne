@@ -512,30 +512,31 @@ we can design distinct estimation regimes.
 Setting a low penalty on the network groups makes it is probable
 that all of them are active in the estimated weight maps. If we then select
 higher penalties on region groups, selection of relevant region groups is
-forced without negligable bias of the network definitions.
+forced without obeying network definitions.
 Conversely, setting low penalties on the region definitions
 makes it possible for
 all voxels to be active. Selecting higher penalties on the networks then
 leads to a selection of networks with all regions associated to it.
 %
-This region-network tradeoff allows inspecting the relative contributions
+This region-network equilibrium allows inspecting the relative contributions
 of the region and network levels
 of the hierarchical tree prior.
 
 
 % \paragraph{Problem formulation.}
 \subsection{Problem formulation}
-We formulate our estimation problem in the framework of regularized risk
-estimation applied to linear models: 
-The goal is to estimate a good predictor of cognitive task
-given a brain image. Let the set \(\mathcal X\subset\R^p\) represent brain
+We formulate our estimation problem in the framework of regularized
+empirical risk
+minimization applied to linear models.
+The goal is to estimate a good predictor of psychological task
+given single brain images. Let the set \(\mathcal X\in\R^{nxp}\) represent brain
 images of \(p > 0\) voxels.
 %
-We minimize the risk \(\mathcal L(\hat y, y)\) with
+We then minimize the risk \(\mathcal L(\hat y, y)\) with
 \(\hat y = f(X\hat w + \hat b)\), where \(f\) is a link function 
-(e.g. sigmoid for logistic regression, identity for linear regression),
+(e.g., sigmoid for logistic regression, identity for linear regression),
 and \(\mathcal L\) usually represents an appropriate negative loglikelihood.
-We incorporate a useful prior through regularization:
+We incorporate an informative prior through regularization:
 \[\argmin_{w, b} \mathcal L(f(Xw + b), y) + \lambda\Omega(w),\]
 where \(\lambda > 0\) and \(\Omega\) is the regularizer.
 
@@ -544,33 +545,34 @@ be a partition of \(\{1, \dots, p\}\), i.e.
 \[  \bigcup_{i} g_i = \{1, \dots, p\} \textrm{ and } g_i\cap g_j=\emptyset
 \quad\forall i\not=j\]
 
-Brain \textit{networks} consist of a group of one or several brain regions.
+Brain \textit{networks} consist of one or several brain regions.
 The set of brain networks \(\mathcal{H}\) also forms a partition of 
-\(\{1, \dots, p\}\) and in addition it is consistent with \(\mathcal G\) in
+\(\{1, \dots, p\}\) that is consistent with \(\mathcal G\) in
 the sense that
-\[\textrm{for all }g\in\mathcal G, h\in\mathcal H,\quad
+\[\forall g\in\mathcal G, h\in\mathcal H,\quad
 \textrm{ either } g\subset h\textrm{ or }g\cap h = \emptyset.\]
-This allows the association of each region \(g\in\mathcal G\) to a 
-network \(h\in\mathcal H\) and thus establishes a tree structure (up to 
-adding a root node containing all voxels).
+This allows an unambiguous assignment of each region \(g\in\mathcal G\) to one
+network \(h\in\mathcal H\) and thus establishes a tree structure.
+A root node is added to contain all voxels.
 
 For a brain image \(w\in\R^p\) and a group \(g\), the vector 
 \(w_g\in\R^{|g|}\) is defined as the restriction of \(w\) to the coordinates
- in \(g\). The structured penalty incorporating network
+ in \(g\). The penalty structured by network
 and region information can then be written as
 \[\Omega(w) = \alpha\sum_{h\in\mathcal H}\eta_h\|w_h\|_2 + \beta\sum_{g\in\mathcal G}\eta_g\|w_g\|_2.\]
-According to \cite{yuan2006model} we set \(\eta_g = 1/\sqrt{|g|}\) to
-account for varying group size. The hierarchy-level-specific factors 
-\(\alpha > 0\) and \(\beta > 0\) are used to trade-off region-weighted and
+As originally recommended \cite{yuan2006model},
+we set \(\eta_g = 1/\sqrt{|g|}\) to
+account for discrepancy in group sizes. The hierarchy-level-specific factors 
+\(\alpha > 0\) and \(\beta > 0\) can trade-off region-weighted and
 network-weighted models against each other.
 
-One can read off the formula that decreasing \(\alpha\) leads to less 
-penalization of brain networks and thus to tendentially fully active groups
+Following the formula, decreasing \(\alpha\) leads to less 
+penalization of brain networks and thus the tendency for fully active groups
 and dense brain maps. If at the same time \(\beta\) is increased to 
 induce group sparsity, then only the structure of brain regions encoded
-by \(\mathcal G\) is present. Conversely, if \(\beta\) is chosen 
-sufficiently small, and \(\alpha\) increased,
-then the structure will come from \(\mathcal H\), leading to the
+by \(\mathcal G\) is acknowledged. Conversely, if \(\beta\) is chosen 
+sufficiently small and \(\alpha\) increased,
+the structure will come from \(\mathcal H\), leading to the
 selection of brain networks rather than regions.
 
 It is important to note that the above trade-off shows that predominance
@@ -868,7 +870,7 @@ accessible online for reproducibility and reuse
 As the currently biggest openly accessible reference dataset,
 we chose resources from the Human Connectome Project (HCP)
 \cite{barch2013}.
-Neuroimaging task data with labels of ongoing cognitive processes
+Neuroimaging task data with labels of ongoing psychological processes
 were drawn from 500
 healthy HCP participants (cf. Appendix for details on datasets).
 18 HCP tasks 

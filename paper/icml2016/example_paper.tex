@@ -474,7 +474,8 @@ and
 previously published region definitions obtained from
 spatially constrained ward clustering \cite{crad12}
 allow constructing a hierarchy of global ICA networks with their
-assigned local cluster regions.
+assigned local cluster regions
+(Figure \ref{fig_priors}).
 The ensuing network-region tree is used as a structural prior
 of expected weight distributions
 during supervised model fitting.
@@ -576,8 +577,9 @@ the structure will come from \(\mathcal H\), leading to the
 selection of brain networks rather than regions.
 
 It is important to note that the above trade-off shows that predominance
-can be either attributed to regions or networks, but that nevertheless the
-penalty structure is hierarchical: If the network penalty layer sets a
+can be either attributed to regions or networks, but that the
+penalty structure is nevertheless hierarchical.
+If the network penalty layer sets a
 network group to zero, then all the contained region groups are forced to
 have activity zero. Conversely, if a brain region has non-zero coefficients,
 then necessarily the network containing it must be active.
@@ -590,12 +592,12 @@ When evaluating the trade-off in \((\alpha, \beta)\), this needs to be taken
 into account.
 
 The prediction problem at hand is a multiclass classification. We choose to
-attack this using one-vs-rest scheme on a binary logistic regression, whose
-loss can be written as
+attack this using one-versus-rest scheme on a binary logistic regression.
+Its loss can be written as
 \[\sum_{i=1}^n\log(1 + \exp(-y_i\langle x_i, w\rangle)) + \lambda\Omega(w),\]
 if \(y\in\{-1, 1\}\) and with \(x_i\in\R^p\) the training sample brain images.
 We optimize parameters \(w\) using an iterative forward-backward
-scheme analogous to FISTA for the lasso \cite{beck2009}.
+scheme analogous to the FISTA solver for the lasso \cite{beck2009}.
 
 % \paragraph{Optimization.}
 % We optimize the data loss function using an iterative forward-backward
@@ -632,7 +634,7 @@ scheme analogous to FISTA for the lasso \cite{beck2009}.
 % \paragraph{Hyperparameter optimization.}
 \subsection{Hyperparameter optimization}
 The stratified and shuffled training data were submitted
-to a nested cross-validation scheme
+to a nested cross-validation (CV) scheme
 for model selection and model assessment.
 In the inner CV layer, the logistic regression estimators
 have been trained in a one-versus-rest design that
@@ -847,7 +849,7 @@ evaluated on an identical test set in all settings.
 
 % \paragraph{Implementation.}
 \subsection{Implementation}
-All analyses were performed in Python.
+All experiments were performed in Python.
 We used \textit{nilearn} to process and resphape
 the extensive neuroimaging data 
 \cite{abrah14},
@@ -856,7 +858,7 @@ data processing pipelines
 \cite{pedr11},
 and
 \textit{SPAMs} for numerically optimized
-implementations of the sparse estimators
+implementations of the sparse learners
 (\url{http://spams-devel.gforge.inria.fr/}).
 All Python scripts that generated the results are
 accessible online for reproducibility and reuse
@@ -867,24 +869,26 @@ accessible online for reproducibility and reuse
 %
 \subsection{Data}
 % \paragraph{Data.}
-As the currently biggest openly accessible reference dataset,
-we chose resources from the Human Connectome Project (HCP)
+As the currently biggest open-access dataset,
+we chose brain data from the Human Connectome Project (HCP)
 \cite{barch2013}.
-Neuroimaging task data with labels of ongoing psychological processes
+Neuroimaging data with labels of ongoing psychological processes
 were drawn from 500
-healthy HCP participants (cf. Appendix for details on datasets).
+healthy HCP participants.
 18 HCP tasks 
 were selected that are known to elicit reliable neural activity
 across participants.
 % across participants (Table \ref{table_tasks}).
-In sum, the HCP task data incorporated 8650 first-level activity maps
+The HCP data incorporated $n$ = 8650 first-level activity maps
 from 18 diverse paradigms administered to 498 participants (2 removed
 due to incomplete data).
-All maps were resampled to a common $60\times72\times60$ space of
+All maps were warped into a common $60\times72\times60$ space of
 3mm isotropic voxels and gray-matter masked (at least 10\% tissue
 probability).
-The supervised analyses were thus based on labeled HCP task maps with
-79,941 voxels of interest representing z-values in gray matter.
+Hence,
+the present experiments were based on task-labeled HCP maps of neural
+activity with
+$p$ = 79,941 voxels of interest that represent zscored-values in gray matter.
 
 % \begin{table*}[h]
 %   \resizebox{0.98\textwidth}{!}{%
@@ -988,7 +992,7 @@ was hence most beneficial for predicting psychological tasks from
 brain maps.
 }
 \end{centering}
-\label{fig_sparsities}
+\label{Tab:fig_sparsities}
 \end{figure*}
 
 
@@ -998,29 +1002,33 @@ common sparsity penalties}
 Hierarchical region-network priors have been systematically
 evaluated against other popular choices of sparse classification algorithms
 in an 18-class scenario
-(Figure \ref{fig_sparsities}).
+(Figure 2).
+% (Figure \ref{Tab:fig_sparsities}).
 %
-Logistic regression with $\ell_1/\ell_2$ block norm penalization
+Logistic regression with $\ell_1/\ell_2$-block-norm penalization
 incorporated a hierarchy of previously known region and network neighborhoods
 for a neurobiological bias of the statistical estimation
 ($\alpha = 1, \beta = 1$).
 %
-Vanilla logistic regression with $\ell_1$-penalization
-does not assume any previously known special structure.
-This classification estimator embraces a vision of neural activity structure
+Vanilla logistic regression with $\ell_1$-penalization and
+$\ell_1$-$\ell_2$-elastic-net penalization
+do not assume any previously known special structure.
+These classification estimators embrace a vision of neural activity structure
 that expects a minimum of
 topographically and functionally independent brain voxel to be relevant.
 %
 Logistic regression with (sparse) group sparsity
-imposes a structured $\ell_1/\ell_2$ block norm (with additional $\ell_1$ term)
-with a known atlas of region voxel groups onto the statistical estimation process.
-This supervised estimator shrinks and selects the coefficients
-of topographically compact voxel groups expected to be relevant together.
+imposes a structured $\ell_1/\ell_2$-block norm (with additional $\ell_1$ term)
+with a known region atlas of voxel groups
+onto the statistical estimation process.
+These supervised estimators shrink and select the coefficients
+of topographically compact voxel groups expected to
+be relevant in unison.
 %
 Logistic regression with trace-norm penalization
 imposed low-rank structure \cite{harchaoui2012large}.
 This supervised classification algorithm
-expected a minimum of unknown network patterns
+expected a minimum of unknown ``network'' patterns
 to be relevant.
 %
 % The stratified and shuffled training data were submitted
@@ -1042,39 +1050,43 @@ Across analyses,
 hierarchial tree sparsity was most successful
 in distinguishing unseen neural activity maps from 18 psychological tasks
 (89.7\% multi-class accuracy, mean AUC 94.8 [+/- 9.1 standard deviation]
-mean precision 86.7, mean recall 91.5).
+mean precision 0.87, mean recall 0.92).
 It was closely followed by logistic regression
 structured by trace-norm regularization
 (89.4\%, mean AUC 90.8 [+/- 14.8],
-precision 86.4, recall 91.3).
+precision 0.86, recall 0.91).
 Lasso featured an average performance comparing to the other sparse estimators
-(88.60\%, mean AUC 94.3 [+/- 9.3],
-precision 85.7, recall 90.3).
+(88.6\%, mean AUC 94.3 [+/- 9.3],
+precision 0.86, recall 0.90).
 Elastic-Net, in turn, featured an
 average performance comparing to the other sparse estimators
 (88.1\%, mean AUC 94.1 [+/- 10.2],
-precision 84.8, recall 84.1).
+precision 0.85, recall 0.84).
 Introducing a priori knowledge of brain region compartments
 by sparse group sparsity
-(87.9\%, mean AUC 93.9 [+/- 10.1], precision 84.8, recall 89.5)
+(87.9\%, mean AUC 93.9 [+/- 10.1], precision 0.85, recall 0.90)
 and
 by group sparsity
-(87.9\%, mean AUC 84.7 [+/- 17.3], precision 85.3, recall 90.3)
+(87.9\%, mean AUC 84.7 [+/- 17.3], precision 0.85, recall 0.90)
 performed worst.
-%
+
+
+
 In an important subanalysis,
 the gain of the combined region-network prior was also confirmed by
-selectively zeroing the $\eta_g$ coefficients of all region groups
-or all network groups in the hierarchical prior.
+selectively zeroing
+the $\eta_g$ coefficients of all region groups
+or
+the $\eta_h$ coefficients of all network groups in the hierarchical prior.
 Removing region structure from the prior achieved
 88,84\% accuracy,
 while removing network structure from the prior achieved
 87,05\% accuracy.
-These results from partial priors are indeed outperformed
+These results from partial priors were indeed outperformed by
 the full region-network tree prior at 89,67\% accuracy.
 %
 In sum,
-biasing sparse model selection by domain knowledge of region-network hierarchies
+driving sparse model selection by domain knowledge of region-network hierarchies
 outcompeted other types of frequently used sparse penalization techniques.
 
 
@@ -1111,7 +1123,7 @@ neurobiologically informed logistic regression
 profits more from the available information quantities than
 neurobiologically naive logistic regression.
 }
-\label{fig_dataratio}
+\label{Tab:fig_dataratio}
 \end{centering}
 \end{figure*}
 
@@ -1122,18 +1134,18 @@ neurobiologically naive logistic regression.
 Subsequently, the sample complexity of
 $\ell_1$-penalized and hierarchical-tree-penalized logistic regression
 ($\alpha = 1, \beta = 1$)
-were quantitatively compared (Figure \ref{fig_dataratio}).
-Region-network priors should bias model selection towards more
+was quantitatively compared (Figure \ref{Tab:fig_dataratio}).
+Region-network priors should contrain model selection towards more
 neurobiologically plausible classification estimators.
 This should yield better out-of-sample generalization and
 support recovery than
 neurobiology-naive $\ell_1$-constrained logistic regression
 in the data-scarce and data-rich scenarios.
 %
-The HCP task data with examples from 18
+The HCP data with examples from 18
 psychological tasks were first divided into
 90\% of training set (i.e., 7584 neural activity maps) and
-10\% of test set (i.e., 842 neural activity maps).
+10\% of test set (i.e., 842 maps).
 Both learning algorithms were fitted based on the
 training set at different subsampling fractions:
 20\% (1516 neural activity maps),
@@ -1143,7 +1155,7 @@ training set at different subsampling fractions:
 100\% (7584 maps).
 
 % results: accuracy
-Regarding classification performance on the always same test set,
+Regarding classification performance on the identical test set,
 $\ell_1$-penalized versus hierarchical-tree-penalized logistic regression
 achieved
 83.6\% versus 88.7\% (20\% of training data),

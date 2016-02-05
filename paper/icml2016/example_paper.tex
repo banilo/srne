@@ -531,25 +531,27 @@ estimation applied to linear models:
 The goal is to estimate a good predictor of cognitive task
 given a brain image. Let the set \(\mathcal X\subset\R^p\) represent brain
 images of \(p > 0\) voxels.
-
-Then we would like to minimize the risk \(\mathcal L(\hat y, y)\), where
-\(\hat y = X\hat w + \hat b\), while regularizing to incorporate a useful
-prior:
-\[\argmin_{w, b} \mathcal L(Xw + b, y) + \lambda\Omega(w),\]
+%
+We minimize the risk \(\mathcal L(\hat y, y)\) with
+\(\hat y = f(X\hat w + \hat b)\), where \(f\) is a link function 
+(e.g. sigmoid for logistic regression, identity for linear regression),
+and \(\mathcal L\) usually represents an appropriate negative loglikelihood.
+We incorporate a useful prior through regularization:
+\[\argmin_{w, b} \mathcal L(f(Xw + b), y) + \lambda\Omega(w),\]
 where \(\lambda > 0\) and \(\Omega\) is the regularizer.
 
-Brain regions are defined as disjoint groups of voxels. Let \(\mathcal G\)
+Brain \textit{regions} are defined as disjoint groups of voxels. Let \(\mathcal G\)
 be a partition of \(\{1, \dots, p\}\), i.e.
 \[  \bigcup_{i} g_i = \{1, \dots, p\} \textrm{ and } g_i\cap g_j=\emptyset
 \quad\forall i\not=j\]
 
-Brain networks consist of regions and are thus super-regions or groups of 
-regions. The set of brain networks \(\mathcal{H}\) is also a partition of 
+Brain \textit{networks} consist of a group of one or several brain regions.
+The set of brain networks \(\mathcal{H}\) also forms a partition of 
 \(\{1, \dots, p\}\) and in addition it is consistent with \(\mathcal G\) in
 the sense that
 \[\textrm{for all }g\in\mathcal G, h\in\mathcal H,\quad
 \textrm{ either } g\subset h\textrm{ or }g\cap h = \emptyset.\]
-This allows a clear association of each region \(g\in\mathcal G\) to a 
+This allows the association of each region \(g\in\mathcal G\) to a 
 network \(h\in\mathcal H\) and thus establishes a tree structure (up to 
 adding a root node containing all voxels).
 
@@ -565,11 +567,11 @@ network-weighted models against each other.
 
 One can read off the formula that decreasing \(\alpha\) leads to less 
 penalization of brain networks and thus to tendentially fully active groups
-and dense brain maps. If at the same time \(\beta\) is increased to a point
-of inducing group sparsity, then only the structure of brain regions encoded
-by \(\mathcal G\) is present. Conversely, if \(\beta\) is decreased to 
-become non-selective, and \(\alpha\) is increased to group selectivity,
-then the structure imposed will come from \(\mathcal H\), leading to the
+and dense brain maps. If at the same time \(\beta\) is increased to 
+induce group sparsity, then only the structure of brain regions encoded
+by \(\mathcal G\) is present. Conversely, if \(\beta\) is chosen 
+sufficiently small, and \(\alpha\) increased,
+then the structure will come from \(\mathcal H\), leading to the
 selection of brain networks rather than regions.
 
 It is important to note that the above trade-off shows that predominance
@@ -578,11 +580,11 @@ penalty structure is hierarchical: If the network penalty layer sets a
 network group to zero, then all the contained region groups are forced to
 have activity zero. Conversely, if a brain region has non-zero coefficients,
 then necessarily the network containing it must be active.
-This relation is asymmetric, since when swapping the roles of \(\mathcal G\)
- and \(\mathcal H\), these statements do not hold true anymore. A brain 
+This relation is asymmetric, the roles of \(\mathcal G\) and \(\mathcal H\) 
+cannot be swapped: A brain 
 region can set all its coefficients to zero without forcing the 
 corresponding network to zero. A brain network can be active without its
-subregions necessarily being active.
+subregions being active.
 When evaluating the trade-off in \((\alpha, \beta)\), this needs to be taken
 into account.
 
@@ -591,7 +593,7 @@ attack this using one-vs-rest scheme on a binary logistic regression, whose
 loss can be written as
 \[\sum_{i=1}^n\log(1 + \exp(-y_i\langle x_i, w\rangle)) + \lambda\Omega(w),\]
 if \(y\in\{-1, 1\}\) and with \(x_i\in\R^p\) the training sample brain images.
-The data loss function is approximated using an iterative forward-backward
+We optimize parameters \(w\) using an iterative forward-backward
 scheme analogous to FISTA for the lasso \cite{beck2009}.
 
 % \paragraph{Optimization.}
@@ -636,9 +638,9 @@ have been trained in a one-versus-rest design that
 distinguishes each class from
 the respective 17 other classes
 (number of maximal iterations=$100$, tolerance=$0.001$).
-In the outer CV layer, grid search
+{\color{red} In the outer CV layer, grid search
 selected among candidates for the respective $\lambda$ parameter
-by searching between $10^{-2}$ and $10^{1}$ in 9 steps on a logarithmic scale.
+by searching between $10^{-2}$ and $10^{1}$ in 9 steps on a logarithmic scale.}
 Importantly, the thus selected sparse logistic regression classifier was
 evaluated on an identical test set in all settings.
 
@@ -848,7 +850,7 @@ All analyses were performed in Python.
 We used \textit{nilearn} to process and resphape
 the extensive neuroimaging data 
 \cite{abrah14},
-\textit{scikit learn} to design machine-learning
+\textit{scikit-learn} to design machine-learning
 data processing pipelines
 \cite{pedr11},
 and

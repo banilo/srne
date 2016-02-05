@@ -226,7 +226,7 @@ interpretation of findings naturally embraces
 cross-regional integration by
 overlapping network compartments
 as the basic architecture of brain organization,
-in stark constrast to methods examining regional specialization.
+in contrast to methods examining regional specialization.
 
 
 % % specialization & integration
@@ -398,7 +398,7 @@ conformational dynamics of protein complexes \cite{jenatton2009structured}.
 The hierarchical tree penalties recently suggested for imaging neuroscience
 \cite{jenatton2011multi} will be extended
 by introducing neurobiologically plausible region and network priors
-to design neuroscience-specific estimators.
+to design neuroscience-specific classifiers.
 %
 Based on the largest public neuroimaging repository
 (Human Connectome Project [HCP], \url{http://www.humanconnectomeproject.org/}),
@@ -406,18 +406,18 @@ we demonstrated that domain-informed supervised models
 gracefully tackle the curse of dimensionality,
 yield more human-interpretable results,
 and generalize better to new samples
-than domain-naive estimators.
+than domain-naive blackbox estimators.
 
 \section{Methods}
-The main contribution is the domain adaptation of hierarchical structured
+This paper contributes a domain adaptation of hierarchical structured
 tree penalties to jointly incorporate region 
 specialization and network integration priors into multivariate 
-estimators.
+classification.
 We capitalize on hierarchical group lasso as recently introduced
 \cite{jenatton2011multi} to create a set of convex penalty terms.
 These allow acknowledging the interplay between local specialization and 
 global connectivity when discriminating defined psychological tasks
-from brain activity.
+from neural activity maps.
 % Bertrand: univariate-multivariate is orthogonal to the
 % current study -> make clear why we opted for multivariate
 % rather than univariate which might even have been simpler
@@ -429,9 +429,9 @@ prediction in unseen neuroimaging data.
 %
 \subsection{Rationale}
 % \paragraph{Rationale.}
-3D brain maps obtained by neuroimaging
-techniques are high-dimensional but, luckily,
-their signal is highly structured.
+3D brain maps acquired by neuroimaging
+scanners are high-dimensional but, luckily,
+their signal is also highly structured.
 Its explicit dimensionality, the number of brain voxels,
 typically exceeds 100,000 variables, while the number
 of samples rarely exceeds few hundreds.
@@ -448,25 +448,24 @@ into the statistical estimation process.
 
 
 
-Large-scale brain networks emerge in human individuals around birth
+Major brain networks emerge in human individuals around birth
 \cite{doria2010}, before mental capacities mature in childhood. 
 In adults,
-the sets of regions that compose
-a given spatiotemporally cohesive network are known to have more
+the regions that compose
+a given cohesive network are known to have more
 similar functional profiles than nodes from different networks
 \cite{anderson2013}.
-As a well-established method for network estimation
-\cite{beckmann2005},
-ICA yields continuous brain maps with
+As a well-established method for network estimation,
+ICA \cite{beckmann2005} yields continuous brain maps with
 weights for each voxel. The region nodes of ICA
 networks are spatially disjoint sets of voxel groups that
 agree with boundaries of brain atlases.
 Such brain atlases can be obtained by segregating
-the brain's grey matter into spatially compact voxel groups
-using clustering algorithmisms
+the brain's grey matter into local voxel groups
+using clustering algorithisms
 \cite{cbp2015review}.
 Consequently,
-each region from a brain atlas can be uniquely associated with one
+each region from a brain atlas can be uniquely associated with one of
 the extracted ICA networks.
 %
 In the present work previously published network definitions
@@ -482,8 +481,8 @@ during supervised model fitting.
 
 
 
-This tree structure can be seamlessly plugged into
-a recently introduced hierarchical sparsity estimator
+This tree structure can be plugged into
+hierarchical sparsity penalty terms
 \cite{jenatton2011multi}.
 It extends the group lasso
 \cite{yuan2006model}
@@ -492,7 +491,7 @@ in a nested tree structure.
 The first hierarchical level of that tree are
 the network groups that contain all
 the voxels of the brain regions associated to them.
-Each network node, in turn, descends into a second hierarchical level of
+Each network node in turn descends into a second hierarchical level of
 brain regions of spatially neighboring voxel groups.
 %
 As a consequence of such a region-network sparsity tree,
@@ -508,10 +507,10 @@ the coefficient of all region groups and all network groups can
 be weighed individually.
 Trading off the voxel penalties of the network level against the
 voxel penalties of the region level,
-we can design different estimation regimes.
+we can design distinct estimation regimes.
 %
-Setting a low penalty on the network groups makes it probable
-that all of them are active in the estimated weight map. If we then select
+Setting a low penalty on the network groups makes it is probable
+that all of them are active in the estimated weight maps. If we then select
 higher penalties on region groups, selection of relevant region groups is
 forced without negligable bias of the network definitions.
 Conversely, setting low penalties on the region definitions

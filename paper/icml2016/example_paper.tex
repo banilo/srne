@@ -1378,20 +1378,20 @@ feature engineering and subsequent inference
 integration account of brain organization,
 \textit{ii)} depend on the ground truth being a region or network effect,
 and
-\textit{iii)} cannot issue individual coefficients for every brain voxels.
+\textit{iii)} cannot issue individual coefficients for every brain voxel.
 %
 Hierarchical region-network sparsity addresses these shortcomings
 by estimating individual voxel contributions
-while benefitting from their functional segregation and integration
+while benefitting from their biological multi-level stratification
 to restrict statistical complexity.
 %
 Viewed from the bias-variance tradeoff,
-our modification to logistic regression estimators
+our modification to logistic regression
 entailed a large decrease in model variance but only a modest
 increase in model bias.
 Viewed from the Vapnik-Chervonenkis dimensions,
 this entailed a healthy decrease in the complexity capacity of the prediction model
-with a higher chance of generalizing to unobserved data.
+with a higher chance of extrapolating to unobserved data samples.
 
 
 
@@ -1400,27 +1400,27 @@ region-network sparsity priors could be incorporated into various
 pattern-learning methods in systems neuroscience.
 %
 This includes supervised methods for whole-brain classification and regression
-with one or several target variables.
+in single- and multi-task learning settings.
 The principled regularization scheme could inform
 unsupervised structure-discovery by
 matrix factorization and clustering algorithms
 \cite{jenatton2009structured, witten2010framework}.
 Additionally,
-model regularization by hierarchical structured sparsity could be extended
-from the spatial domain of neural activity to
+hierarchical regularization could be extended
+from the spatial activity domain to
 priors of coherent spatiotemporal activity structure
 \cite{gramfort2011tracking}.
 %
 The deterministic choice of a region and network atlas
 could further be avoided by
 sparse selection of overcomplete region-network dictionaries.
-Non-hierarchical penalty terms will probably allow for
+Advanced but non-hierarchical penalty terms will probably allow for
 more complex structured sparsity that
-extend the recently enabled parent-children dependencies.
+go beyond the recently enabled parent-children dependencies.
 %
 Ultimately,
 successful high-dimensional inference is
-an important prerequisite
+a prerequisite
 for predicting diagnosis,
 disease trajectories, and treatment response
 in personalized psychiatry and neurology.

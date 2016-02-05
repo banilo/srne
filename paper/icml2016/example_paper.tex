@@ -1181,7 +1181,7 @@ yield the sparsities
 163.2 (+/- 0.7), 160.2 (+/- 1.8), 132.1 (+/- 3.3), 116.2 (+/- 4.4), and 88.4 (+/- 8.4)
 after fitting 20\% to 100\% of the training data.
 % results: support recovery
-Finally, the support recovery was quantified by
+Regarding the support recovery, we computed
 Pearson correlation $\rho$ between vectors of
 the zscored model coefficients
 and
@@ -1194,6 +1194,19 @@ achieved a mean correlation $\rho$ (+/- standard deviation) of
 0.16 (+/- 0.04) versus 0.22 (+/- 0.05), and
 0.19 (+/- 0.05) versus 0.29 (+/- 0.06) across classes
 based on 20\% to 100\% training data.
+% results: model variance
+Finally, regarding model variance,
+we quantified the agreement between
+$\ell_1$-penalized versus hierarchical-tree-penalized
+model weights after fitting
+on 5 different 20\%-subsamples of the training data.
+For each classifier,
+the absolute model weights were concatenated for all 18 classes,
+thresholded at 0.0001 to binarize variable selection,
+and mutual information was computed on all pairs
+of the 5 trained models.
+This agreement metric of model selection across fold pairs
+yielded the means 0.001 ($\ell_1$) versus 0.506 (Hierarchical Tree).
 
 
 

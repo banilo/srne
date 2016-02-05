@@ -119,8 +119,8 @@ generalization performance, sample complexity, and domain interpretability.
 \section{Introduction}
 % sparsity
 Many quantitative scientific domains underwent a
-recent passage from the classical regime (i.e., ``long data")  to
-the high-dimensional regime (i.e., ``wide data").
+recent passage from the classical ``long data" regime to
+the high-dimensional ``wide data" regime.
 % the high-dimensional regime (i.e., ``wide data") \cite{jordan2015massive}.
 Also in the brain imaging domain,
 many contemporary methods for acquiring brain signals yield
@@ -136,15 +136,15 @@ Many such ill-posed estimation problems
 have benefited from
 \textit{sparsity} assumptions
 \cite{hastie2015statistical}.
-They act as a 
-regularizer and can be used for model selection.
+They act as regularizer by encouraging zero coefficients
+in model selection.
 Sparse supervised and unsupervised
 learning algorithms have proven to yield
 statistical relationships that can be readily
 estimated, reproduced, and interpreted
 \cite{giraud2014introduction}.
 %
-Generally, \textit{structured sparsity} can impose
+Moreover, \textit{structured sparsity} can impose
 domain knowledge on the 
 statistical estimation,
 thus shrinking and selecting variables guided by
@@ -166,14 +166,14 @@ Functional specialization emphasizes that microscopically distinguishable
 brain regions are responsible for distinct classes of computational 
 processes
 \cite{kanwisher2010functional}.
-Conversely, functional integration emphasizes that brain function
+Conversely, functional integration emphasizes that brain computation
 is enabled by a complex interplay between these
 distinct brain regions \cite{sporns14nn}.
 %
 Local
 infrastructure
-and unique global connectivity profiles are thought to go hand-in-hand
-to realize brain function.
+and global connectivity profiles are thought to go hand-in-hand
+to realize neural processes.
 %
 However,
 probably no existing brain analysis method acknowledges that
@@ -186,7 +186,7 @@ Functional specialization has long been
 explored and interpreted based on different research methods.
 %
 For instance,
-single-cell recordings and microscopic examination
+single-cell recordings and microscopic tissue examination
 revealed the
 segregation of the occipital visual cortex into V1, V2, V3, V3A/B, and V4
 regions
@@ -226,7 +226,7 @@ interpretation of findings naturally embraces
 cross-regional integration by
 overlapping network compartments
 as the basic architecture of brain organization,
-in stark constrast to methods examining regional specialization.
+in contrast to methods examining regional specialization.
 
 
 % % specialization & integration
@@ -398,7 +398,7 @@ conformational dynamics of protein complexes \cite{jenatton2009structured}.
 The hierarchical tree penalties recently suggested for imaging neuroscience
 \cite{jenatton2011multi} will be extended
 by introducing neurobiologically plausible region and network priors
-to design neuroscience-specific estimators.
+to design neuroscience-specific classifiers.
 %
 Based on the largest public neuroimaging repository
 (Human Connectome Project [HCP], \url{http://www.humanconnectomeproject.org/}),
@@ -406,18 +406,18 @@ we demonstrated that domain-informed supervised models
 gracefully tackle the curse of dimensionality,
 yield more human-interpretable results,
 and generalize better to new samples
-than domain-naive estimators.
+than domain-naive blackbox estimators.
 
 \section{Methods}
-The main contribution is the domain adaptation of hierarchical structured
+This paper contributes a domain adaptation of hierarchical structured
 tree penalties to jointly incorporate region 
 specialization and network integration priors into multivariate 
-estimators.
+classification.
 We capitalize on hierarchical group lasso as recently introduced
 \cite{jenatton2011multi} to create a set of convex penalty terms.
 These allow acknowledging the interplay between local specialization and 
 global connectivity when discriminating defined psychological tasks
-from brain activity.
+from neural activity maps.
 % Bertrand: univariate-multivariate is orthogonal to the
 % current study -> make clear why we opted for multivariate
 % rather than univariate which might even have been simpler
@@ -429,9 +429,9 @@ prediction in unseen neuroimaging data.
 %
 \subsection{Rationale}
 % \paragraph{Rationale.}
-3D brain maps obtained by neuroimaging
-techniques are high-dimensional but, luckily,
-their signal is highly structured.
+3D brain maps acquired by neuroimaging
+scanners are high-dimensional but, luckily,
+their signal is also highly structured.
 Its explicit dimensionality, the number of brain voxels,
 typically exceeds 100,000 variables, while the number
 of samples rarely exceeds few hundreds.
@@ -448,25 +448,24 @@ into the statistical estimation process.
 
 
 
-Large-scale brain networks emerge in human individuals around birth
+Major brain networks emerge in human individuals around birth
 \cite{doria2010}, before mental capacities mature in childhood. 
 In adults,
-the sets of regions that compose
-a given spatiotemporally cohesive network are known to have more
+the regions that compose
+a given cohesive network are known to have more
 similar functional profiles than nodes from different networks
 \cite{anderson2013}.
-As a well-established method for network estimation
-\cite{beckmann2005},
-ICA yields continuous brain maps with
+As a well-established method for network estimation,
+ICA \cite{beckmann2005} yields continuous brain maps with
 weights for each voxel. The region nodes of ICA
 networks are spatially disjoint sets of voxel groups that
 agree with boundaries of brain atlases.
 Such brain atlases can be obtained by segregating
-the brain's grey matter into spatially compact voxel groups
-using clustering algorithmisms
+the brain's grey matter into local voxel groups
+using clustering algorithisms
 \cite{cbp2015review}.
 Consequently,
-each region from a brain atlas can be uniquely associated with one
+each region from a brain atlas can be uniquely associated with one of
 the extracted ICA networks.
 %
 In the present work previously published network definitions
@@ -482,8 +481,8 @@ during supervised model fitting.
 
 
 
-This tree structure can be seamlessly plugged into
-a recently introduced hierarchical sparsity estimator
+This tree structure can be plugged into
+hierarchical sparsity penalty terms
 \cite{jenatton2011multi}.
 It extends the group lasso
 \cite{yuan2006model}
@@ -492,7 +491,7 @@ in a nested tree structure.
 The first hierarchical level of that tree are
 the network groups that contain all
 the voxels of the brain regions associated to them.
-Each network node, in turn, descends into a second hierarchical level of
+Each network node in turn descends into a second hierarchical level of
 brain regions of spatially neighboring voxel groups.
 %
 As a consequence of such a region-network sparsity tree,
@@ -508,35 +507,36 @@ the coefficient of all region groups and all network groups can
 be weighed individually.
 Trading off the voxel penalties of the network level against the
 voxel penalties of the region level,
-we can design different estimation regimes.
+we can design distinct estimation regimes.
 %
-Setting a low penalty on the network groups makes it probable
-that all of them are active in the estimated weight map. If we then select
+Setting a low penalty on the network groups makes it is probable
+that all of them are active in the estimated weight maps. If we then select
 higher penalties on region groups, selection of relevant region groups is
-forced without negligable bias of the network definitions.
+forced without obeying network definitions.
 Conversely, setting low penalties on the region definitions
 makes it possible for
 all voxels to be active. Selecting higher penalties on the networks then
 leads to a selection of networks with all regions associated to it.
 %
-This region-network tradeoff allows inspecting the relative contributions
+This region-network equilibrium allows inspecting the relative contributions
 of the region and network levels
 of the hierarchical tree prior.
 
 
 % \paragraph{Problem formulation.}
 \subsection{Problem formulation}
-We formulate our estimation problem in the framework of regularized risk
-estimation applied to linear models: 
-The goal is to estimate a good predictor of cognitive task
-given a brain image. Let the set \(\mathcal X\subset\R^p\) represent brain
+We formulate our estimation problem in the framework of regularized
+empirical risk
+minimization applied to linear models.
+The goal is to estimate a good predictor of psychological task
+given single brain images. Let the set \(\mathcal X\in\R^{nxp}\) represent brain
 images of \(p > 0\) voxels.
 %
-We minimize the risk \(\mathcal L(\hat y, y)\) with
+We then minimize the risk \(\mathcal L(\hat y, y)\) with
 \(\hat y = f(X\hat w + \hat b)\), where \(f\) is a link function 
-(e.g. sigmoid for logistic regression, identity for linear regression),
+(e.g., sigmoid for logistic regression, identity for linear regression),
 and \(\mathcal L\) usually represents an appropriate negative loglikelihood.
-We incorporate a useful prior through regularization:
+We incorporate an informative prior through regularization:
 \[\argmin_{w, b} \mathcal L(f(Xw + b), y) + \lambda\Omega(w),\]
 where \(\lambda > 0\) and \(\Omega\) is the regularizer.
 
@@ -545,33 +545,34 @@ be a partition of \(\{1, \dots, p\}\), i.e.
 \[  \bigcup_{i} g_i = \{1, \dots, p\} \textrm{ and } g_i\cap g_j=\emptyset
 \quad\forall i\not=j\]
 
-Brain \textit{networks} consist of a group of one or several brain regions.
+Brain \textit{networks} consist of one or several brain regions.
 The set of brain networks \(\mathcal{H}\) also forms a partition of 
-\(\{1, \dots, p\}\) and in addition it is consistent with \(\mathcal G\) in
+\(\{1, \dots, p\}\) that is consistent with \(\mathcal G\) in
 the sense that
-\[\textrm{for all }g\in\mathcal G, h\in\mathcal H,\quad
+\[\forall g\in\mathcal G, h\in\mathcal H,\quad
 \textrm{ either } g\subset h\textrm{ or }g\cap h = \emptyset.\]
-This allows the association of each region \(g\in\mathcal G\) to a 
-network \(h\in\mathcal H\) and thus establishes a tree structure (up to 
-adding a root node containing all voxels).
+This allows an unambiguous assignment of each region \(g\in\mathcal G\) to one
+network \(h\in\mathcal H\) and thus establishes a tree structure.
+A root node is added to contain all voxels.
 
 For a brain image \(w\in\R^p\) and a group \(g\), the vector 
 \(w_g\in\R^{|g|}\) is defined as the restriction of \(w\) to the coordinates
- in \(g\). The structured penalty incorporating network
+ in \(g\). The penalty structured by network
 and region information can then be written as
 \[\Omega(w) = \alpha\sum_{h\in\mathcal H}\eta_h\|w_h\|_2 + \beta\sum_{g\in\mathcal G}\eta_g\|w_g\|_2.\]
-According to \cite{yuan2006model} we set \(\eta_g = 1/\sqrt{|g|}\) to
-account for varying group size. The hierarchy-level-specific factors 
-\(\alpha > 0\) and \(\beta > 0\) are used to trade-off region-weighted and
+As originally recommended \cite{yuan2006model},
+we set \(\eta_g = 1/\sqrt{|g|}\) to
+account for discrepancy in group sizes. The hierarchy-level-specific factors 
+\(\alpha > 0\) and \(\beta > 0\) can trade-off region-weighted and
 network-weighted models against each other.
 
 Decreasing \(\alpha\) leads to less 
-penalization of brain networks and thus to tendentially fully active groups
+penalization of brain networks and thus the tendency for fully active groups
 and dense brain maps. If at the same time \(\beta\) is increased to 
 induce group sparsity, then only the structure of brain regions encoded
-by \(\mathcal G\) is present. Conversely, if \(\beta\) is chosen 
-sufficiently small, and \(\alpha\) increased,
-then the structure will come from \(\mathcal H\), leading to the
+by \(\mathcal G\) is acknowledged. Conversely, if \(\beta\) is chosen 
+sufficiently small and \(\alpha\) increased,
+the structure will come from \(\mathcal H\), leading to the
 selection of brain networks rather than regions.
 
 It is important to note that the above trade-off shows that predominance
@@ -869,7 +870,7 @@ accessible online for reproducibility and reuse
 As the currently biggest openly accessible reference dataset,
 we chose resources from the Human Connectome Project (HCP)
 \cite{barch2013}.
-Neuroimaging task data with labels of ongoing cognitive processes
+Neuroimaging task data with labels of ongoing psychological processes
 were drawn from 500
 healthy HCP participants (cf. Appendix for details on datasets).
 18 HCP tasks 

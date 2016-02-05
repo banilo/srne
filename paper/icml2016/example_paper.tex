@@ -536,20 +536,22 @@ estimation applied to linear models:
 The goal is to estimate a good predictor of cognitive task
 given a brain image. Let the set \(\mathcal X\subset\R^p\) represent brain
 images of \(p > 0\) voxels.
-
-Then we would like to minimize the risk \(\mathcal L(\hat y, y)\), where
-\(\hat y = X\hat w + \hat b\), while regularizing to incorporate a useful
-prior:
-\[\argmin_{w, b} \mathcal L(Xw + b, y) + \lambda\Omega(w),\]
+%
+We minimize the risk \(\mathcal L(\hat y, y)\) with
+\(\hat y = f(X\hat w + \hat b)\), where \(f\) is a link function 
+(e.g. sigmoid for logistic regression, identity for linear regression),
+and \(\mathcal L\) usually represents an appropriate negative loglikelihood.
+We incorporate a useful prior through regularization:
+\[\argmin_{w, b} \mathcal L(f(Xw + b), y) + \lambda\Omega(w),\]
 where \(\lambda > 0\) and \(\Omega\) is the regularizer.
 
-Brain regions are defined as disjoint groups of voxels. Let \(\mathcal G\)
+Brain \textit{regions} are defined as disjoint groups of voxels. Let \(\mathcal G\)
 be a partition of \(\{1, \dots, p\}\), i.e.
 \[  \bigcup_{i} g_i = \{1, \dots, p\} \textrm{ and } g_i\cap g_j=\emptyset
 \quad\forall i\not=j\]
 
-Brain networks consist of regions and are thus super-regions or groups of 
-regions. The set of brain networks \(\mathcal{H}\) is also a partition of 
+Brain \textit{networks} consist of a group of one or several brain regions.
+The set of brain networks \(\mathcal{H}\) also forms a partition of 
 \(\{1, \dots, p\}\) and in addition it is consistent with \(\mathcal G\) in
 the sense that
 \[\textrm{for all }g\in\mathcal G, h\in\mathcal H,\quad

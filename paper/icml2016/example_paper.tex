@@ -227,6 +227,7 @@ cross-regional integration by
 overlapping network compartments
 as the basic architecture of brain organization,
 in contrast to methods examining regional specialization.
+% XXX are the compartments overlapping or not ?
 
 
 % % specialization & integration
@@ -463,7 +464,7 @@ networks are spatially disjoint sets of voxel groups that
 agree with boundaries of brain atlases.
 Such brain atlases can be obtained by segregating
 the brain's grey matter into local voxel groups
-using clustering algorithisms
+using clustering algorithms
 \cite{cbp2015review}.
 Consequently,
 each region from a brain atlas can be uniquely associated with one of
@@ -518,7 +519,7 @@ forced without obeying network definitions.
 Conversely, setting low penalties on the region definitions
 makes it possible for
 all voxels to be active. Selecting higher penalties on the networks then
-leads to a selection of networks with all regions associated to it.
+leads to a selection of networks with all regions associated with it.
 %
 This region-network equilibrium allows inspecting the relative contributions
 of the region and network levels
@@ -896,7 +897,7 @@ are shown for comparison against
 the sample average of that class
 (\textit{rightmost column}, thresholded at the $75^{th}$ percentile).
 The support recovery of that exemplary class is given
-as Pearson correlation $\rho$ (cf. results).
+as Pearson correlation $r$ (cf. results).
 %
 In the data-scarce scenario,
 ubiquitous in brain imaging studies,
@@ -955,7 +956,7 @@ probability).
 Hence,
 the present experiments were based on task-labeled HCP maps of neural
 activity with
-$p$ = 79,941 voxels of interest that represent zscored-values in gray matter.
+$p$ = 79,941 voxels of interest that represent z-scored-values in gray matter.
 
 % \begin{table*}[h]
 %   \resizebox{0.98\textwidth}{!}{%
@@ -1181,12 +1182,12 @@ yield the sparsities
 after fitting 20\% to 100\% of the training data.
 % results: support recovery
 Regarding the support recovery, we computed
-Pearson correlation $\rho$ between vectors of
-the zscored model coefficients
+Pearson correlation $r$ between vectors of
+the z-scored model coefficients
 and
-the zscored average sample maps for each class.
+the z-scored average sample maps for each class.
 $\ell_1$-penalized versus hierarchical-tree-penalized logistic regression
-achieved a mean correlation $\rho$ (+/- standard deviation) of
+achieved a mean correlation $r$ (+/- standard deviation) of
 0.10 (+/- 0.03) versus 0.13 (+/- 0.04),
 0.11 (+/- 0.03) versus 0.13 (+/- 0.05),
 0.13 (+/- 0.04) versus 0.17 (+/- 0.05),
@@ -1229,7 +1230,7 @@ higher variance and more zero coefficients
 than hierarchical tree logistic regression.
 Given the usually high multicollinearity in neuroimaging data,
 this observation is likely to reflect instable selection of
-representative voxels among class-responsive predictor groups
+representative voxels among class-responsive groups
 due to the $\ell_1$-norm penalization.
 %
 Third,

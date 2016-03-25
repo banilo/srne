@@ -1,0 +1,46 @@
+Structured sparsity penalties have successfully incorporated domain knowledge into otherwise ill-posed high-dimensional predictions, whereas *hierarchical* structure sparsity has been introduced only recently (Jenatton et al., 2012). Model regularization by hierarchical structured sparsity penalization is able to bias model selection by mutual dependencies between a-priori known, overlapping compartments in the input data. This technical improvement is a watershed event for classification and regression based on the >100,000 variables per brain scan in the imaging neurosciences. It is so important because relevant structure in brain data has long been investigated according to two separate organizational principles: functional segregation into discrete brain regions (Passingham et al., 2002 Nature Rev Neurosci) and functional integration by brain networks between regions (Sporns, 2014 Nature Neurosci). Both organizational principles are however inextricable because a specialized brain region communicates input and output with
+other regions and a brain network subserves complex function by orchestrating its region nodes. It suggests hierarchical statistical models as an underexploited opportunity for neuroimaging analysis. Probably for the first time, established neurobiological knowledge of both regions and networks can thus be formally imposed onto high-dimensional model estimations.
+
+
+
+In the present proof-of-concept study, hierarchical region-network sparsity was demonstrated to improve out-of-sample performance, sample complexity, and interpretability/support recovery.
+
+
+
+
+
+
+
+
+Taken together, hierarchical region-network sparsity
+has bridged two levels of brain architecture 
+that has almost exclusively been studied separately in neuroscientific research. Indeed, neuroimaging has been shown to exhibit low effective dimensionality (Bzdok et al., 2015 NIPS). Yet, it is the present experiments that demonstrate simultaneous exploitation of local region compartments and global network compartments as superior to reliance on either of these two structural priors to tackle the curse of dimensionality in a large reference dataset. In the future, benefitting from neuroscience-specific estimators with combined region-network priors can be better estimate, reproduce, and interpret high-dimensional brain imaging analyses.
+
+
+
+
+
+
+
+ impose domain knowledge on the statistical estimation
+exploit existing knowledge
+two major interpretational traditions
+Local infrastructure and global connectivity profiles are 081 thought to go hand-in-hand to realize neural processes.
+
+
+
+
+
+
+
+
+
+
+Reviewer 4:
+R4: Every variable of brain signals belongs to a-priori region and network compartments
+
+
+Reviewer 5:
+
+
+Reviewer 6:

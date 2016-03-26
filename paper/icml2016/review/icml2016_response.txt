@@ -1,14 +1,77 @@
-Structured sparsity penalties have successfully incorporated domain knowledge into many otherwise ill-posed high-dimensional predictions. But *hierarchical* structured sparsity has been introduced only recently (Jenatton et al., 2012 SIAM). Model regularization by hierarchical penalty terms is able to bias model selection by imposing mutual dependencies between a-priori known, overlapping compartments in the input data. This machine-learning advance is a watershed event for imaging neuroscience performing classification and regression on >100,000 variables per brain scan. It is important because relevant structure in brain data has long been investigated according to two separate organizational principles: functional segregation into discrete brain regions (Passingham et al., 2002 Nature Neuroscience) and functional integration by brain networks regrouping distinct regions (Sporns, 2014 Nature Neuroscience). Both organizational principles are however inextricable since a given brain region communicates input and output with other regions and a given brain network subserves complex function by orchestrating its region nodes. This neurobiological reality suggests hierarchical statistical models as an under-exploited opportunity. Probably for the first time, established neurobiological knowledge of *both regions and networks* can be formally imposed onto high-dimensional model estimations.
+Structured sparsity penalties have successfully incorporated domain
+knowledge into many otherwise ill-posed high-dimensional
+prediction problems. But *hierarchical* structured sparsity has been
+introduced only recently (Jenatton et al., 2012 SIAM). Model
+regularization by hierarchical penalty terms is able to bias model
+selection by imposing mutual dependencies between a-priori known,
+overlapping compartments in the input data. 
 
-The present experiments demonstrate hierarchical region-network sparsity priors to improve 1) out-of-sample performance, 2) sample complexity, and 3) domain interpretability.
+This contribution is a milestone for imaging neuroscience
+performing classification and regression on >100,000 variables per
+brain scan. It is important because relevant structure in brain data
+has long been investigated according to two separate organizational
+principles: functional segregation into discrete brain regions
+(Passingham et al., 2002 Nature Neuroscience) and functional
+integration by brain networks regrouping distinct regions (Sporns,
+2014 Nature Neuroscience). Both organizational principles are however
+inextricable since a given brain region communicates input and output
+with other regions and a given brain network subserves complex
+function by orchestrating its region nodes. This neurobiological
+reality suggests hierarchical statistical models as an under-exploited
+opportunity. Probably for the first time, established neurobiological
+knowledge of *both regions and networks* can be formally imposed onto
+high-dimensional model estimations.
 
-First, in an 18-class prediction setting, hierarchical region-network sparsity penalties for logistic regression achieved an area under the curve (AUC) of 95 and a classification accuracy of 90% on unseen data. Importantly, this result was better than after introducing only region priors (without any network knowledge) by sparse group sparsity (AUC 94 and 88% accuracy) and group sparsity (AUC 85 and 88% accuracy). Hierarchical tree sparsity further outperformed trace-norm sparsity (AUC 91, 89%) as well as unstructured Lasso (AUC 94, 89%) and Elastic-net (AUC 94, 88%) estimators. Hence, our approach outcompeted the alternative sparsity estimators based on two separate performance metrics.
+# So far, you're mostly (emphatically) restating your contribution. 
 
-Second, the sample complexity was quantified by comparing hierarchical-tree-penalized versus l1-norm-penalized logistic regression. Each model was fitted on 20%, 40%, 60%, 80%, and 100% of the training data. Based on the 20% train set region-network-informed versus non-neurobiology-informed classification achieved 89% versus 84% accuracy (besides low versus high model variance), and 90% versus 89% on all training examples. The support recovery was computed by Pearson correlation between vectors of the z-scored model coefficients. Hierarchical penalization achieved almost identical recovery (r=0.17) using only 20% examples as neurobiology-naive sparsity using all 100% examples (r=0.18).
+The present experiments demonstrate hierarchical region-network
+sparsity priors to improve 1) out-of-sample performance, 2) sample
+complexity, and 3) domain interpretability.
 
-Third, the model interpretability was also improved because hierarchical sparsity penalization even achieved r=0.32 support recovery using 100% training data. This is almost twice the recovery performance of Lasso, thus effectively extracting neurobiological structure in the data-rich scenario.
+First, in an 18-class prediction setting, hierarchical region-network
+sparsity penalties for logistic regression achieved an area under the
+curve (AUC) of .95 and a classification accuracy of 90% on unseen
+data. Importantly, this result was better than after introducing only
+region priors (without network knowledge) by sparse group sparsity
+(AUC .94 and 88% accuracy) and group sparsity (AUC .85 and 88%
+accuracy). Hierarchical tree sparsity further outperformed trace-norm
+sparsity (AUC .91, 89%) as well as unstructured Lasso (AUC .94, 89%) and
+Elastic-net (AUC .94, 88%) estimators. Hence, our approach outcompeted
+the alternative sparsity estimators based on two separate performance
+metrics.
 
-Taken together, hierarchical region-network sparsity has bridged two levels of brain architecture that have almost exclusively been studied in isolation in the neurosciences. In fact, neuroimaging data has been shown before to exhibit low effective dimensionality (Bzdok et al., 2015 NIPS). Yet, it is the present experiments that demonstrate simultaneous exploitation of local region compartments and global network compartments as superior to relying on only one of these two structural priors to tackle the curse of dimensionality in a large reference dataset (international Human Connectome consortium). In the future, such neuroscience-tailored estimators with combined region-network priors can enhance fitting, reproducing, and interpreting high-dimensional brain imaging predictions.
+#  it remains unclear whether the differences are significant
+
+Second, the sample complexity was quantified by comparing
+hierarchical-tree-penalized versus l1-norm-penalized logistic
+regression. Each model was fitted on 20%, 40%, 60%, 80%, and 100% of
+the training data. Based on the 20% train set region-network-informed
+versus non-neurobiology-informed classification achieved 89% versus
+84% accuracy (besides low versus high model variance), and 90% versus
+89% on all training examples. The support recovery was computed by
+Pearson correlation between vectors of the z-scored model
+coefficients. Hierarchical penalization achieved almost identical
+recovery (r=0.17) using only 20% examples as neurobiology-naive
+sparsity using all 100% examples (r=0.18).
+
+Third, the model interpretability was also improved because
+hierarchical sparsity penalization even achieved r=0.32 support
+recovery using 100% training data. This is almost twice the recovery
+performance of Lasso, thus effectively extracting neurobiological
+structure in the data-rich scenario.
+
+Taken together, hierarchical region-network sparsity has bridged two
+levels of brain architecture that have almost exclusively been studied
+in isolation in the neurosciences. In fact, neuroimaging data have
+been shown before to exhibit low effective dimensionality (Bzdok et
+al., 2015 NIPS). Yet, the present experiments demonstrate simultaneous
+exploitation of local region compartments and global network
+compartments as superior to relying on only one of these two
+structural priors to tackle the curse of dimensionality in a large
+reference dataset (the so-called HCP). In the future, such
+neuroscience-tailored estimators with combined region-network priors
+can enhance fitting, reproducing, and interpreting high-dimensional
+brain imaging predictions.
 
 Reviewer 4:
 We follow this reviewer's helpful advice by adding new clarifications to the manuscript:

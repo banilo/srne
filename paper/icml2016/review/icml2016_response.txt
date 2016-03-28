@@ -1,93 +1,31 @@
-Structured sparsity penalties have successfully addressed many
-otherwise ill-posed high-dimensional prediction problems.
-But *hierarchical* structured sparsity has been
-introduced only recently (Jenatton et al., 2012 SIAM). Model
-regularization by hierarchical penalty terms can bias model
-selection by imposing mutual dependencies between a-priori known,
-overlapping compartments in the input data. 
+Structured sparsity penalties have successfully addressed many otherwise ill-posed high-dimensional prediction problems. But *hierarchical* structured sparsity has been introduced only recently (Jenatton et al., 2012 SIAM). This model regularization can bias model selection by imposing mutual dependencies between a-priori known, hierarchically overlapping compartments in the input data. 
 
-Hierarchical tree sparsity is a milestone for imaging neuroscience
-performing classification and regression on >100,000 variables per
-brain scan because relevant structure was long investigated according
-to two separate organizational principles:
-Discrete brain regions (Passingham et al., 2002 Nature Neuroscience)
-and brain networks regrouping regions (Sporns, 2014 Nature Neuroscience).
-Yet, both are inextricable since each region communicates
-with other regions and each network subserves complex
-function by orchestrating its regions.
-Probably for the first time, established neurobiological
-knowledge of *both regions and networks* can be formally integrated
-into high-dimensional model estimations.
+Hierarchical tree sparsity is a milestone for imaging neuroscience performing classification and regression on >100,000 variables per brain scan because relevant structure was long investigated according to two separate organizational principles:
+Discrete brain regions (Passingham et al., 2002 Nature Neuroscience) and brain networks regrouping regions (Sporns, 2014 Nature Neuroscience). Yet, both are inextricable since each region communicates with other regions and each network subserves complex function by orchestrating its regions. Probably for the first time, established neurobiological knowledge of *both regions and networks* can be formally integrated into high-dimensional model estimations.
 
-The present experiments show that hierarchical region-network
-sparsity priors indeed improve 1) out-of-sample performance, 2) sample
-complexity, and 3) domain interpretability.
+The present experiments show that hierarchical region-network sparsity priors indeed improve 1) out-of-sample performance, 2) sample complexity, and 3) domain interpretability.
 
-1) In an 18-class prediction setting, region-network penalties
-for logistic regression achieved an area under the
-curve (AUC) of .95 and a classification accuracy of 90% on unseen
-data. Importantly, this result was better than introducing only
-region priors (without network knowledge) by group sparsity (AUC .85 and
-88% accuracy) or sparse group sparsity (AUC .94 and 88% accuracy).
-Hierarchical tree sparsity further outperformed trace-norm
-sparsity (AUC .91, 89%) as well as unstructured Lasso (AUC .94, 89%) and
-Elastic-net (AUC .94, 88%) estimators. Hence, our approach outcompeted
-the existing sparse estimators based on two separate performance metrics.
+1) In an 18-class prediction setting, region-network penalties for logistic regression achieved an area under the curve (AUC) of .95 and a classification accuracy of 90% on unseen data. Importantly, this result was better than introducing only region priors (without network knowledge) by group sparsity (AUC .85 and 88% accuracy) or sparse group sparsity (AUC .94 and 88% accuracy). Hierarchical tree sparsity further outperformed trace-norm sparsity (AUC .91, 89%) as well as unstructured Lasso (AUC .94, 89%) and Elastic-net (AUC .94, 88%) estimators. Hence, our approach outperformed the existing sparse estimators based on two separate metrics.
 
-2) The sample complexity was quantified by comparing
-hierarchical-tree-penalized versus l1-norm-penalized logistic
-regression. Each model was fitted on 20%, 40%, 60%, 80%, and 100% of
-the training data. In the data-scarce scenario (20% train set)
-region-network-informed versus non-informed sparse classification achieved
-89% versus 84% accuracy (in addition to low versus high model variance), and
-90% versus 89% on all training examples. The support recovery was
-evaluated by Pearson correlation between vectors of the z-scored model
-coefficients. Hierarchical penalization achieved the essentially same
-recovery (r=0.17) using only 20% examples than neurobiology-naive
-penalization using all 100% examples (r=0.18).
+2) The sample complexity was quantified by comparing hierarchical-tree-penalized versus l1-norm-penalized logistic regression. Each model was fitted on 20%, 40%, 60%, 80%, and 100% of the training data. In the data-scarce scenario (20% train set) region-network-informed versus non-informed sparse classification achieved 89% versus 84% accuracy (in addition to low versus high model variance), and 90% versus 89% on all training examples. The support recovery was evaluated by Pearson correlation between vectors of the z-scored model coefficients and class averages. Hierarchical penalization achieved the essentially same recovery (r=0.17) using only 20% examples than neurobiology-naive penalization using all 100% examples (r=0.18).
 
-3) The model interpretability was also improved because
-sparse region-network penalization achieved a maximum support recovery
-of r=0.32. This is almost twice the recovery
-performance of Lasso, thus more effectively extracting
-neurobiological structure also in the data-rich scenario.
+3) The model interpretability was also improved because sparse region-network penalization achieved a maximum support recovery of r=0.32. This is almost twice the recovery performance of Lasso, thus more effectively extracting neurobiological structure also in the data-rich scenario.
 
-Taken together, hierarchical region-network sparsity allowed bridging two
-levels of brain architecture that have almost exclusively been studied
-in isolation in the neurosciences. In fact, neuroimaging data have been shown
-before to exhibit low effective dimensionality (Bzdok et al., 2015 NIPS).
-Yet, the present experiments demonstrate simultaneous
-exploitation of local region compartments and global network compartments
-as superior to relying on one structural prior only
-to tackle the curse of dimensionality in a large
-reference dataset (the so-called HCP). In the future, these
-neuroscience-tailored estimators informed by region-network priors
-will enhance fitting, reproducing, and interpreting
-high-dimensional classifications/regressions in brain imaging.
+Taken together, hierarchical region-network sparsity allowed bridging two levels of brain architecture that have almost exclusively been studied in isolation in the neurosciences. Yet, the present experiments demonstrate simultaneous exploitation of local region compartments and global network compartments as superior to relying on one structural prior only to tackle the curse of dimensionality in a large reference dataset (the so-called HCP). In the future, these neuroscience-tailored estimators informed by region-network priors will enhance fitting, reproducing, and interpreting high-dimensional classifications/regressions in brain imaging.
 
 #Reviewer 4:
-We follow this reviewer's helpful advice by adding new clarifications to
-the manuscript:
-a) Introduction (l. 117): "That is, every variable carrying brain signals
-will be a-priori assigned to both region and network compartments to
-improve model fitting based on existing domain knowledge."
-b) Methods (l. 209): "The one-versus-rest classification strategy is
-chosen to obtain one weight map per class for display and model diagnostics."
+We follow this reviewer's helpful advice by adding new clarifications to the manuscript:
+a) Introduction (l. 117): "That is, every variable carrying brain signals will be a-priori assigned to both region and network compartments to improve model fitting based on existing domain knowledge."
+b) Methods (l. 209): "The one-versus-rest classification strategy is chosen to obtain one weight map per class for display and model diagnostics."
 c) Methods (l. 445): clear descriptions of the 18 tasks will be added
-d) Results (l. 484): "Across experiments with stratified-shuffled
-cross-validation (90%/10% train/test set) across pooled subject data"
-e) Results (l. 580): "across-participant average maps for each class"
-serve as ground-truth activity pattern
-f) Hierarchical tree sparsity always assigns each region/child to
-only one network/parent
+d) Results (l. 484): "Across experiments with stratified and shuffled cross-validation (90%/10% train/test set) across pooled subject data"
+e) Results (l. 580): "across-participant average maps for each class" serve as ground-truth activity pattern
+f) Hierarchical tree sparsity always assigns each region/child to only one network/parent
 g) The full code will be provided
 
 #Reviewer 5:
 We thank this reviewer for the positive assessment.
-Responding to the claimed Lasso/ElasticNet-like performance,
-we emphasize that our method achieved the same support recovery
-with 5 times less data, better AUC + accuracy and
-much lower model variance indexed by mutual information.
+Responding to the claimed Lasso/ElasticNet-like performance, we emphasize that our method achieved the same support recovery with 5 times less data, better AUC + accuracy and much lower model variance indexed by mutual information.
 
 #Reviewer 6:
 We are very grateful to this reviewer for the enthusiastic evaluation.

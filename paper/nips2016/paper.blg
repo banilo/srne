@@ -1,0 +1,80 @@
+This is BibTeX, Version 0.99d (TeX Live 2015)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: paper.aux
+The style file: splncs03.bst
+Database file #1: ../paper_refs.bib
+I was expecting a `,' or a `}'---line 39 of file ../paper_refs.bib
+ : 
+ : @article{witten2010framework,
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+Repeated entry---line 3327 of file ../paper_refs.bib
+ : @article{smith2009
+ :                   ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 3753 of file ../paper_refs.bib
+ : @article{barch2013
+ :                   ,
+I'm skipping whatever remains of this entry
+Too many commas in name 5 of "Harchaoui, Z. and Douze, M. and Paulin, M. and Dudik, M. and Malick, J., booktitle={Computer Vision and Pattern Recognition (CVPR), 2012 IEEE Conference on}, pages={3386--3393}, year={2012}, organization={IEEE}" for entry harchaoui2012large
+while executing---line 2947 of file splncs03.bst
+Too many commas in name 5 of "Harchaoui, Z. and Douze, M. and Paulin, M. and Dudik, M. and Malick, J., booktitle={Computer Vision and Pattern Recognition (CVPR), 2012 IEEE Conference on}, pages={3386--3393}, year={2012}, organization={IEEE}" for entry harchaoui2012large
+while executing---line 2947 of file splncs03.bst
+Too many commas in name 5 of "Harchaoui, Z. and Douze, M. and Paulin, M. and Dudik, M. and Malick, J., booktitle={Computer Vision and Pattern Recognition (CVPR), 2012 IEEE Conference on}, pages={3386--3393}, year={2012}, organization={IEEE}" for entry harchaoui2012large
+while executing---line 2947 of file splncs03.bst
+Too many commas in name 5 of "Harchaoui, Z. and Douze, M. and Paulin, M. and Dudik, M. and Malick, J., booktitle={Computer Vision and Pattern Recognition (CVPR), 2012 IEEE Conference on}, pages={3386--3393}, year={2012}, organization={IEEE}" for entry harchaoui2012large
+while executing---line 3017 of file splncs03.bst
+Too many commas in name 5 of "Harchaoui, Z. and Douze, M. and Paulin, M. and Dudik, M. and Malick, J., booktitle={Computer Vision and Pattern Recognition (CVPR), 2012 IEEE Conference on}, pages={3386--3393}, year={2012}, organization={IEEE}" for entry harchaoui2012large
+while executing---line 3017 of file splncs03.bst
+Too many commas in name 5 of "Harchaoui, Z. and Douze, M. and Paulin, M. and Dudik, M. and Malick, J., booktitle={Computer Vision and Pattern Recognition (CVPR), 2012 IEEE Conference on}, pages={3386--3393}, year={2012}, organization={IEEE}" for entry harchaoui2012large
+while executing---line 3017 of file splncs03.bst
+Too many commas in name 5 of "Harchaoui, Z. and Douze, M. and Paulin, M. and Dudik, M. and Malick, J., booktitle={Computer Vision and Pattern Recognition (CVPR), 2012 IEEE Conference on}, pages={3386--3393}, year={2012}, organization={IEEE}" for entry harchaoui2012large
+while executing---line 3017 of file splncs03.bst
+Too many commas in name 5 of "Harchaoui, Z. and Douze, M. and Paulin, M. and Dudik, M. and Malick, J., booktitle={Computer Vision and Pattern Recognition (CVPR), 2012 IEEE Conference on}, pages={3386--3393}, year={2012}, organization={IEEE}" for entry harchaoui2012large
+while executing---line 3017 of file splncs03.bst
+Too many commas in name 5 of "Harchaoui, Z. and Douze, M. and Paulin, M. and Dudik, M. and Malick, J., booktitle={Computer Vision and Pattern Recognition (CVPR), 2012 IEEE Conference on}, pages={3386--3393}, year={2012}, organization={IEEE}" for entry harchaoui2012large
+while executing---line 3017 of file splncs03.bst
+Warning--empty booktitle in harchaoui2012large
+Warning--empty year in harchaoui2012large
+You've used 31 entries,
+            2785 wiz_defined-function locations,
+            779 strings with 10819 characters,
+and the built_in function-call counts, 20059 in all, are:
+= -- 1634
+> -- 752
+< -- 47
++ -- 312
+- -- 276
+* -- 1313
+:= -- 2549
+add.period$ -- 33
+call.type$ -- 31
+change.case$ -- 236
+chr.to.int$ -- 0
+cite$ -- 33
+duplicate$ -- 1716
+empty$ -- 1599
+format.name$ -- 302
+if$ -- 4337
+int.to.chr$ -- 0
+int.to.str$ -- 31
+missing$ -- 371
+newline$ -- 98
+num.names$ -- 62
+pop$ -- 620
+preamble$ -- 1
+purify$ -- 200
+quote$ -- 0
+skip$ -- 594
+stack$ -- 0
+substring$ -- 1145
+swap$ -- 1106
+text.length$ -- 47
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 122
+warning$ -- 2
+while$ -- 151
+width$ -- 33
+write$ -- 306
+(There were 12 error messages)

@@ -25,6 +25,23 @@ REGS_STR = ['Hierarchical Tree Sparsity', 'Lasso',
 
 auc_mat = np.zeros((len(REGS), n_classes))
 
+# load HCP task data
+print('Loading data...')
+from sklearn.cross_validation import StratifiedShuffleSplit
+if on_server:
+    X_task, Y = joblib.load('/storage/workspace/danilo/prni2015/preload_HT_3mm')
+else:
+    X_task, Y = joblib.load('/git/prni2015/preload_HT_3mm')
+Y = np.array(Y)
+folder = StratifiedShuffleSplit(Y, n_iter=10, test_size=0.1,
+                                random_state=42)
+inds_train, inds_test = iter(folder).next()
+X_train = X_task[inds_train]
+# all estimators will have the same training set due to random_state
+Y_train = Y[inds_train]
+X_test = X_task[inds_test]
+Y_test = Y[inds_test]
+
 for i_r, r in enumerate(REGS):
     print('-' * 80)
     print(r)
@@ -91,12 +108,18 @@ plt.show()
 plt.savefig(op.join(READ_DIR, 'ROC_ALL_perclf.png'))
 
 # summary AUC plot: per task
+my_width = 3
+colors = ['k', 'y', 'b', 'g', 'r', 'm']
 plt.figure()
-for i_r in range(len(REGS)):
+for i_r, c in zip([0, 1, 2, 3, 4, 5], colors):
     plt.plot(np.arange(n_classes),
              auc_mat[i_r, :] * 100,
-             label=REGS_STR[i_r],
-             linewidth=2)
+             label=REGS_STR[i_r], color=c,
+             linewidth=my_width)
+i_r = 0
+plt.plot(np.arange(n_classes),
+    auc_mat[i_r, :] * 100, color='k',
+    linewidth=my_width)
 plt.ylim([35., 102.])
 plt.xticks(np.arange(n_classes), np.arange(n_classes) + 1)
 plt.ylabel('AUC')

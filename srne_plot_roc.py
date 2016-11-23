@@ -108,17 +108,18 @@ plt.show()
 plt.savefig(op.join(READ_DIR, 'ROC_ALL_perclf.png'))
 
 # summary AUC plot: per task
-my_width = 3
-colors = ['k', 'y', 'b', 'g', 'r', 'm']
+my_width = 5
+colors = ['r', 'y', 'b', 'g', 'k', 'c']
 plt.figure()
 for i_r, c in zip([0, 1, 2, 3, 4, 5], colors):
     plt.plot(np.arange(n_classes),
              auc_mat[i_r, :] * 100,
-             label=REGS_STR[i_r], color=c,
+             label=REGS_STR[i_r] + ' (mean AUC=%.1f)' % np.mean(auc_mat[i_r, :] * 100),
+             color=c,
              linewidth=my_width)
 i_r = 0
 plt.plot(np.arange(n_classes),
-    auc_mat[i_r, :] * 100, color='k',
+    auc_mat[i_r, :] * 100, color='r',
     linewidth=my_width)
 plt.ylim([35., 102.])
 plt.xticks(np.arange(n_classes), np.arange(n_classes) + 1)

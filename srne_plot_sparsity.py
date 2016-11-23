@@ -44,12 +44,13 @@ for i_c, c in enumerate(contrasts_names):
 
 
 # REGS = ['tree-l2', 'l1']
-REGS = ['tree-l2',
-    'group-lasso-l2', 'sparse-group-lasso-l2',
-    'l1', 'elastic-net',
-    'trace-norm']
+REGS = ['tree-l2', 'l1', 
+    # 'group-lasso-l2', 'sparse-group-lasso-l2',
+    # 'elastic-net',
+    # 'trace-norm'
+    ]
 # dataratios = np.linspace(20, 100, 5)
-dataratios = [100]
+dataratios = [20]
 
 for ratio in dataratios:
     READ_DIR = 'srne_benchmark_dataratioFIXED%i_zerobrainlevel_weighted'

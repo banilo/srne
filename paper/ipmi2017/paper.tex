@@ -449,7 +449,7 @@ tree penalties to jointly incorporate region
 specialization and network integration priors into high-dimensional 
 prediction.
 We capitalize on hierarchical group lasso
-\cite{jenatton2012multi} to create a set of convex sparse penalty terms.
+to create a set of convex sparse penalty terms.
 These conjointly acknowledge local specialization and 
 global connectivity when discriminating defined psychological tasks
 from neural activity maps.
@@ -509,17 +509,15 @@ into statistical estimation.
   \label{fig_priors}
 \end{figure*}
 
-Major brain networks already emerge in human individuals around birth
+Major brain networks emerge in human individuals around birth
 \cite{doria2010}.
-In adults,
-the regions that compose
-a given cohesive network have more
+Their nodes have more
 similar functional profiles than nodes from different networks
 \cite{anderson2013}.
-As a well-established method for network estimation,
+As a popular method for network extraction,
 ICA \cite{beckmann2005} yields continuous brain maps with
 weights for each voxel. The region nodes of ICA
-networks are spatially disjoint sets of voxel groups that
+network are spatially disjoint sets of voxel groups that
 agree with boundaries of brain atlases.
 Hence,
 each region from a brain atlas can be uniquely associated with one of
@@ -530,16 +528,14 @@ obtained using ICA \cite{smith2009}
 and
 region definitions obtained from
 spatially constrained clustering \cite{crad12}
-allow constructing a hierarchy of global ICA networks with their
+allowed constructing a hierarchy of global ICA networks with their
 assigned local cluster regions
 (Figure \ref{fig_priors}).
-The ensuing network-region tree is used as a structural prior
+The ensuing network-region tree was used as a frequentist prior
 of expected weight distributions
-that guide supervised model fitting.
+to advantageously bias supervised model fitting.
 
-
-
-This tree structure can be plugged into
+Specifically, this tree structure was plugged into
 hierarchical sparsity penalty terms
 \cite{jenatton2012multi}.
 It extends the group lasso
@@ -552,7 +548,7 @@ the voxels of the brain regions associated with them.
 Each network node in turn descends into a second hierarchical level with
 brain regions of neighboring voxels.
 %
-As a consequence of this region-network sparsity tree,
+Induced by the region-network sparsity tree,
 a child node enters the set of relevant voxel variables only
 if its parent node has been selected
 \cite{bach2012optimization}.
@@ -561,10 +557,10 @@ if a parent node is deselected,
 also the voxel variables of all child nodes are deselected.
 %
 Moreover,
-the coefficient of all region or all network groups can
+the coefficients of all region or all network groups can
 be weighed individually.
 Trading off the voxel penalties of the network level against the
-voxel penalties of the region level,
+voxel penalties of the region level
 we can design distinct estimation regimes.
 %
 % Setting a low penalty on the network groups makes it is probable
@@ -576,9 +572,9 @@ we can design distinct estimation regimes.
 % all voxels to be active. Selecting higher penalties on the networks then
 % leads to a selection of networks with all regions associated with it.
 %
-This region-network equilibrium allows inspecting the relative contributions
-of the region and network levels
-of the hierarchical tree prior.
+% This region-network equilibrium allows inspecting the relative contributions
+% of the region and network levels
+% of the hierarchical tree prior.
 
 
 % \paragraph{Problem formulation.}
@@ -589,7 +585,6 @@ minimization applied to linear models.
 The goal is to estimate a good predictor of psychological tasks
 given a single brain image. Let the set \(\mathcal X\in\R^{n \times p}\) represent brain
 images of \(p > 0\) voxels.
-%
 We then minimize the risk \(\mathcal L(\hat y, y)\) with
 \(\hat y = f(X\hat w + \hat b)\), where \(f\) is a link function 
 (e.g., sigmoid for logistic regression, identity for linear regression),
@@ -597,12 +592,10 @@ and \(\mathcal L\) usually represents an appropriate negative loglikelihood.
 We incorporate an informative prior through regularization:
 \[\argmin_{w, b} \mathcal L(f(Xw + b), y) + \lambda\Omega(w),\]
 where \(\lambda > 0\) and \(\Omega\) is the regularizer.
-
 Brain \textit{regions} are defined as disjoint groups of voxels. Let \(\mathcal G\)
 be a partition of \(\{1, \dots, p\}\), i.e.
 \[  \bigcup_{i} g_i = \{1, \dots, p\} \textrm{ and } g_i\cap g_j=\emptyset
 \quad\forall i\not=j\]
-
 Brain \textit{networks} consist of one or several brain regions.
 The set of brain networks \(\mathcal{H}\) also forms a partition of 
 \(\{1, \dots, p\}\) that is consistent with \(\mathcal G\) in
@@ -623,7 +616,6 @@ we set \(\eta_g = 1/\sqrt{|g|}\) to
 account for discrepancy in group sizes. The hierarchy-level-specific factors 
 \(\alpha > 0\) and \(\beta > 0\) can tradeoff region-weighted and
 network-weighted models against each other.
-
 Decreasing \(\alpha\) leads to less 
 penalization of brain networks and thus the tendency for fully active groups
 and dense brain maps. If at the same time \(\beta\) is increased to 
@@ -687,7 +679,6 @@ scheme analogous to the FISTA solver for the lasso \cite{beck2009}.
 % According to \cite{jenatton2011}, the proximal operator of 
 % the hierarchical penalty \(\varepsilon\lambda\Omega\) is
 % \[\prox_{\varepsilon\lambda\Omega}(v) = \prox_{\varepsilon\lambda\Omega_{\mathcal H}}\circ\prox_{\varepsilon\lambda\Omega_{\mathcal G}}(v).\]
-
 
 % \paragraph{Hyperparameter optimization.}
 \subsection{Hyperparameter optimization}
@@ -939,9 +930,9 @@ as class-wise measure (\textit{y-axis}) and across-class mean (\textit{legend}).
 % with sparsity of unknown ``network'' patterns,
 % but naive to region structure.
 %
-A-priori knowledge of both region and network neighborhoods
+Simultaneous knowledge of both region and network neighborhoods
 was hence most beneficial for predicting
-various psychological tasks from brain maps.
+tasks from neural activity.
 }
 \end{centering}
 \label{fig_sparsities}

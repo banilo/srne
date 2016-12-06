@@ -512,7 +512,7 @@ into statistical estimation.
 %
 \begin{wrapfigure}{r}{0.45\textwidth}
 \begin{centering}
-\includegraphics[width=0.45\textwidth]{../figures/level_schematic_crop.pdf}
+\includegraphics[width=0.45\textwidth]{../figures/level_schematic_crop.jpg}
 \end{centering}
 \vspace{-0.7cm}
   \caption{\textbf{Hierarchical Tree Prior.}
@@ -1162,7 +1162,7 @@ for high-dimensional data.
 Subsequently, the sample complexity of
 $\ell_1$-penalized and hierarchical-tree-penalized logistic regression
 ($\alpha = 1, \beta = 1$)
-was empirically estimated and quantitatively compared
+was empirically evaluated and quantitatively compared
 (Figure \ref{fig_dataratio}).
 Region-network priors should constrain model selection towards more
 neurobiologically plausible classification estimators.
@@ -1200,12 +1200,12 @@ the measure $s = \frac{||w||_1}{||w||_F}$ was computed from
 the model weights $w$ of both penalized estimators
 for each of the 18 classes.
 The $\ell_1$-penalized logistic regression
-yielded the mean (+/- standard deviation) sparsities
-50.0 (+/- 2.6), 45.4 (+/- 2.3), 40.0 (+/- 2.4), 30.9 (+/- 2.0), and 24.0 (+/- 2.3)
+yielded the mean sparsities
+50.0, 45.4, 40.0, 30.9, and 24.0
 after model fitting with 20\% to 100\% training data.
 The hierarchical-tree-penalized logistic regression
 yield the sparsities
-163.2 (+/- 0.7), 160.2 (+/- 1.8), 132.1 (+/- 3.3), 116.2 (+/- 4.4), and 88.4 (+/- 8.4)
+163.2, 160.2, 132.1, 116.2, and 88.4
 after fitting 20\% to 100\% of the training data.
 % results: support recovery
 Regarding the support recovery, we computed
@@ -1214,12 +1214,12 @@ the z-scored model coefficients
 and
 the z-scored across-participant average maps for each class.
 $\ell_1$-penalized versus hierarchical-tree-penalized logistic regression
-achieved a mean correlation $r$ (+/- standard deviation) of
-0.10 (+/- 0.03) versus 0.13 (+/- 0.04),
-0.11 (+/- 0.03) versus 0.13 (+/- 0.05),
-0.13 (+/- 0.04) versus 0.17 (+/- 0.05),
-0.16 (+/- 0.04) versus 0.22 (+/- 0.05), and
-0.19 (+/- 0.05) versus 0.29 (+/- 0.06) across classes
+achieved a mean correlation $r$ of
+0.10 versus 0.13,
+0.11 versus 0.13,
+0.13 versus 0.17,
+0.16 versus 0.22, and
+0.19 versus 0.29 across classes
 based on 20\% to 100\% training data.
 % results: model variance
 Finally, regarding model variance,
@@ -1242,8 +1242,8 @@ yielded the means 0.001 ($\ell_1$) versus 0.506 (hierarchical tree).
     \vspace{-0.3cm}
     \caption{\textbf{Support recovery as a function of
     region and network emphasis.}
-    The relative impact of the region and network priors
-    on model selection
+    The relative strength of the region and network priors
+    on the regularization
     is systematically varied against each other
     (i.e., $\alpha$ and $\beta$ are changed reciprocally).
     Horizontal brain slices are shown with the voxel-wise weights for each class
@@ -1283,18 +1283,6 @@ yielded the means 0.001 ($\ell_1$) versus 0.506 (hierarchical tree).
   \end{centering}
   \vspace{-0.6cm}
 \end{figure*}
-\begin{table*}[]
-  \vspace{-0.6cm}
-  \centering
-  \caption{Out-of-sample performance by region-network emphasis}
-  \vspace{-0.3cm}
-  \begin{tabular}{l|l|l|l|l|l|l|l|l|l|l|l|l|l|l|l}
-    \textbf{Reg-Net Ratio}          & 100   & 50    & 10   & 5     & 2    & 1     & $\frac{1}{2}$  & $\frac{1}{5}$  & $\frac{1}{10}$ & $\frac{1}{50}$ & $\frac{1}{100}$ \\ \hline
-    \textbf{Accuracy {[}\%{]}}             & 89.7  & 89.9  & 90.1 & 90.5  & 88.0 & 89.7  & 87.8           & 88.0           & 87.7           & 88.4           & 88.1  
-  \end{tabular}
-  \vspace{-0.6cm}
-  \label{table_reg_net_ratio}
-\end{table*}
 
 
 %
@@ -1310,6 +1298,18 @@ In the case of scarce training data, which is typical for the brain imaging doma
 regularization by region-network priors thus allowed for
 more effective extraction of classification-relevant structure
 from the neural activity maps.
+\begin{table*}[]
+  \vspace{-0.6cm}
+  \centering
+  \caption{Out-of-sample performance by region-network emphasis}
+  \vspace{-0.3cm}
+  \begin{tabular}{l|l|l|l|l|l|l|l|l|l|l|l|l|l|l|l}
+    \textbf{Reg-Net Ratio}          & 100   & 50    & 10   & 5     & 2    & 1     & $\frac{1}{2}$  & $\frac{1}{5}$  & $\frac{1}{10}$ & $\frac{1}{50}$ & $\frac{1}{100}$ \\ \hline
+    \textbf{Accuracy {[}\%{]}}             & 89.7  & 89.9  & 90.1 & 90.5  & 88.0 & 89.7  & 87.8           & 88.0           & 87.7           & 88.4           & 88.1  
+  \end{tabular}
+  \vspace{-0.6cm}
+  \label{table_reg_net_ratio}
+\end{table*}
 %
 Second,
 across training data fractions,
@@ -1377,8 +1377,8 @@ statistically significant generalization
 In sum,
 stratifying the hierarchical tree penalty between region and network emphasis
 suggests that \textit{class-specific region-network tradeoffs}
-enables more performant and more interpretable classification models
-for future neuroimaging analyses.
+enable more performant and more interpretable classification models
+for neuroimaging analyses.
 
 \section{Conclusion}
 Relevant structure in brain recordings has long been investigated

@@ -176,7 +176,7 @@ yields an underdetermined system of equations.
 Many such ill-posed estimation problems
 have benefited from
 \textit{sparsity} assumptions
-\cite{hastie2015statistical}.
+\cite{bach2012optimization}.
 They act as regularizer by encouraging zero coefficients
 in model selection.
 Sparse supervised and unsupervised
@@ -583,7 +583,7 @@ We formulate our estimation problem in the framework of regularized
 empirical risk
 minimization applied to linear models.
 The goal is to estimate a good predictor of psychological tasks
-given a single brain image. Let the set \(\mathcal X\in\R^{n \times p}\) represent brain
+given a single brain image. Let the set \(\mathcal X\in\mathbb{R}^{n \times p}\) represent brain
 images of \(p > 0\) voxels.
 We then minimize the risk \(\mathcal L(\hat y, y)\) with
 \(\hat y = f(X\hat w + \hat b)\), where \(f\) is a link function 
@@ -606,8 +606,8 @@ This allows for an unambiguous assignment of each region \(g\in\mathcal G\) to o
 network \(h\in\mathcal H\) and thus generates a tree structure.
 A root node is added to contain all voxels.
 
-For a brain image \(w\in\R^p\) and a group \(g\), the vector 
-\(w_g\in\R^{|g|}\) is defined as the restriction of \(w\) to the coordinates
+For a brain image \(w\in\mathbb{R}^p\) and a group \(g\), the vector 
+\(w_g\in\mathbb{R}^{|g|}\) is defined as the restriction of \(w\) to the coordinates
  in \(g\). The penalty structured by network
 and region information can then be written as
 \[\Omega(w) = \alpha\sum_{h\in\mathcal H}\eta_h\|w_h\|_2 + \beta\sum_{g\in\mathcal G}\eta_g\|w_g\|_2.\]
@@ -646,7 +646,7 @@ The one-versus-rest classification strategy is
 chosen to obtain one weight map per class for display and model diagnostics.
 Its loss can be written as
 \[\sum_{i=1}^n\log(1 + \exp(-y_i\langle x_i, w\rangle)) + \lambda\Omega(w),\]
-if \(y\in\{-1, 1\}\) and with \(x_i\in\R^p\) the training sample brain images.
+if \(y\in\{-1, 1\}\) and with \(x_i\in\mathbb{R}^p\) the training sample brain images.
 We optimize parameters \(w\) using an iterative forward-backward
 scheme analogous to the FISTA solver for the lasso \cite{beck2009}.
 
@@ -901,7 +901,7 @@ evaluated on an identical test set in all analysis settings.
 \begin{centering}
 % \includegraphics[width=1.00\textwidth]{../figures/sparsities.pdf}
 \includegraphics[width=0.60\textwidth]{../figures/ROC_ALL_perclass.png}
-\vspace{-0.6cm}
+\vspace{-0.65cm}
 \caption{\textbf{Prediction performance across sparsity priors.}
 Comparing the performance of logistic regression estimators
 with 6 different structured and unstructered
@@ -959,7 +959,7 @@ accessible online for reproducibility and reuse
 \nopagebreak
 \subsection{Data}
 % \paragraph{Data.}
-As the currently biggest open-access dataset in brain imagingf5,
+As the currently biggest open-access dataset in brain imaging,
 we chose brain data from the HCP
 \cite{barch2013}.
 Neuroimaging data with labels of ongoing psychological processes
@@ -967,19 +967,15 @@ were drawn from 500
 healthy HCP participants.
 18 HCP tasks 
 were selected that are known to elicit reliable neural activity
-across participants
-(see appendix for detailed descriptions of dataset and tasks).
+across participants.
+% (see appendix for detailed descriptions of dataset and tasks).
 % across participants (Table \ref{table_tasks}).
 The HCP data incorporated $n$ = 8650 first-level activity maps
-from 18 diverse paradigms administered to 498 participants (2 removed
-due to incomplete data).
-All maps were warped into a common $60\times72\times60$ space of
-3mm isotropic voxels and gray-matter masked (at least 10\% tissue
-probability).
+from 18 diverse paradigms in a common $60\times72\times60$ space of
+3mm isotropic gray-matter voxels.
 Hence,
-the present experiments were based on task-labeled HCP maps of neural
-activity with
-$p$ = 79,941 voxels of interest that represent z-scored-values in gray matter.
+the present analyses were based on task-labeled HCP maps of neural
+activity with z-scored $p$ = 79,941 voxels.
 
 % \begin{table*}[h]
 %   \resizebox{0.98\textwidth}{!}{%
@@ -1010,16 +1006,7 @@ $p$ = 79,941 voxels of interest that represent z-scored-values in gray matter.
 % \caption{\textbf{Description of psychological tasks to predict.}}
 % \label{table_tasks}
 % \end{table*}
-
-
-
-
-
-
 \section{Experimental Results}
-
-
-
 % \paragraph{Benchmarking hierarchical tree sparsity against
 \subsection{Benchmarking hierarchical tree sparsity against
 common sparse estimators}
@@ -1042,7 +1029,7 @@ that expects a minimum of
 topographically and functionally independent brain voxels to be relevant.
 %
 \begin{figure*}
-  \vspace{-0.6cm}
+  \vspace{-0.3cm}
   \begin{centering}
     \includegraphics[width=0.80\textwidth]{../figures/dataratio_trans.pdf}
     \vspace{-0.3cm}
@@ -1283,8 +1270,10 @@ yielded the means 0.001 ($\ell_1$) versus 0.506 (hierarchical tree).
   \vspace{-0.6cm}
 \end{figure*}
 \begin{table*}[]
+  \vspace{-0.6cm}
   \centering
   \caption{Out-of-sample performance by region-network emphasis}
+  \vspace{-0.3cm}
   \begin{tabular}{l|l|l|l|l|l|l|l|l|l|l|l|l|l|l|l}
     \textbf{Reg-Net Ratio}          & 100   & 50    & 10   & 5     & 2    & 1     & $\frac{1}{2}$  & $\frac{1}{5}$  & $\frac{1}{10}$ & $\frac{1}{50}$ & $\frac{1}{100}$ \\ \hline
     \textbf{Accuracy {[}\%{]}}             & 89.7  & 89.9  & 90.1 & 90.5  & 88.0 & 89.7  & 87.8           & 88.0           & 87.7           & 88.4           & 88.1  
@@ -1378,8 +1367,7 @@ enables more performant and more interpretable classification models
 for future neuroimaging analyses.
 
 \section{Conclusion}
-
-Relevant structure in neuroimaging data has long been investigated
+Relevant structure in brain recordings has long been investigated
 according to two separate organizational principles:
 functional segregation into discrete brain regions
 \cite{passingham2002}
@@ -1403,23 +1391,21 @@ that are most neurobiologically plausible.
 %
 This statistically and neurobiologically desirable simplification
 is shown to enhance
-model interpretability and generalization performance,
-although these two goals are typically in conflict
-\cite{hastie2015statistical}.
+model interpretability and generalization performance.
 
 Our approach has important advantages over previous
 analysis strategies that rely on dimensionality reduction of
 the neuroimaging data to harness the curse of dimensionality.
-They often resort to preliminary pooling functions within regions
+They often resort to preliminary pooling functions based on region atlases
 or regression against network templates
-for subsequent supervised learning on the aggregated feature space.
+for subsequent supervised learning on the ensuing aggregated features.
 Such lossy approaches of
 feature engineering and subsequent inference
-\textit{i)} can only satisfy the specialization or
-integration account of brain organization,
+\textit{i)} can only satisfy either the specialization or
+the integration account of brain organization,
 \textit{ii)} depend on the ground truth being either a region or network effect,
 and
-\textit{iii)} cannot issue individual coefficients for every brain voxel.
+\textit{iii)} cannot issue individual coefficients for every voxel of the brain.
 %
 Hierarchical region-network sparsity addresses these shortcomings
 by estimating individual voxel contributions
@@ -1430,13 +1416,13 @@ Viewed from the bias-variance tradeoff,
 our modification to logistic regression
 entailed a large decrease in model variance but only a modest
 increase in model bias.
-Viewed from the Vapnik-Chervonenkis dimensions,
-this entailed a healthy decrease in the complexity capacity of the prediction model
-with a higher chance of extrapolating to unobserved data samples.
+% Viewed from the Vapnik-Chervonenkis dimensions,
+% this entailed a healthy decrease in the complexity capacity of the prediction model
+% with a higher chance of extrapolating to newly acquired data samples.
 
 In the future,
 region-network sparsity priors could be incorporated into various
-pattern-learning methods in systems neuroscience.
+pattern-learning methods applied in systems neuroscience.
 %
 This includes supervised methods for whole-brain classification and regression
 in single- and multi-task learning settings.
@@ -1448,15 +1434,14 @@ matrix factorization and clustering algorithms
 Additionally,
 hierarchical regularization could be extended
 from the spatial activity domain to
-priors of coherent spatiotemporal activity structure
-\cite{gramfort2011tracking}.
+priors of coherent spatiotemporal activity structure.
 %
 The deterministic choice of a region and network atlas
 could further be avoided by
 sparse selection of overcomplete region-network dictionaries.
-Advanced but non-hierarchical penalty terms will probably allow for
-more complex structured sparsity that
-go beyond the recently enabled parent-children dependencies.
+% Advanced but non-hierarchical penalty terms will probably allow for
+% more complex structured sparsity that
+% go beyond the recently enabled parent-children dependencies.
 %
 Ultimately,
 successful high-dimensional inference on brain scans is

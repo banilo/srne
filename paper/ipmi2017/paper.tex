@@ -135,7 +135,7 @@ Brain Imaging}
     Structured sparsity penalization has recently improved
     statistical models applied to high-dimensional data in various domains.
     %
-    As an extension to imaging neuroscience,
+    As an extension to medical imaging,
     the present work incorporates
     priors on network hierarchies of brain regions into
     logistic-regression to distinguish neural activity effects.
@@ -152,8 +152,9 @@ Brain Imaging}
     captured complementary aspects of the neural activity patterns.
     %
     Local and global priors of neurobiological knowledge
-    are thus demonstrated to enhance
-    generalization performance, sample complexity, and domain interpretability.
+    are thus demonstrated to offer advantages in
+    generalization performance, sample complexity,
+    and domain interpretability.
 \end{abstract}
 
 
@@ -177,7 +178,7 @@ Many such ill-posed estimation problems
 have benefited from
 \textit{sparsity} assumptions
 \cite{bach2012optimization}.
-They act as regularizer by encouraging zero coefficients
+Those act as regularizer by encouraging zero coefficients
 in model selection.
 Sparse supervised and unsupervised
 learning algorithms have proven to yield
@@ -443,22 +444,22 @@ yield more human-interpretable results,
 and generalize better to new samples
 than domain-naive black-box estimators.
 \nopagebreak
-\section*{Methods}
-This paper contributes a domain adaptation of hierarchical structured
+\section{Methods}
+This paper contributes a neuroscience adaptation of hierarchical structured
 tree penalties to jointly incorporate region 
 specialization and network integration priors into high-dimensional 
 prediction.
 We capitalize on hierarchical group lasso
-to create a set of convex sparse penalty terms.
+to create a new class of convex sparse penalty terms.
 These conjointly acknowledge local specialization and 
-global connectivity when discriminating defined psychological tasks
+global integration when discriminating defined psychological tasks
 from neural activity maps.
 % Bertrand: univariate-multivariate is orthogonal to the
 % current study -> make clear why we opted for multivariate
 % rather than univariate which might even have been simpler
 Rather than inferring brain activity from psychological tasks
 by independent comparisons of task pairs,
-this study simultaneously infers
+this approach simultaneously infers
 a set of psychological tasks from brain activity maps
 in a multivariate setting and allows for
 prediction in unseen neuroimaging data.
@@ -508,6 +509,18 @@ into statistical estimation.
   \vspace{-0.6cm}
   \label{fig_priors}
 \end{figure*}
+%
+\begin{wrapfigure}{r}{0.45\textwidth}
+\begin{centering}
+\includegraphics[width=0.45\textwidth]{../figures/level_schematic_crop.pdf}
+\end{centering}
+\vspace{-0.7cm}
+  \caption{\textbf{Hierarchical Tree Prior.}
+  % Abc
+  % \textit{Left:} Def
+  }
+\label{fig_prior_penalty}
+\end{wrapfigure}
 
 Major brain networks emerge in human individuals around birth
 \cite{doria2010}.
@@ -516,7 +529,7 @@ similar functional profiles than nodes from different networks
 \cite{anderson2013}.
 As a popular method for network extraction,
 ICA \cite{beckmann2005} yields continuous brain maps with
-weights for each voxel. The region nodes of ICA
+voxel-level resolution. The region nodes of ICA
 network are spatially disjoint sets of voxel groups that
 agree with boundaries of brain atlases.
 Hence,
@@ -546,7 +559,8 @@ The first hierarchical level are
 the network groups with all
 the voxels of the brain regions associated with them.
 Each network node in turn descends into a second hierarchical level with
-brain regions of neighboring voxels.
+brain regions of neighboring voxels
+(Figure \ref{fig_prior_penalty}).
 %
 Induced by the region-network sparsity tree,
 a child node enters the set of relevant voxel variables only
@@ -583,14 +597,15 @@ We formulate our estimation problem in the framework of regularized
 empirical risk
 minimization applied to linear models.
 The goal is to estimate a good predictor of psychological tasks
-given a single brain image. Let the set \(\mathcal X\in\mathbb{R}^{n \times p}\) represent brain
+given a single brain image. Let the set
+\(\mathbf{X}\in\mathbb{R}^{n \times p}\) represent brain
 images of \(p > 0\) voxels.
 We then minimize the risk \(\mathcal L(\hat y, y)\) with
-\(\hat y = f(X\hat w + \hat b)\), where \(f\) is a link function 
+\(\hat y = f(\mathbf{X} \mathbf{\hat w} + \mathbf{\hat b})\), where \(f\) is a link function 
 (e.g., sigmoid for logistic regression, identity for linear regression),
 and \(\mathcal L\) usually represents an appropriate negative loglikelihood.
 We incorporate an informative prior through regularization:
-\[\argmin_{w, b} \mathcal L(f(Xw + b), y) + \lambda\Omega(w),\]
+\[ \mathbf{\hat{w}, \hat{b}} = \argmin_{w, b} \mathcal L(f(\mathbf{X}\mathbf{w} + \mathbf{b}), y) + \lambda\Omega(\mathbf{w}),\]
 where \(\lambda > 0\) and \(\Omega\) is the regularizer.
 Brain \textit{regions} are defined as disjoint groups of voxels. Let \(\mathcal G\)
 be a partition of \(\{1, \dots, p\}\), i.e.
@@ -605,12 +620,11 @@ the sense that
 This allows for an unambiguous assignment of each region \(g\in\mathcal G\) to one
 network \(h\in\mathcal H\) and thus generates a tree structure.
 A root node is added to contain all voxels.
-
-For a brain image \(w\in\mathbb{R}^p\) and a group \(g\), the vector 
-\(w_g\in\mathbb{R}^{|g|}\) is defined as the restriction of \(w\) to the coordinates
+For a brain image \(\mathbf{w}\in\mathbb{R}^p\) and a group \(g\), the vector 
+\(\mathbf{w}_g\in\mathbb{R}^{|g|}\) is defined as the restriction of \(\mathbf{w}\) to the coordinates
  in \(g\). The penalty structured by network
 and region information can then be written as
-\[\Omega(w) = \alpha\sum_{h\in\mathcal H}\eta_h\|w_h\|_2 + \beta\sum_{g\in\mathcal G}\eta_g\|w_g\|_2.\]
+\[\Omega(\mathbf{w}) = \alpha\sum_{h\in\mathcal H}\eta_h\|\mathbf{w}_h\|_2 + \beta\sum_{g\in\mathcal G}\eta_g\|\mathbf{w}_g\|_2.\]
 As originally recommended \cite{yuan2006model},
 we set \(\eta_g = 1/\sqrt{|g|}\) to
 account for discrepancy in group sizes. The hierarchy-level-specific factors 
@@ -645,9 +659,9 @@ attack this using one-versus-rest scheme on a binary logistic regression.
 The one-versus-rest classification strategy is
 chosen to obtain one weight map per class for display and model diagnostics.
 Its loss can be written as
-\[\sum_{i=1}^n\log(1 + \exp(-y_i\langle x_i, w\rangle)) + \lambda\Omega(w),\]
+\[\sum_{i=1}^n\log(1 + \exp(-y_i\langle x_i, \mathbf{w}\rangle)) + \lambda\Omega(\mathbf{w}),\]
 if \(y\in\{-1, 1\}\) and with \(x_i\in\mathbb{R}^p\) the training sample brain images.
-We optimize parameters \(w\) using an iterative forward-backward
+We optimize parameters \(\mathbf{w}\) using an iterative forward-backward
 scheme analogous to the FISTA solver for the lasso \cite{beck2009}.
 
 % \paragraph{Optimization.}
@@ -975,7 +989,7 @@ from 18 diverse paradigms in a common $60\times72\times60$ space of
 3mm isotropic gray-matter voxels.
 Hence,
 the present analyses were based on task-labeled HCP maps of neural
-activity with z-scored $p$ = 79,941 voxels.
+activity with $p$ = 79,941 z-scored voxels.
 
 % \begin{table*}[h]
 %   \resizebox{0.98\textwidth}{!}{%
@@ -1100,25 +1114,25 @@ Across experiments with stratified and shuffled
 cross-validation (90\%/10\% train/test set) across pooled participant data,
 hierarchial tree sparsity was most successful
 in distinguishing unseen neural activity maps from 18 psychological tasks
-(89.7\% multi-class accuracy, mean AUC 94.8 [+/- 9.1 standard deviation]
+(89.7\% multi-class accuracy, mean AUC 0.948 [+/- 0.091 standard deviation]
 mean precision 0.87, mean recall 0.92).
 It was closely followed by logistic regression
 structured by trace-norm regularization
-(89.4\%, mean AUC 90.8 [+/- 14.8],
+(89.4\%, mean AUC 0.908 [+/- 0.148],
 precision 0.86, recall 0.91).
 Lasso featured an average performance comparing to the other sparse estimators
-(88.6\%, mean AUC 94.3 [+/- 9.3],
+(88.6\%, mean AUC 0.943 [+/- 0.093],
 precision 0.86, recall 0.90).
 Elastic-Net, in turn, featured an
 average performance comparing to the other sparse estimators
-(88.1\%, mean AUC 94.1 [+/- 10.2],
+(88.1\%, mean AUC 0.941 [+/- 0.102],
 precision 0.85, recall 0.84).
 Introducing a-priori knowledge of brain region compartments
 by sparse group sparsity
-(87.9\%, mean AUC 93.9 [+/- 10.1], precision 0.85, recall 0.90)
+(87.9\%, mean AUC 0.939 [+/- 0.101], precision 0.85, recall 0.90)
 and
 by group sparsity
-(87.9\%, mean AUC 84.7 [+/- 17.3], precision 0.85, recall 0.90)
+(87.9\%, mean AUC 0.847 [+/- 0.173], precision 0.85, recall 0.90)
 performed worst.
 
 
